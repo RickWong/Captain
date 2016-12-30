@@ -1,27 +1,33 @@
 <meta charset="utf-8" />
 
 <style>
+html { background: transparent; }
 body { 
 	/*background: #f9f9f9; */
-	background: #f4f4f4;
-	color: #222; 
+	/*background: #f4f4f4;*/
+	background: transparent;
+	color: #888; 
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 0.85em;
 	line-height: 20px;
 	padding: 0;
 	margin: 0;
 }
-.menu {
+ul {
 	list-style: none;
-	margin: 0;
-	padding: 4px 0;
+	margin: 4px 0;
+	padding: 0;
 }
-.menu li {
+li {
 	margin: 0;
-	padding: 0 20px;
+	padding: 0 8px 0 20px;
 	line-height: 20px;
-	height: 20px;
+	min-height: 20px;
 	-webkit-user-select: none;
+	display: block;
+}
+.menu li.action {
+	color: #222;
 }
 .menu li.action:hover {
 	background: #4f9dfb;
@@ -30,24 +36,81 @@ body {
 }
 .menu li.separator {
 	border-bottom: 2px solid rgba(0,0,0, 0.1);
-	height: 0;
-	margin: 2px 0;
+	min-height: 0;
+	margin: 4px 0;
+}
+.menu li .shortcut {
+	float: right;
+}
+.containers li {
+	padding: 0;
+}
+.containers li.container {
+	color: #000;
+}
+.containers li.container:hover {
+	cursor: default;
 }
 </style>
 
 <ul class="menu">
-	<li>Docker</li>
+	<li>Ahoy! Docker is running</li>
 	<li class="separator"></li>
-	<li class="action">Check for updates…</li>
-	<li class="action" onClick="appQuit()">Quit</li>
+	<li>
+		<ul class="containers">
+			<li class="container">Foo</li>
+			<li class="container">Bar</li>
+		</ul>
+	</li>
+	<li class="separator"></li>
+	<li class="action" onClick="checkForUpdates()">Check for updates</li>
+	<li class="action" onClick="appQuit()">Quit Captain <span class="shortcut">⌘Q</span></li>
 </ul>
 
 
 <script>
+const remote = require('electron').remote;
+const shell = require('electron').shell;
 const ElectronClient = require('electron-rpc/client');
+
+const menuWindow = remote.getCurrentWindow();
+menuWindow.setVibrancy('titlebar');
+menuWindow.setResizable(true);
+menuWindow.setMovable(false);
+menuWindow.setMinimizable(false);
+menuWindow.setMaximizable(false);
+menuWindow.openDevTools();
+
 const client = new ElectronClient();
+client.on('containers', (err, body) => {
+	console.log(body);
+
+	for (let c of document.querySelectorAll('.containers .container')) {
+		c.remove();
+	}
+
+	const containers = document.querySelectorAll('.containers')[0];
+
+	for (let container of body.containers) {
+		const li = document.createElement('li');
+		li.className = 'container';
+		li.innerHTML = container.name;
+		containers.appendChild(li);
+	}
+
+    var win = remote.getCurrentWindow();
+    win.setSize(menuWindow.getSize()[0], body.containers.length * 20 + 90);
+});
 
 const appQuit = () => {
 	client.request('quit');
 };
+
+const checkForUpdates = () => {
+	shell.openExternal('http://getcaptain.co/#changes');
+};
+
+setInterval(() => {
+	client.request('refresh');
+}, 5000);
 </script>
