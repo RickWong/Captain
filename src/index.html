@@ -1,1 +1,53 @@
-index.html
+<meta charset="utf-8" />
+
+<style>
+body { 
+	/*background: #f9f9f9; */
+	background: #f4f4f4;
+	color: #222; 
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-size: 0.85em;
+	line-height: 20px;
+	padding: 0;
+	margin: 0;
+}
+.menu {
+	list-style: none;
+	margin: 0;
+	padding: 4px 0;
+}
+.menu li {
+	margin: 0;
+	padding: 0 20px;
+	line-height: 20px;
+	height: 20px;
+	-webkit-user-select: none;
+}
+.menu li.action:hover {
+	background: #4f9dfb;
+	color: #fff;
+	cursor: default;
+}
+.menu li.separator {
+	border-bottom: 2px solid rgba(0,0,0, 0.1);
+	height: 0;
+	margin: 2px 0;
+}
+</style>
+
+<ul class="menu">
+	<li>Docker</li>
+	<li class="separator"></li>
+	<li class="action">Check for updates…</li>
+	<li class="action" onClick="appQuit()">Quit</li>
+</ul>
+
+
+<script>
+const ElectronClient = require('electron-rpc/client');
+const client = new ElectronClient();
+
+const appQuit = () => {
+	client.request('quit');
+};
+</script>
