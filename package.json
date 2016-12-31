@@ -2,7 +2,7 @@
   "name": "captain",
   "version": "1.0.0",
   "description": "Docker menubar",
-  "main": "src/main.js",
+  "main": "src/app.js",
   "author": "Rick Wong <rick@webambition.nl>",
   "license": "MIT",
   "dependencies": {

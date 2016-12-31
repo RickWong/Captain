@@ -1,0 +1,89 @@
+* { box-sizing: border-box; }
+
+body {
+	color: #888;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-size: 0.85em;
+	line-height: 22px;
+	padding: 0;
+	margin: 0;
+}
+ul {
+	list-style: none;
+	margin: 4px 0;
+	padding: 0;
+}
+li {
+	margin: 0;
+	padding: 0 8px 0 22px;
+	line-height: 22px;
+	min-height: 22px;
+	-webkit-user-select: none;
+	display: block;
+}
+.menu li.action {
+	color: #222;
+}
+.menu li.action:hover {
+	background: #4f9dfb;
+	color: #fff;
+	cursor: default;
+}
+.menu li.separator {
+	border-bottom: 2px solid rgba(0,0,0, 0.1);
+	min-height: 0;
+	margin: 4px 0;
+}
+.menu li .shortcut {
+	float: right;
+}
+.containers li {
+	padding-left: 22px;
+	margin-left: -22px;
+	padding-right: 8px;
+	margin-right: -8px;
+}
+.containers li.group {
+	font-weight: 500;
+	color: #000;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-right: 40px;
+}
+.containers li.container {
+	color: #000;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-left: 40px;
+	padding-right: 40px;
+}
+.containers li.container:hover {
+	cursor: default;
+}
+.containers li.container.active:hover {
+	background: #4f9dfb;
+	color: #fff;
+	cursor: default;
+}
+.containers li.container.active:before {
+	content: " ";
+	display: inline-block;
+	position: absolute;
+	margin-left: -16px;
+	margin-top: 8px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #0ed80e;
+}
+.containers li.container.inactive:before {
+	content: " ";
+	display: inline-block;
+	position: absolute;
+	margin-left: -16px;
+	margin-top: 8px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #cc2d2d;
+}

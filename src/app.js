@@ -1,14 +1,14 @@
-const exec = require('child_process').exec;
 const path = require('path');
 const ElectronServer = require('electron-rpc/server');
 const Menubar = require('menubar');
 const package = require(path.join(__dirname, '../package.json'));
-const Docker = require('./docker');
+const Docker = require('./app/docker');
 
 const server = new ElectronServer();
 
 const menu = Menubar({
 	dir: __dirname,
+	index: 'file://' + path.join(__dirname, './gui/gui.html'),
 	icon: path.join(__dirname, '../resources/IconTemplate.png'),
 	tooltip: `Captain Docker ${package.version}`,
 	width: 240,
