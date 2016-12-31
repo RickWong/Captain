@@ -1,15 +1,12 @@
 <meta charset="utf-8" />
 
 <style>
-html { background: transparent; }
+* { box-sizing: border-box; }
 body { 
-	/*background: #f9f9f9; */
-	/*background: #f4f4f4;*/
-	background: transparent;
 	color: #888; 
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 0.85em;
-	line-height: 20px;
+	line-height: 22px;
 	padding: 0;
 	margin: 0;
 }
@@ -20,9 +17,9 @@ ul {
 }
 li {
 	margin: 0;
-	padding: 0 8px 0 20px;
-	line-height: 20px;
-	min-height: 20px;
+	padding: 0 8px 0 22px;
+	line-height: 22px;
+	min-height: 22px;
 	-webkit-user-select: none;
 	display: block;
 }
@@ -43,13 +40,54 @@ li {
 	float: right;
 }
 .containers li {
-	padding: 0;
+	padding-left: 22px;
+	margin-left: -22px;
+	padding-right: 8px;
+	margin-right: -8px;
+}
+.containers li.group {
+	font-weight: 500;
+	color: #000;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-right: 40px;
 }
 .containers li.container {
 	color: #000;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-left: 40px;
+	padding-right: 40px;
 }
 .containers li.container:hover {
 	cursor: default;
+}
+.containers li.container.active:hover {
+	background: #4f9dfb;
+	color: #fff;
+	cursor: default;
+}
+.containers li.container.active:before {
+	content: " ";
+	display: inline-block;
+	position: absolute;
+	margin-left: -16px;
+	margin-top: 8px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #0ed80e;
+}
+.containers li.container.inactive:before {
+	content: " ";
+	display: inline-block;
+	position: absolute;
+	margin-left: -16px;
+	margin-top: 8px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #cc2d2d;
 }
 </style>
 
@@ -69,8 +107,7 @@ li {
 
 
 <script>
-const remote = require('electron').remote;
-const shell = require('electron').shell;
+const {clipboard, remote, shell} = require('electron');
 const ElectronClient = require('electron-rpc/client');
 
 const menuWindow = remote.getCurrentWindow();
@@ -85,21 +122,42 @@ const client = new ElectronClient();
 client.on('containers', (err, body) => {
 	console.log(body);
 
-	for (let c of document.querySelectorAll('.containers .container')) {
+	for (let c of document.querySelectorAll('.containers .group, .containers .container')) {
 		c.remove();
 	}
 
 	const containers = document.querySelectorAll('.containers')[0];
 
-	for (let container of body.containers) {
-		const li = document.createElement('li');
-		li.className = 'container';
-		li.innerHTML = container.name;
+	Object.keys(body.groups).forEach((groupName) => {
+		const li     = document.createElement('li');
+		li.className = 'group';
+		li.innerHTML = groupName;
 		containers.appendChild(li);
-	}
+
+		Object.keys(body.groups[groupName]).forEach((containerName) => {
+			const container = body.groups[groupName][containerName];
+			const port = (container.ports||[])[0];
+
+			const li     = document.createElement('li');
+			li.className = 'container ' + (container.active ? 'active' : 'inactive');
+			li.innerHTML = containerName + (port ? ` (${port})` : '');
+			if (container.active) {	
+				li.onclick   = (event) => {
+					if (event.metaKey) {
+						shell.openExternal(`http${port==443?'s':''}://localhost:${port}`);
+					} else {
+						clipboard.writeText(`localhost:${port}`);
+					}
+					menuWindow.hide();
+				};
+				li.title = `Copy / Hold ⌘ to Open`;
+			}
+			containers.appendChild(li);
+		});
+	});
 
     var win = remote.getCurrentWindow();
-    win.setSize(menuWindow.getSize()[0], body.containers.length * 20 + 90);
+    win.setSize(menuWindow.getSize()[0], containers.children.length * 22 + 96);
 });
 
 const appQuit = () => {
@@ -109,8 +167,4 @@ const appQuit = () => {
 const checkForUpdates = () => {
 	shell.openExternal('http://getcaptain.co/#changes');
 };
-
-setInterval(() => {
-	client.request('refresh');
-}, 5000);
 </script>
