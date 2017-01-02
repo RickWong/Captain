@@ -21,6 +21,10 @@ export const version = async () => {
 			.map((version) => (version.match(/:\s+(.*)$/) || [])[1])
 			.shift();
 	} catch (error) {
+		if (process.env.NODE_ENV === 'development') {
+			console.error(error);
+		}
+
 		return undefined;
 	}
 };
