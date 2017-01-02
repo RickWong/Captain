@@ -1,60 +1,42 @@
-const {clipboard, remote, shell} = require('electron');
-const ElectronClient = require('electron-rpc/client');
+require("babel-polyfill");
+require("babel-register")({
+	"presets": ["es2015", "stage-2"],
+});
+
+const {remote, shell} = require("electron");
+const {clientStart, clientStop} = require("./client"); // Relative to the html file.
 
 const menuWindow = remote.getCurrentWindow();
-menuWindow.setVibrancy('titlebar');
-menuWindow.setResizable(true);
+menuWindow.setVibrancy("titlebar");
 menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
-menuWindow.openDevTools();
+menuWindow.setResizable(false);
 
-const client = new ElectronClient();
-client.on('containers', (err, body) => {
-	console.log(body);
+if (process.env.NODE_ENV === 'development') {
+	menuWindow.setResizable(true);
+	menuWindow.openDevTools();
+}
 
-	for (let c of document.querySelectorAll('.containers .group, .containers .container')) {
-		c.remove();
+window.onkeydown = (event) => {
+	if (String.fromCharCode(event.which).toUpperCase() !== "Q") {
+		event.preventDefault();
 	}
-
-	const containers = document.querySelectorAll('.containers')[0];
-
-	Object.keys(body.groups).forEach((groupName) => {
-		const li     = document.createElement('li');
-		li.className = 'group';
-		li.innerHTML = groupName;
-		containers.appendChild(li);
-
-		Object.keys(body.groups[groupName]).forEach((containerName) => {
-			const container = body.groups[groupName][containerName];
-			const port = (container.ports||[])[0];
-
-			const li     = document.createElement('li');
-			li.className = 'container ' + (container.active ? 'active' : 'inactive');
-			li.innerHTML = containerName + (port ? ` (${port})` : '');
-			if (container.active) {
-				li.onclick   = (event) => {
-					if (event.metaKey) {
-						shell.openExternal(`http${port==443?'s':''}://localhost:${port}`);
-					} else {
-						clipboard.writeText(`localhost:${port}`);
-					}
-					menuWindow.hide();
-				};
-				li.title = `Copy / Hold ⌘ to Open`;
-			}
-			containers.appendChild(li);
-		});
-	});
-
-	var win = remote.getCurrentWindow();
-	win.setSize(menuWindow.getSize()[0], document.body.parentNode.offsetHeight);
-});
-
-const appQuit = () => {
-	client.request('quit');
 };
 
 const checkForUpdates = () => {
-	shell.openExternal('http://getcaptain.co/#changes');
+	shell.openExternal("http://getcaptain.co/#changes");
 };
+
+const updateWindowHeight = ({width, height} = {}) => {
+	menuWindow.setSize(
+		width || menuWindow.getSize()[0],
+		height || (document.body.firstChild.offsetHeight + 8)
+	);
+};
+
+const updateStatus = (message) => {
+	document.querySelector(".status").innerHTML = message;
+};
+
+clientStart();

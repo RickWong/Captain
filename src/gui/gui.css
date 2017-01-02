@@ -17,27 +17,32 @@ li {
 	margin: 0;
 	padding: 0 8px 0 22px;
 	line-height: 22px;
-	min-height: 22px;
-	-webkit-user-select: none;
 	display: block;
+	cursor: default;
+	-webkit-user-select: none;
 }
 .menu li.action {
 	color: #222;
 }
 .menu li.action:hover {
-	background: #4f9dfb;
+	background: rgba(0, 114, 238, 0.61);
 	color: #fff;
-	cursor: default;
-}
-.menu li.separator {
-	border-bottom: 2px solid rgba(0,0,0, 0.1);
-	min-height: 0;
-	margin: 4px 0;
 }
 .menu li .shortcut {
 	float: right;
 }
-.containers li {
+
+.menu li.separator {
+	border-bottom: 2px solid rgba(0,0,0, 0.1);
+	margin: 4px 0;
+}
+
+.containers {
+	visibility: hidden;
+	height: 0;
+}
+
+.menu .containers > li {
 	padding-left: 22px;
 	margin-left: -22px;
 	padding-right: 8px;
@@ -58,10 +63,11 @@ li {
 	padding-right: 40px;
 }
 .containers li.container:hover {
-	cursor: default;
+	background: rgba(0, 114, 238, 0.61);
+	color:      #fff;
 }
 .containers li.container.active:hover {
-	background: #4f9dfb;
+	background: rgba(0, 114, 238, 0.61);
 	color: #fff;
 	cursor: default;
 }
@@ -75,6 +81,17 @@ li {
 	height: 8px;
 	border-radius: 50%;
 	background: #0ed80e;
+}
+.containers li.container.paused:before {
+	content:       " ";
+	display:       inline-block;
+	position:      absolute;
+	margin-left:   -16px;
+	margin-top:    8px;
+	width:         8px;
+	height:        8px;
+	border-radius: 50%;
+	background:    #cc9b53;
 }
 .containers li.container.inactive:before {
 	content: " ";
