@@ -18,11 +18,11 @@ if (process.env.NODE_ENV === 'development') {
 	menuWindow.openDevTools();
 }
 
-window.onkeydown = (event) => {
+window.addEventListener("keydown", (event) => {
 	if (String.fromCharCode(event.which).toUpperCase() !== "Q") {
 		event.preventDefault();
 	}
-};
+});
 
 const checkForUpdates = () => {
 	shell.openExternal("http://getcaptain.co/#changes");

@@ -8,12 +8,20 @@ const serverTrigger = (command, body) => {
 	server.methods[command]({body});
 };
 
+let updateInterval;
+
 export const serverStart = async (menubar) => {
 	server.configure(menubar.window.webContents);
 
 	menubar.on("show", () => {
 		serverTrigger(COMMANDS.VERSION);
 		serverTrigger(COMMANDS.CONTAINER_GROUPS);
+
+		updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 5000);
+	});
+
+	menubar.on("hide", () => {
+		clearInterval(updateInterval);
 	});
 
 	server.on(COMMANDS.APPLICATION_QUIT, () => {

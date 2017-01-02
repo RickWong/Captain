@@ -61,6 +61,8 @@ li {
 	text-overflow: ellipsis;
 	padding-left: 40px;
 	padding-right: 40px;
+	max-height: 22px;
+	white-space: pre;
 }
 .containers li.container:hover {
 	background: rgba(0, 114, 238, 0.61);
@@ -70,6 +72,16 @@ li {
 	background: rgba(0, 114, 238, 0.61);
 	color: #fff;
 	cursor: default;
+}
+.containers li.container.active.killable:hover {
+	background: rgba(238, 0, 17, 0.61);
+	color:      #fff;
+	cursor:     default;
+}
+.containers li.container.active.pauzeable:hover {
+	background: rgba(247, 124, 0, 0.61);
+	color:      #fff;
+	cursor:     default;
 }
 .containers li.container.active:before {
 	content: " ";

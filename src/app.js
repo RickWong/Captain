@@ -13,7 +13,7 @@ const menubar = Menubar({
 	icon: Path.join(__dirname, "../resources/IconTemplate.png"),
 	index: `file://${Path.join(__dirname, "./gui/gui.html")}`,
 
-	width: 240,
+	width: 256,
 	height: 30,
 	windowPosition: "trayLeft",
 	tooltip: `Captain Docker ${Package.version}`,
