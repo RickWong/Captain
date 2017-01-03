@@ -1,5 +1,8 @@
 import {exec} from 'child_process';
 
+// Fix PATH to find 'docker' binary.
+process.env.PATH = process.env.PATH + ':/usr/local/bin';
+
 const escapeShell = (arg) => '"' + arg.replace(/(["\s'$`\\])/g, '\\$1') + '"';
 
 const execPromise = (command) => {

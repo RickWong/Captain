@@ -1,6 +1,6 @@
 require("babel-polyfill");
 require("babel-register")({
-	"presets": ["es2015", "stage-2"],
+	presets: ["babel-preset-es2015", "babel-preset-stage-2"].map(require.resolve),
 });
 
 const {remote, shell} = require("electron");
