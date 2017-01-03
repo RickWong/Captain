@@ -1,9 +1,9 @@
-import {exec} from 'child_process';
+import {exec} from "child_process";
 
-// Fix PATH to find 'docker' binary.
-process.env.PATH = process.env.PATH + ':/usr/local/bin';
+// Fix PATH to find "docker" binary.
+process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
-const escapeShell = (arg) => '"' + arg.replace(/(["\s'$`\\])/g, '\\$1') + '"';
+const escapeShell = (arg) => `'${arg.replace(/(["\s'$\`\\])/g, "\\$1")}'`;
 
 const execPromise = (command) => {
 	return new Promise((resolve, reject) => {
@@ -17,14 +17,25 @@ const execPromise = (command) => {
 	});
 };
 
+export const containerCommand = async (command, id) => {
+	try {
+		return await execPromise(`docker ${command} ${id ? escapeShell(id) : ""}`);
+	} catch (error) {
+		if (process.env.NODE_ENV === "development") {
+			console.error(error);
+		}
+
+		return [];
+	}
+};
+
 export const version = async () => {
 	try {
-		return (await execPromise('docker version'))
-			.filter((line) => line.indexOf('Version:') >= 0)
-			.map((version) => (version.match(/:\s+(.*)$/) || [])[1])
+		return (await containerCommand("-v"))
+			.map((version) => (version.match(/version\s+(.*),/) || [])[1])
 			.shift();
 	} catch (error) {
-		if (process.env.NODE_ENV === 'development') {
+		if (process.env.NODE_ENV === "development") {
 			console.error(error);
 		}
 
@@ -34,7 +45,7 @@ export const version = async () => {
 
 export const containerList = async () => {
 	try {
-		return (await execPromise('docker container ls -a') || [])
+		return (await containerCommand("ps -a"))
 			.slice(1).filter((line) => line.length > 0)
 			.map((item) => {
 				let [id, image, command, created, status, port, name] = item.split(/\s{3,}/g);
@@ -47,22 +58,10 @@ export const containerList = async () => {
 				return {id, image, command, created, status, port, name};
 			});
 	} catch (error) {
-		if (process.env.NODE_ENV === 'development') {
+		if (process.env.NODE_ENV === "development") {
 			console.error(error);
 		}
 
 		return [];
-	}
-};
-
-export const containerCommand = async (command, id) => {
-	try {
-		return await execPromise(`docker container ${escapeShell(command)} ${escapeShell(id)}`);
-	} catch (error) {
-		if (process.env.NODE_ENV === 'development') {
-			console.error(error);
-		}
-
-		return undefined;
 	}
 };

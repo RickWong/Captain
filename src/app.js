@@ -19,8 +19,13 @@ const menubar = Menubar({
 	tooltip: `Captain Docker ${Package.version}`,
 
 	preloadWindow: true,
+	alwaysOnTop: true,
 });
 
 menubar.on("ready", () => {
 	serverStart(menubar);
+});
+
+menubar.on("focus-lost", () => {
+	menubar.window.hide();
 });
