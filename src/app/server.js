@@ -70,7 +70,7 @@ export const serverStart = async (menubar) => {
 
 		for (const container of containers) {
 			const imageParts    = container.image.split("_");
-			const groupName     = (imageParts.length < 2 ? "nogroup" : imageParts[0]);
+			const groupName     = (imageParts.length < 2 ? "~nogroup" : imageParts[0]);
 			const containerName = (imageParts.length < 2 ? container.name : container.name.substr(imageParts[0].length + 1));
 
 			container.active    = container.status.indexOf("Up") >= 0;

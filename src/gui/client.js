@@ -89,7 +89,7 @@ const renderContainerGroups = (listNode, groups) => {
 };
 
 const renderContainerGroupName = (listNode, groupName) => {
-	if (groupName === "nogroup") {
+	if (groupName === "~nogroup") {
 		return;
 	}
 
