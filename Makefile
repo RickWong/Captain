@@ -10,8 +10,10 @@ build:
 		--no-prune \
 		--ignore=".idea" \
 		--ignore=".gitignore" \
+		--ignore="dmg.json" \
 		--ignore="Makefile" \
 		--overwrite
+	NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg
 
 test:
 	NODE_ENV=production electron .
