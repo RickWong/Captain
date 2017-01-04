@@ -19,7 +19,7 @@ const menubar = Menubar({
 	tooltip: `Captain Docker ${Package.version}`,
 
 	preloadWindow: true,
-	alwaysOnTop: true,
+	alwaysOnTop: false,
 });
 
 menubar.on("ready", () => {
