@@ -10,7 +10,7 @@ const {serverStart} = require("./app/server");
 
 const menubar = Menubar({
 	dir: __dirname,
-	icon: Path.join(__dirname, "../resources/Icon.png"),
+	icon: Path.join(__dirname, "../resources/iconTemplate.png"),
 	index: `file://${Path.join(__dirname, "./gui/gui.html")}`,
 
 	width: 256,
