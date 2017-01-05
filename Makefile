@@ -13,6 +13,9 @@ build:
 		--ignore="dmg.json" \
 		--ignore="Makefile" \
 		--overwrite
+
+package:
+	rm -rf ./Captain-darwin-x64/Captain.dmg
 	NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg
 
 test:

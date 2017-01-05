@@ -55,6 +55,17 @@ li {
 	text-overflow: ellipsis;
 	padding-right: 40px;
 }
+.containers li.group:before {
+	content: "▾ ";
+	font-size: 20px;
+	display: inline-block;
+	position: absolute;
+	margin-left: -14px;
+	margin-top: 0;
+}
+.containers li.group.closed:before {
+	content: "▸ ";
+}
 .containers li.container {
 	color: #000;
 	overflow: hidden;

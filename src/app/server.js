@@ -69,9 +69,19 @@ export const serverStart = async (menubar) => {
 		const groups     = {};
 
 		for (const container of containers) {
-			const imageParts    = container.image.split("_");
-			const groupName     = (imageParts.length < 2 ? "~nogroup" : imageParts[0]);
-			const containerName = (imageParts.length < 2 ? container.name : container.name.substr(imageParts[0].length + 1));
+			let groupName     = "~others";
+			let containerName = container.name;
+
+			const imageParts  = container.image.split("_");
+			const nameParts   = container.name.split("_");
+
+			if (nameParts.length >= 3) {
+				groupName     = nameParts[0];
+				containerName = nameParts.slice(1).join("_");
+			} else if (imageParts.length >= 2) {
+				groupName     = imageParts[0];
+				containerName = imageParts.slice(1).join("_");
+			}
 
 			container.active    = container.status.indexOf("Up") >= 0;
 			container.paused    = container.status.indexOf("Paused") >= 0;

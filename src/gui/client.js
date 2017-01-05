@@ -7,13 +7,14 @@ let altIsDown = false;
 let ctrlIsDown = false;
 let metaIsDown = false;
 let shiftIsDown = false;
+const closedGroups = new Set;
 
 export const clientStart = async () => {
 	client.on(COMMANDS.VERSION, (error, {version}) => {
 		if (version) {
-			updateStatus(`Runnin' Docker ${version}`);
+			updateStatus(`Running Docker ${version}`);
 		} else {
-			updateStatus(`Aaargh whar's ye Docker ay?`);
+			updateStatus("Is Docker running?");
 		}
 	});
 
@@ -80,22 +81,30 @@ const renderContainerGroups = (listNode, groups) => {
 	Object.keys(groups).forEach((groupName) => {
 		renderContainerGroupName(listNode, groupName);
 
-		Object.keys(groups[groupName]).forEach((containerName) => {
-			renderContainerGroupItem(listNode, groups[groupName][containerName]);
-		});
+		if (!closedGroups.has(groupName)) {
+			Object.keys(groups[groupName]).forEach((containerName) => {
+				renderContainerGroupItem(listNode, groups[groupName][containerName]);
+			});
+		}
 
 		renderContainerGroupSeparator(listNode);
 	});
 };
 
 const renderContainerGroupName = (listNode, groupName) => {
-	if (groupName === "~nogroup") {
-		return;
-	}
+	const closed = closedGroups.has(groupName) ? "closed" : "";
 
 	const li     = document.createElement("li");
-	li.className = "group";
-	li.innerHTML = groupName;
+	li.className = ` group ${closed} `;
+	li.innerHTML = `${groupName.replace(/^~/, "")}`;
+	li.onclick   = (event) => {
+		if (closed) {
+			closedGroups.delete(groupName);
+		} else {
+			closedGroups.add(groupName);
+		}
+		client.request(COMMANDS.CONTAINER_GROUPS);
+	};
 	listNode.appendChild(li);
 };
 

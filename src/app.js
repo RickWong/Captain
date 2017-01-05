@@ -5,7 +5,7 @@ require("babel-register")({
 
 const Menubar       = require("menubar");
 const Path          = require("path");
-const Package       = require(Path.join(__dirname, "../package.json"));
+const Package       = require("../package.json");
 const {serverStart} = require("./app/server");
 
 const menubar = Menubar({

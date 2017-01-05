@@ -5,6 +5,7 @@ require("babel-register")({
 
 const {remote, shell} = require("electron");
 const {clientStart, clientStop} = require("./client"); // Relative to the html file.
+const Package = require("../../package.json"); // Relative to the html file.
 
 const menuWindow = remote.getCurrentWindow();
 menuWindow.setVibrancy("titlebar");
@@ -25,7 +26,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 const checkForUpdates = () => {
-	shell.openExternal("http://getcaptain.co/#changes");
+	shell.openExternal(`http://getcaptain.co/?updates_since=${Package.version}`);
 };
 
 const updateWindowHeight = ({width, height} = {}) => {
