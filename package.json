@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "captain",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Docker menubar",
   "main": "src/app.js",
   "author": "Rick Wong <rick@webambition.nl>",
