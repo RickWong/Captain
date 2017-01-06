@@ -12,9 +12,9 @@ const closedGroups = new Set;
 export const clientStart = async () => {
 	client.on(COMMANDS.VERSION, (error, {version}) => {
 		if (version) {
-			updateStatus(`Running Docker ${version}`);
+			updateStatus(`Using Docker ${version}`);
 		} else {
-			updateStatus("Is Docker running?");
+			updateStatus("Docker not available");
 		}
 	});
 

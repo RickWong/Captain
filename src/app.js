@@ -16,7 +16,7 @@ const menubar = Menubar({
 	width: 256,
 	height: 30,
 	windowPosition: "trayLeft",
-	tooltip: `Captain Docker ${Package.version}`,
+	tooltip: `Captain v${Package.version.split(".")[0]}`,
 
 	preloadWindow: true,
 	alwaysOnTop: false,

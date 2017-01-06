@@ -31,8 +31,9 @@ export const containerCommand = async (command, id) => {
 
 export const version = async () => {
 	try {
-		return (await containerCommand("-v"))
-			.map((version) => (version.match(/version\s+(.*),/) || [])[1])
+		return (await containerCommand("version"))
+			.filter((line) => line.match(/Version:\s+(.*)/))
+			.map((version) => (version.match(/Version:\s+(.*)/) || [])[1])
 			.shift();
 	} catch (error) {
 		if (process.env.NODE_ENV === "development") {

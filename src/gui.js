@@ -26,7 +26,7 @@ window.addEventListener("keydown", (event) => {
 });
 
 const checkForUpdates = () => {
-	shell.openExternal(`http://getcaptain.co/?updates_since=${Package.version}`);
+	shell.openExternal(`http://getcaptain.co/?since=${Package.version.split(".")[0]}`);
 };
 
 const updateWindowHeight = ({width, height} = {}) => {
