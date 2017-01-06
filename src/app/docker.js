@@ -1,21 +1,4 @@
-import {exec} from "child_process";
-
-// Fix PATH to find "docker" binary.
-process.env.PATH = process.env.PATH + ":/usr/local/bin";
-
-const escapeShell = (arg) => `'${arg.replace(/(["\s'$\`\\])/g, "\\$1")}'`;
-
-const execPromise = (command) => {
-	return new Promise((resolve, reject) => {
-		exec(command, (error, stdout, stderr) => {
-			if (error || stderr) {
-				reject(error || new Error(stderr));
-			} else {
-				resolve(stdout.split("\n"));
-			}
-		});
-	});
-};
+import {execPromise, escapeShell} from "./exec";
 
 export const containerCommand = async (command, id) => {
 	try {

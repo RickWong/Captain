@@ -1,6 +1,7 @@
 import ElectronServer from "electron-rpc/server";
 import * as Docker from "./docker";
 import {COMMANDS} from "../rpc";
+import {execPromise} from "./exec";
 
 const server = new ElectronServer();
 
@@ -9,12 +10,20 @@ const serverTrigger = (command, body) => {
 };
 
 let updateInterval;
+let vibrancy;
 
 export const serverStart = async (menubar) => {
 	server.configure(menubar.window.webContents);
 
-	menubar.on("show", () => {
+	menubar.on("show", async () => {
 		clearInterval(updateInterval);
+
+		try {
+			await execPromise("defaults read -g AppleInterfaceStyle");
+			vibrancy = "dark";
+		} catch (error) {
+			vibrancy = "light";
+		}
 
 		serverTrigger(COMMANDS.VERSION);
 		serverTrigger(COMMANDS.CONTAINER_GROUPS);
@@ -33,7 +42,7 @@ export const serverStart = async (menubar) => {
 	});
 
 	server.on(COMMANDS.VERSION, async () => {
-		server.send(COMMANDS.VERSION, {version: await Docker.version()});
+		server.send(COMMANDS.VERSION, {vibrancy, version: await Docker.version()});
 	});
 
 	server.on(COMMANDS.CONTAINER_KILL, async ({body}) => {

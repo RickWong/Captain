@@ -21,6 +21,9 @@ li {
 	cursor: default;
 	-webkit-user-select: none;
 }
+body .menu > li.status {
+	color: #aaa;
+}
 .menu li.action {
 	color: #222;
 }
@@ -37,6 +40,10 @@ li {
 	margin: 4px 0;
 }
 
+.menu.dark li, .menu.dark .containers li {
+	color: rgba(255, 255, 255, 0.9);
+}
+
 .containers {
 	visibility: hidden;
 	height: 0;
@@ -47,10 +54,10 @@ li {
 	margin-left: -22px;
 	padding-right: 8px;
 	margin-right: -8px;
+	color: #000;
 }
 .containers li.group {
 	font-weight: 500;
-	color: #000;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	padding-right: 40px;
@@ -67,7 +74,6 @@ li {
 	content: "▸ ";
 }
 .containers li.container {
-	color: #000;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	padding-left: 40px;
@@ -94,7 +100,7 @@ li {
 	color:      #fff;
 	cursor:     default;
 }
-.containers li.container.active:before {
+.containers li.container:before {
 	content: " ";
 	display: inline-block;
 	position: absolute;
@@ -103,27 +109,14 @@ li {
 	width: 8px;
 	height: 8px;
 	border-radius: 50%;
+	box-shadow: 0 0 1px rgba(127, 127, 127, 0.8);
+}
+.containers li.container.active:before {
 	background: #0ed80e;
 }
 .containers li.container.paused:before {
-	content:       " ";
-	display:       inline-block;
-	position:      absolute;
-	margin-left:   -16px;
-	margin-top:    8px;
-	width:         8px;
-	height:        8px;
-	border-radius: 50%;
 	background:    #cc9b53;
 }
 .containers li.container.inactive:before {
-	content: " ";
-	display: inline-block;
-	position: absolute;
-	margin-left: -16px;
-	margin-top: 8px;
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
 	background: #cc2d2d;
 }

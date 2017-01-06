@@ -3,19 +3,23 @@ import ElectronClient from "electron-rpc/client";
 import {COMMANDS} from "../rpc";
 
 const client = new ElectronClient();
+let vibrancy = "light";
 let altIsDown = false;
 let ctrlIsDown = false;
 let metaIsDown = false;
 let shiftIsDown = false;
 const closedGroups = new Set;
 
-export const clientStart = async () => {
-	client.on(COMMANDS.VERSION, (error, {version}) => {
+export const clientStart = async (menuWindow) => {
+	client.on(COMMANDS.VERSION, (error, {vibrancy, version}) => {
 		if (version) {
 			updateStatus(`Using Docker ${version}`);
 		} else {
 			updateStatus("Docker not available");
 		}
+
+		menuWindow.setVibrancy(vibrancy);
+		document.querySelector(".menu").className = `menu ${vibrancy}`;
 	});
 
 	client.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
@@ -68,7 +72,7 @@ export const clientStart = async () => {
 	});
 
 	updateWindowHeight({height: 3 * 22 + 18});
-	updateStatus("Ahoy! Findin' ye Docker...");
+	updateStatus("Looking for Docker");
 	client.request(COMMANDS.VERSION);
 	client.request(COMMANDS.CONTAINER_GROUPS);
 };

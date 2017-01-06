@@ -8,7 +8,7 @@ const {clientStart, clientStop} = require("./client"); // Relative to the html f
 const Package = require("../../package.json"); // Relative to the html file.
 
 const menuWindow = remote.getCurrentWindow();
-menuWindow.setVibrancy("titlebar");
+menuWindow.setVibrancy("light");
 menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
@@ -40,4 +40,4 @@ const updateStatus = (message) => {
 	document.querySelector(".status").innerHTML = message;
 };
 
-clientStart();
+clientStart(menuWindow);
