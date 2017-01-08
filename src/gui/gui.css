@@ -39,8 +39,11 @@ body .menu > li.status {
 	border-bottom: 2px solid rgba(0,0,0, 0.1);
 	margin: 4px 0;
 }
+.menu.ultra-dark li.separator {
+	border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
 
-.menu.dark li, .menu.dark .containers li {
+.menu.ultra-dark li, .menu.ultra-dark .containers li {
 	color: rgba(255, 255, 255, 0.9);
 }
 

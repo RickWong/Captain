@@ -32,14 +32,20 @@ export const containerList = async () => {
 		return (await containerCommand("ps -a"))
 			.slice(1).filter((line) => line.length > 0)
 			.map((item) => {
-				let [id, image, command, created, status, port, name] = item.split(/\s{3,}/g);
+				let [id, image, command, created, status, ports, name] = item.split(/\s{3,}/g);
 
 				if (!name) {
-					name = port;
-					port = undefined;
+					name = ports;
+					ports = undefined;
 				}
 
-				return {id, image, command, created, status, port, name};
+				if (ports) {
+					ports = (ports.match(/:([0-9]+)->/g) || []).map(s => s.replace(/[^0-9]+/g, ""));
+				} else {
+					ports = [];
+				}
+
+				return {id, image, command, created, status, ports, name};
 			});
 	} catch (error) {
 		if (process.env.NODE_ENV === "development") {

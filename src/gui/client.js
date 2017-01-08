@@ -120,7 +120,7 @@ const renderContainerGroupSeparator = (listNode) => {
 
 const renderContainerGroupItem = (listNode, item) => {
 	const container = item;
-	const port      = container.ports.indexOf(443) >= 0 ? 443 : (container.ports.indexOf(80) >= 0 ? 80 : container.ports[0]);
+	const port      = container.ports.indexOf("443") >= 0 ? "443" : (container.ports.indexOf("80") >= 0 ? "80" : container.ports[0]);
 	const openable  = container.active && !container.paused && port && metaIsDown;
 	const killable  = container.active && !container.paused && ctrlIsDown;
 	const pauzeable = container.active && shiftIsDown;
@@ -147,11 +147,11 @@ Click to ${container.active ? "\Stop" : "Start"}`;
 	if (altIsDown) {
 		li.innerHTML = `Copy "${container.id}"`;
 	} else if (openable) {
-		li.innerHTML = `Open localhost:${port || 80}`;
+		li.innerHTML = `Open "localhost:${port || 80}"`;
 	} else if (killable) {
 		li.innerHTML = `Kill ${container.shortName}`;
 	} else if (pauzeable) {
-		li.innerHTML = `${container.paused ? "Unpauze" : "Pauze"} ${container.shortName} ${port ? `(${port})` : ""}`;
+		li.innerHTML = `${container.paused ? "Unpauze" : "Pauze"} ${container.shortName}`;
 	} else {
 		li.innerHTML = `${container.shortName} ${container.paused ? `(paused)` : (port ? `(${port})` : "")}`;
 	}

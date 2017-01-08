@@ -20,7 +20,7 @@ export const serverStart = async (menubar) => {
 
 		try {
 			await execPromise("defaults read -g AppleInterfaceStyle");
-			vibrancy = "dark";
+			vibrancy = "ultra-dark";
 		} catch (error) {
 			vibrancy = "light";
 		}
@@ -94,7 +94,6 @@ export const serverStart = async (menubar) => {
 
 			container.active    = container.status.indexOf("Up") >= 0;
 			container.paused    = container.status.indexOf("Paused") >= 0;
-			container.ports     = ((container.port || "").match(/>([0-9]+)\//) || []).slice(1);
 			container.shortName = containerName;
 
 			groups[groupName] = Object.assign(
