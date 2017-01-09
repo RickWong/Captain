@@ -15,6 +15,7 @@ build:
 		--overwrite
 
 package:
+	electron-osx-sign Captain-darwin-x64/Captain.app
 	rm -rf ./Captain-darwin-x64/Captain.dmg
 	NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg
 
