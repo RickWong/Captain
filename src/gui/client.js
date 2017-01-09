@@ -40,7 +40,7 @@ export const clientStart = async (menuWindow) => {
 			shiftIsDown = event.shiftKey;
 		}
 
-		renderContainerGroups();
+		renderContainerGroups(cachedGroups);
 		updateWindowHeight();
 	};
 	window.addEventListener("keydown", watchModifierKeys);
@@ -66,7 +66,7 @@ export const clientStop = () => {
 	client.request(COMMANDS.APPLICATION_QUIT);
 };
 
-const renderContainerGroups = (groups = cachedGroups) => {
+const renderContainerGroups = (groups) => {
 	document
 		.querySelectorAll(".containers .group, .containers .container, .containers .separator")
 		.forEach((node) => node.remove());
@@ -106,7 +106,9 @@ const renderContainerGroupName = (listNode, groupName) => {
 		} else {
 			closedGroups.add(groupName);
 		}
-		client.request(COMMANDS.CONTAINER_GROUPS);
+
+		renderContainerGroups(cachedGroups);
+		updateWindowHeight();
 	};
 	listNode.appendChild(li);
 };

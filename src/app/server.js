@@ -10,7 +10,7 @@ let cachedContainerGroups = undefined;
 let lastCacheMicrotime = Date.now();
 const serverTrigger = (command, body) => {
 	lastCacheMicrotime = 0;
-	server.methods[command]({body});
+	setTimeout(() => server.methods[command]({body}), 1);
 };
 
 let updateInterval;
@@ -19,15 +19,15 @@ let vibrancy;
 export const serverStart = async (menubar) => {
 	server.configure(menubar.window.webContents);
 
+	try {
+		await execPromise("defaults read -g AppleInterfaceStyle");
+		vibrancy = "ultra-dark";
+	} catch (error) {
+		vibrancy = "light";
+	}
+
 	menubar.on("show", async () => {
 		clearInterval(updateInterval);
-
-		try {
-			await execPromise("defaults read -g AppleInterfaceStyle");
-			vibrancy = "ultra-dark";
-		} catch (error) {
-			vibrancy = "light";
-		}
 
 		serverTrigger(COMMANDS.VERSION);
 		serverTrigger(COMMANDS.CONTAINER_GROUPS);
