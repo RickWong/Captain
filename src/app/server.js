@@ -5,7 +5,11 @@ import {execPromise} from "./exec";
 
 const server = new ElectronServer();
 
+
+let cachedContainerGroups = undefined;
+let lastCacheMicrotime = Date.now();
 const serverTrigger = (command, body) => {
+	lastCacheMicrotime = 0;
 	server.methods[command]({body});
 };
 
@@ -74,6 +78,15 @@ export const serverStart = async (menubar) => {
 	});
 
 	server.on(COMMANDS.CONTAINER_GROUPS, async () => {
+		if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 2000) {
+			if (process.env.NODE_ENV === 'development') {
+				console.log("Using cache");
+			}
+
+			server.send(COMMANDS.CONTAINER_GROUPS, {groups: cachedContainerGroups});
+			return;
+		}
+
 		const containers = await Docker.containerList();
 		const groups     = {};
 
@@ -104,6 +117,8 @@ export const serverStart = async (menubar) => {
 			);
 		}
 
+		cachedContainerGroups = Object.assign({}, groups);
+		lastCacheMicrotime = Date.now();
 		server.send(COMMANDS.CONTAINER_GROUPS, {groups});
-	});
+	})
 };

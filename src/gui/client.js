@@ -147,7 +147,7 @@ Click to ${container.active ? "\Stop" : "Start"}`;
 	if (altIsDown) {
 		li.innerHTML = `Copy "${container.id}"`;
 	} else if (openable) {
-		li.innerHTML = `Open "localhost:${port || 80}"`;
+		li.innerHTML = `Open "${container.openInBrowser || `${container.hostname || "localhost"}:${port || 80}`}"`;
 	} else if (killable) {
 		li.innerHTML = `Kill ${container.shortName}`;
 	} else if (pauzeable) {
@@ -178,7 +178,7 @@ Click to ${container.active ? "\Stop" : "Start"}`;
 			if (openable) {
 				disableItem(event.target);
 				metaIsDown = false;
-				shell.openExternal(`http${port == 443 ? "s" : ""}://localhost:${port || 80}`);
+				shell.openExternal(container.openInBrowser || `http${port == 443 ? "s" : ""}://localhost:${port || 80}`);
 				menuWindow.hide();
 			}
 		}

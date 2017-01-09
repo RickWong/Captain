@@ -29,9 +29,12 @@ export const version = async () => {
 
 export const containerList = async () => {
 	try {
-		return (await containerCommand("ps -a"))
-			.slice(1).filter((line) => line.length > 0)
-			.map((item) => {
+		const list = {};
+
+		(await containerCommand("ps -a"))
+			.slice(1)
+			.filter((line) => line.length > 0)
+			.forEach((item) => {
 				let [id, image, command, created, status, ports, name] = item.split(/\s{3,}/g);
 
 				if (!name) {
@@ -45,8 +48,24 @@ export const containerList = async () => {
 					ports = [];
 				}
 
-				return {id, image, command, created, status, ports, name};
+				list[id] = {id, image, command, created, status, ports, name};
 			});
+
+		await Promise.all(
+			Object.keys(list)
+				.filter((id) => list[id].ports.length > 0)
+				.map((id) => {
+					containerCommand(
+						`exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`
+					).then((lines) => {
+						list[id].openInBrowser = lines[0] || undefined;
+					}).catch((error) => {
+						return [];
+					})
+				})
+		);
+
+		return Object.values(list);
 	} catch (error) {
 		if (process.env.NODE_ENV === "development") {
 			console.error(error);

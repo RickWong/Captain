@@ -63,7 +63,7 @@ body .menu > li.status {
 	font-weight: 500;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	padding-right: 40px;
+	padding-right: 8px;
 }
 .containers li.group:before {
 	content: "▾ ";
@@ -80,7 +80,7 @@ body .menu > li.status {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	padding-left: 40px;
-	padding-right: 40px;
+	padding-right: 8px;
 	max-height: 22px;
 	white-space: pre;
 }
