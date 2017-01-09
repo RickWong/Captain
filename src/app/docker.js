@@ -55,7 +55,7 @@ export const containerList = async () => {
 			Object.keys(list)
 				.filter((id) => list[id].ports.length > 0)
 				.map((id) => {
-					containerCommand(
+					return containerCommand(
 						`exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`
 					).then((lines) => {
 						list[id].openInBrowser = lines[0] || undefined;

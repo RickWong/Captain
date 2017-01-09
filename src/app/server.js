@@ -78,9 +78,9 @@ export const serverStart = async (menubar) => {
 	});
 
 	server.on(COMMANDS.CONTAINER_GROUPS, async () => {
-		if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 2000) {
+		if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 1000) {
 			if (process.env.NODE_ENV === 'development') {
-				console.log("Using cache");
+				console.log("Using microcache");
 			}
 
 			server.send(COMMANDS.CONTAINER_GROUPS, {groups: cachedContainerGroups});

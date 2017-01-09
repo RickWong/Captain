@@ -9,6 +9,7 @@ let ctrlIsDown = false;
 let metaIsDown = false;
 let shiftIsDown = false;
 const closedGroups = new Set;
+let cachedGroups = {};
 
 export const clientStart = async (menuWindow) => {
 	client.on(COMMANDS.VERSION, (error, {vibrancy, version}) => {
@@ -23,22 +24,7 @@ export const clientStart = async (menuWindow) => {
 	});
 
 	client.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
-		document
-			.querySelectorAll(".containers .group, .containers .container, .containers .separator")
-			.forEach((node) => node.remove());
-
-		const listNode = document.querySelector(".containers");
-
-		renderContainerGroups(listNode, body.groups);
-
-		document
-			.querySelectorAll(".containers")
-			.forEach((node) => {
-				node.style.height = (listNode.childElementCount ? 'auto' : '0');
-				node.style.visibility = (listNode.childElementCount ? 'visible' : 'hidden');
-				node.style.margin = (listNode.childElementCount ? '' : '0px');
-			});
-
+		renderContainerGroups(cachedGroups = body.groups);
 		updateWindowHeight();
 	});
 
@@ -46,17 +32,16 @@ export const clientStart = async (menuWindow) => {
 	let watchModifierKeys = (event) => {
 		if (altIsDown !== event.altKey) {
 			altIsDown = event.altKey;
-			client.request(COMMANDS.CONTAINER_GROUPS);
 		} else if (ctrlIsDown !== event.ctrlKey) {
 			ctrlIsDown = event.ctrlKey;
-			client.request(COMMANDS.CONTAINER_GROUPS);
 		} else if (metaIsDown !== event.metaKey) {
 			metaIsDown = event.metaKey;
-			client.request(COMMANDS.CONTAINER_GROUPS);
-		}else if (shiftIsDown !== event.shiftKey) {
+		} else if (shiftIsDown !== event.shiftKey) {
 			shiftIsDown = event.shiftKey;
-			client.request(COMMANDS.CONTAINER_GROUPS);
 		}
+
+		renderContainerGroups();
+		updateWindowHeight();
 	};
 	window.addEventListener("keydown", watchModifierKeys);
 	window.addEventListener("keyup", watchModifierKeys);
@@ -81,7 +66,13 @@ export const clientStop = () => {
 	client.request(COMMANDS.APPLICATION_QUIT);
 };
 
-const renderContainerGroups = (listNode, groups) => {
+const renderContainerGroups = (groups = cachedGroups) => {
+	document
+		.querySelectorAll(".containers .group, .containers .container, .containers .separator")
+		.forEach((node) => node.remove());
+
+	const listNode = document.querySelector(".containers");
+
 	Object.keys(groups).forEach((groupName) => {
 		renderContainerGroupName(listNode, groupName);
 
@@ -93,6 +84,14 @@ const renderContainerGroups = (listNode, groups) => {
 
 		renderContainerGroupSeparator(listNode);
 	});
+
+	document
+		.querySelectorAll(".containers")
+		.forEach((node) => {
+			node.style.height = (listNode.childElementCount ? 'auto' : '0');
+			node.style.visibility = (listNode.childElementCount ? 'visible' : 'hidden');
+			node.style.margin = (listNode.childElementCount ? '' : '0px');
+		});
 };
 
 const renderContainerGroupName = (listNode, groupName) => {
