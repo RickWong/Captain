@@ -3,6 +3,7 @@ require("babel-register")({
 	presets: ["babel-preset-es2015", "babel-preset-stage-2"].map(require.resolve),
 });
 
+const LetsMove      = require('electron-lets-move');
 const Menubar       = require("menubar");
 const Path          = require("path");
 const Package       = require("../package.json");
@@ -23,7 +24,17 @@ const menubar = Menubar({
 });
 
 menubar.on("ready", () => {
-	serverStart(menubar);
+	if (process.title && process.title.indexOf("Electron.app") >= 0) {
+		return serverStart(menubar);
+	}
+
+	LetsMove.moveToApplications((error) => {
+		if (error) {
+			console.error("Failed to move app");
+		} else {
+			serverStart(menubar);
+		}
+	});
 });
 
 menubar.on("focus-lost", () => {
