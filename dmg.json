@@ -3,7 +3,7 @@
   "icon": "resources/Icon.icns",
   "background": "resources/dmg-background.jpg",
   "contents": [
-    { "x": 433, "y": 200, "type": "link", "path": "/Applications" },
-    { "x": 220, "y": 130, "type": "file", "path": "./Captain-darwin-x64/Captain.app" }
+    { "x": 435, "y": 160, "type": "link", "path": "/Applications" },
+    { "x": 300, "y": 160, "type": "file", "path": "./Captain-darwin-x64/Captain.app" }
   ]
 }

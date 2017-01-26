@@ -12,6 +12,7 @@
     "babel-preset-stage-2": "^6.18.0",
     "babel-register": "^6.18.0",
     "electron": "^1.4.13",
+    "electron-lets-move": "0.0.4",
     "electron-packager": "^8.4.0",
     "electron-rpc": "^2.0.1",
     "menubar": "^5.2.0"

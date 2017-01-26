@@ -2,6 +2,7 @@ SHELL := /bin/bash
 PATH  := node_modules/.bin:$(PATH)
 
 build:
+	rm -rf ./Captain-darwin-x64/Captain.app
 	NODE_ENV=production electron-packager . Captain \
 		--platform=darwin \
 		--arch=x64 \
@@ -15,7 +16,7 @@ build:
 		--overwrite
 
 package:
-	electron-osx-sign Captain-darwin-x64/Captain.app
+#	electron-osx-sign Captain-darwin-x64/Captain.app
 	rm -rf ./Captain-darwin-x64/Captain.dmg
 	NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg
 
