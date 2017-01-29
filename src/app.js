@@ -3,40 +3,4 @@ require("babel-register")({
   presets: ["babel-preset-es2015", "babel-preset-stage-2"].map(require.resolve),
 });
 
-const LetsMove      = require('electron-lets-move');
-const Menubar       = require("menubar");
-const Path          = require("path");
-const Package       = require("../package.json");
-const {serverStart} = require("./app/server");
-
-const menubar = Menubar({
-  dir: __dirname,
-  icon: Path.join(__dirname, "../resources/iconTemplate.png"),
-  index: `file://${Path.join(__dirname, "./gui/gui.html")}`,
-
-  width: 256,
-  height: 30,
-  windowPosition: "trayLeft",
-  tooltip: `Captain ${Package.version}`,
-
-  preloadWindow: true,
-  alwaysOnTop: false,
-});
-
-menubar.on("ready", () => {
-  if (process.title && process.title.indexOf("Electron.app") >= 0) {
-    return serverStart(menubar);
-  }
-
-  LetsMove.moveToApplications((error) => {
-    if (error) {
-      console.error("Failed to move app");
-    } else {
-      serverStart(menubar);
-    }
-  });
-});
-
-menubar.on("focus-lost", () => {
-  menubar.window.hide();
-});
+require("./app/");

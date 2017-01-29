@@ -1,6 +1,7 @@
 import {clipboard, shell} from "electron";
 import ElectronClient from "electron-rpc/client";
-import {COMMANDS} from "../rpc";
+import { COMMANDS } from "../rpc";
+import Package from "../../package.json";
 
 const client = new ElectronClient();
 let vibrancy = "light";
@@ -12,6 +13,21 @@ const closedGroups = new Set;
 let cachedGroups = {};
 
 export const clientStart = async (menuWindow) => {
+  window.clientStop = () => {
+    client.request(COMMANDS.APPLICATION_QUIT);
+  };
+
+  window.checkForUpdates = () => {
+    shell.openExternal(`http://getcaptain.co/?since=${Package.version.split(".")[0]}`);
+  };
+
+  window.updateWindowHeight = ({width, height} = {}) => {
+    menuWindow.setSize(
+      width || menuWindow.getSize()[0],
+      height || (document.body.firstChild.offsetHeight + 8)
+    );
+  };
+
   client.on(COMMANDS.VERSION, (error, {vibrancy, version}) => {
     if (version) {
       updateStatus(`Using Docker ${version}`);
@@ -62,8 +78,8 @@ export const clientStart = async (menuWindow) => {
   client.request(COMMANDS.CONTAINER_GROUPS);
 };
 
-export const clientStop = () => {
-  client.request(COMMANDS.APPLICATION_QUIT);
+const updateStatus = (message) => {
+  document.querySelector(".status").innerHTML = message;
 };
 
 const renderContainerGroups = (groups) => {
@@ -110,6 +126,7 @@ const renderContainerGroupName = (listNode, groupName) => {
     renderContainerGroups(cachedGroups);
     updateWindowHeight();
   };
+
   listNode.appendChild(li);
 };
 
