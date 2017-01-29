@@ -1,8 +1,8 @@
-import LetsMove from 'electron-lets-move';
 import Menubar from "menubar";
 import Path from "path";
 import Package from "../../package.json";
-import { serverStart } from "./server";
+import { moveToApplications } from "./moveToApplications";
+import { serverStart } from "./rpcServer";
 
 const menubar = Menubar({
   dir: __dirname,
@@ -15,17 +15,9 @@ const menubar = Menubar({
   preloadWindow: true,
 });
 
-menubar.on("ready", async () => {
-  if (!process.title ||
-    process.title.indexOf("Electron.app") < 0) {
-    try {
-      await LetsMove.moveToApplications();
-    } catch (error) {
-      console.error("Failed to move app");
-    }
-  }
+menubar.on("focus-lost", () => menubar.window.hide());
 
+menubar.on("ready", async () => {
+  await moveToApplications();
   serverStart(menubar);
 });
-
-menubar.on("focus-lost", () => menubar.window.hide());

@@ -1,30 +1,21 @@
+import { execSync } from "child_process";
+import debug from "debug";
 import ElectronServer from "electron-rpc/server";
+import { COMMANDS } from "../rpcCommands";
 import * as Docker from "./docker";
-import {COMMANDS} from "../rpc";
-import {execPromise} from "./exec";
+import { detectVibrancy } from "./detectVibrancy";
 
 const server = new ElectronServer();
-
-
 let cachedContainerGroups = undefined;
 let lastCacheMicrotime = Date.now();
+let updateInterval;
 const serverTrigger = (command, body) => {
   lastCacheMicrotime = 0;
   setTimeout(() => server.methods[command]({body}), 1);
 };
 
-let updateInterval;
-let vibrancy;
-
 export const serverStart = async (menubar) => {
   server.configure(menubar.window.webContents);
-
-  try {
-    await execPromise("defaults read -g AppleInterfaceStyle");
-    vibrancy = "ultra-dark";
-  } catch (error) {
-    vibrancy = "light";
-  }
 
   menubar.on("show", async () => {
     clearInterval(updateInterval);
@@ -44,49 +35,47 @@ export const serverStart = async (menubar) => {
   });
 
   server.on(COMMANDS.VERSION, async () => {
-    server.send(COMMANDS.VERSION, {vibrancy, version: await Docker.version()});
+    server.send(COMMANDS.VERSION, { vibrancy: detectVibrancy(), version: Docker.version() });
   });
 
-  server.on(COMMANDS.CONTAINER_KILL, async ({body}) => {
-    await Docker.containerCommand("kill", body.id);
+  server.on(COMMANDS.CONTAINER_KILL, ({body}) => {
+    Docker.containerCommand("kill", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_STOP, async ({body}) => {
-    await Docker.containerCommand("stop", body.id);
+  server.on(COMMANDS.CONTAINER_STOP, ({body}) => {
+    Docker.containerCommand("stop", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_START, async ({body}) => {
-    await Docker.containerCommand("start", body.id);
+  server.on(COMMANDS.CONTAINER_START, ({body}) => {
+    Docker.containerCommand("start", body.id);
 
     setTimeout(() => {
       serverTrigger(COMMANDS.CONTAINER_GROUPS);
     }, 333);
   });
 
-  server.on(COMMANDS.CONTAINER_PAUSE, async ({body}) => {
-    await Docker.containerCommand("pause", body.id);
+  server.on(COMMANDS.CONTAINER_PAUSE, ({body}) => {
+    Docker.containerCommand("pause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_UNPAUSE, async ({body}) => {
-    await Docker.containerCommand("unpause", body.id);
+  server.on(COMMANDS.CONTAINER_UNPAUSE, ({body}) => {
+    Docker.containerCommand("unpause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
   server.on(COMMANDS.CONTAINER_GROUPS, async () => {
     if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 1000) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log("Using microcache");
-      }
+      debug("rpcServer")("Using microcache");
 
       server.send(COMMANDS.CONTAINER_GROUPS, {groups: cachedContainerGroups});
       return;
     }
 
     const containers = await Docker.containerList();
-    const groups     = {};
+    const groups = {};
 
     for (const container of containers) {
       let groupName     = "~others";

@@ -1,34 +1,29 @@
-import { execPromise, escapeShell } from "./exec";
+import { execSync } from "child_process";
 import debug from "debug";
+import { escapeShell } from "./escapeShell";
 
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
 // Execute a single Docker command.
-export const containerCommand = async (command, id) => {
+export const containerCommand = (command, id) => {
   try {
-    return await execPromise(`docker ${command} ${id ? escapeShell(id) : ""}`);
+    return execSync(`docker ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }).split("\n");
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error(error);
-    }
-
+    debug("docker")(error);
     return [];
   }
 };
 
 // Retrieve Docker version.
-export const version = async () => {
+export const version = () => {
   try {
-    return (await containerCommand("version"))
+    return containerCommand("version")
       .filter((line) => line.match(/Version:\s+(.*)/))
       .map((version) => (version.match(/Version:\s+(.*)/) || [])[1])
       .shift();
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error(error);
-    }
-
+    debug("docker")(error);
     return undefined;
   }
 };
@@ -39,7 +34,7 @@ export const containerList = async () => {
     const list = {};
 
     // Retrieve and parse container ids, names, statuses and ports.
-    (await containerCommand("ps -a"))
+    containerCommand("ps -a")
       .slice(1)
       .filter((line) => line.length > 0)
       .forEach((item) => {
@@ -63,23 +58,16 @@ export const containerList = async () => {
     await Promise.all(
       Object.keys(list)
         .filter((id) => list[id].ports.length > 0)
-        .map((id) => {
-          return containerCommand(
-            `exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`
-          ).then((lines) => {
-            list[id].openInBrowser = lines[0] || undefined;
-          }).catch((error) => {
-            return [];
-          })
-        })
+        .map((id) => new Promise((resolve, reject) => {
+          const lines = containerCommand(`exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`);
+          list[id].openInBrowser = lines ? lines[0] : undefined;
+          resolve();
+        }))
     );
 
     return Object.values(list);
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error(error);
-    }
-
+    debug("docker")(error);
     return [];
   }
 };

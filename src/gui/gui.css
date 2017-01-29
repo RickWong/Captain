@@ -20,6 +20,7 @@ li {
   display: block;
   cursor: default;
   -webkit-user-select: none;
+  user-select: none;
 }
 body .menu > li.status {
   color: #aaa;
@@ -28,7 +29,7 @@ body .menu > li.status {
   color: #222;
 }
 .menu li.action:hover {
-  background: rgba(0, 114, 238, 0.61);
+  background: rgb(0, 114, 238);
   color: #fff;
 }
 .menu li .shortcut {
@@ -85,21 +86,21 @@ body .menu > li.status {
   white-space: pre;
 }
 .containers li.container:hover {
-  background: rgba(0, 114, 238, 0.61);
+  background: rgb(0, 122, 255);
   color:      #fff;
 }
 .containers li.container.active:hover {
-  background: rgba(0, 114, 238, 0.61);
+  background: rgb(0, 122, 255);
   color: #fff;
   cursor: default;
 }
 .containers li.container.active.killable:hover {
-  background: rgba(238, 0, 17, 0.61);
+  background: rgb(255, 59, 48);
   color:      #fff;
   cursor:     default;
 }
 .containers li.container.active.pauzeable:hover {
-  background: rgba(247, 124, 0, 0.61);
+  background: rgb(255, 149, 0);
   color:      #fff;
   cursor:     default;
 }
@@ -115,11 +116,11 @@ body .menu > li.status {
   box-shadow: 0 0 1px rgba(127, 127, 127, 0.8);
 }
 .containers li.container.active:before {
-  background: #0ed80e;
+  background: rgb(76, 217, 100);
 }
 .containers li.container.paused:before {
-  background:    #cc9b53;
+  background: rgb(255, 204, 0);
 }
 .containers li.container.inactive:before {
-  background: #cc2d2d;
+  background: rgb(255, 59, 48);
 }

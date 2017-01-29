@@ -1,6 +1,6 @@
 import {clipboard, shell} from "electron";
 import ElectronClient from "electron-rpc/client";
-import { COMMANDS } from "../rpc";
+import { COMMANDS } from "../rpcCommands";
 import Package from "../../package.json";
 
 const client = new ElectronClient();
@@ -26,6 +26,10 @@ export const clientStart = async (menuWindow) => {
       width || menuWindow.getSize()[0],
       height || (document.body.firstChild.offsetHeight + 8)
     );
+  };
+
+  window.hideWindow = () => {
+    menuWindow.hide();
   };
 
   client.on(COMMANDS.VERSION, (error, {vibrancy, version}) => {
@@ -189,7 +193,7 @@ Click to ${container.active ? "\Stop" : "Start"}`;
     else if (event.altKey) {
       clipboard.writeText(container.id);
       altIsDown = false;
-      menuWindow.hide();
+      hideWindow();
     }
     // ⌘ Command.
     else if (event.metaKey) {
@@ -197,7 +201,7 @@ Click to ${container.active ? "\Stop" : "Start"}`;
         disableItem(event.target);
         metaIsDown = false;
         shell.openExternal(container.openInBrowser || `http${port == 443 ? "s" : ""}://localhost:${port || 80}`);
-        menuWindow.hide();
+        hideWindow();
       }
     }
     // ⇧ Shift.

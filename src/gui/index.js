@@ -1,5 +1,5 @@
 import { remote } from "electron";
-import { clientStart } from "./client";
+import { clientStart } from "./rpcClient";
 
 const menuWindow = remote.getCurrentWindow();
 menuWindow.setVibrancy("light");

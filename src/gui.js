@@ -3,4 +3,4 @@ require("babel-register")({
   presets: ["babel-preset-es2015", "babel-preset-stage-2"].map(require.resolve),
 });
 
-require("./"); // Relative to `gui.html`.
+require("./index"); // Relative to `gui.html`.
