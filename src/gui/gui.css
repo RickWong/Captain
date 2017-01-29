@@ -1,125 +1,125 @@
 * { box-sizing: border-box; }
 
 body {
-	color: #888;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	font-size: 0.85em;
-	line-height: 22px;
-	padding: 0;
-	margin: 0;
+  color: #888;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 0.85em;
+  line-height: 22px;
+  padding: 0;
+  margin: 0;
 }
 ul {
-	list-style: none;
-	margin: 4px 0;
-	padding: 0;
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
 }
 li {
-	margin: 0;
-	padding: 0 8px 0 22px;
-	line-height: 22px;
-	display: block;
-	cursor: default;
-	-webkit-user-select: none;
+  margin: 0;
+  padding: 0 8px 0 22px;
+  line-height: 22px;
+  display: block;
+  cursor: default;
+  -webkit-user-select: none;
 }
 body .menu > li.status {
-	color: #aaa;
+  color: #aaa;
 }
 .menu li.action {
-	color: #222;
+  color: #222;
 }
 .menu li.action:hover {
-	background: rgba(0, 114, 238, 0.61);
-	color: #fff;
+  background: rgba(0, 114, 238, 0.61);
+  color: #fff;
 }
 .menu li .shortcut {
-	float: right;
+  float: right;
 }
 
 .menu li.separator {
-	border-bottom: 2px solid rgba(0,0,0, 0.1);
-	margin: 4px 0;
+  border-bottom: 2px solid rgba(0,0,0, 0.1);
+  margin: 4px 0;
 }
 .menu.ultra-dark li.separator {
-	border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .menu.ultra-dark li, .menu.ultra-dark .containers li {
-	color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .containers {
-	visibility: hidden;
-	height: 0;
+  visibility: hidden;
+  height: 0;
 }
 
 .menu .containers > li {
-	padding-left: 22px;
-	margin-left: -22px;
-	padding-right: 8px;
-	margin-right: -8px;
-	color: #000;
+  padding-left: 22px;
+  margin-left: -22px;
+  padding-right: 8px;
+  margin-right: -8px;
+  color: #000;
 }
 .containers li.group {
-	font-weight: 500;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	padding-right: 8px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 8px;
 }
 .containers li.group:before {
-	content: "▾ ";
-	font-size: 20px;
-	display: inline-block;
-	position: absolute;
-	margin-left: -14px;
-	margin-top: 0;
+  content: "▾ ";
+  font-size: 20px;
+  display: inline-block;
+  position: absolute;
+  margin-left: -14px;
+  margin-top: 0;
 }
 .containers li.group.closed:before {
-	content: "▸ ";
+  content: "▸ ";
 }
 .containers li.container {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	padding-left: 40px;
-	padding-right: 8px;
-	max-height: 22px;
-	white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 40px;
+  padding-right: 8px;
+  max-height: 22px;
+  white-space: pre;
 }
 .containers li.container:hover {
-	background: rgba(0, 114, 238, 0.61);
-	color:      #fff;
+  background: rgba(0, 114, 238, 0.61);
+  color:      #fff;
 }
 .containers li.container.active:hover {
-	background: rgba(0, 114, 238, 0.61);
-	color: #fff;
-	cursor: default;
+  background: rgba(0, 114, 238, 0.61);
+  color: #fff;
+  cursor: default;
 }
 .containers li.container.active.killable:hover {
-	background: rgba(238, 0, 17, 0.61);
-	color:      #fff;
-	cursor:     default;
+  background: rgba(238, 0, 17, 0.61);
+  color:      #fff;
+  cursor:     default;
 }
 .containers li.container.active.pauzeable:hover {
-	background: rgba(247, 124, 0, 0.61);
-	color:      #fff;
-	cursor:     default;
+  background: rgba(247, 124, 0, 0.61);
+  color:      #fff;
+  cursor:     default;
 }
 .containers li.container:before {
-	content: " ";
-	display: inline-block;
-	position: absolute;
-	margin-left: -16px;
-	margin-top: 8px;
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	box-shadow: 0 0 1px rgba(127, 127, 127, 0.8);
+  content: " ";
+  display: inline-block;
+  position: absolute;
+  margin-left: -16px;
+  margin-top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 1px rgba(127, 127, 127, 0.8);
 }
 .containers li.container.active:before {
-	background: #0ed80e;
+  background: #0ed80e;
 }
 .containers li.container.paused:before {
-	background:    #cc9b53;
+  background:    #cc9b53;
 }
 .containers li.container.inactive:before {
-	background: #cc2d2d;
+  background: #cc2d2d;
 }
