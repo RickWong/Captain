@@ -68,7 +68,7 @@ export const serverStart = async (menubar) => {
 
   server.on(COMMANDS.CONTAINER_GROUPS, async () => {
     if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 1000) {
-      debug("rpcServer")("Using microcache");
+      debug("captain-rpc-server")("Using microcache");
 
       server.send(COMMANDS.CONTAINER_GROUPS, {groups: cachedContainerGroups});
       return;

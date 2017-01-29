@@ -9,6 +9,6 @@ export const moveToApplications = async () => {
   try {
     await LetsMove.moveToApplications();
   } catch (error) {
-    debug("letsMove")("Failed to move app");
+    debug("captain-lets-move")("Failed to move app");
   }
 };

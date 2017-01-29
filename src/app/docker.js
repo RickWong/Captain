@@ -10,7 +10,7 @@ export const containerCommand = (command, id) => {
   try {
     return execSync(`docker ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }).split("\n");
   } catch (error) {
-    debug("docker")(error);
+    debug("captain-docker")(error);
     return [];
   }
 };
@@ -23,7 +23,7 @@ export const version = () => {
       .map((version) => (version.match(/Version:\s+(.*)/) || [])[1])
       .shift();
   } catch (error) {
-    debug("docker")(error);
+    debug("captain-docker")(error);
     return undefined;
   }
 };
@@ -67,7 +67,7 @@ export const containerList = async () => {
 
     return Object.values(list);
   } catch (error) {
-    debug("docker")(error);
+    debug("captain-docker")(error);
     return [];
   }
 };

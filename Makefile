@@ -24,4 +24,4 @@ test:
 	NODE_ENV=production electron .
 
 start:
-	NODE_ENV=development electron .
+	NODE_ENV=development DEBUG=captain* electron .
