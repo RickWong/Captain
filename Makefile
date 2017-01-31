@@ -6,7 +6,7 @@ build:
 	NODE_ENV=production electron-packager . Captain \
 		--platform=darwin \
 		--arch=x64 \
-		--version=1.5.0 \
+		--electron-version=1.5.0 \
 		--icon=resources/Icon.icns \
 		--no-prune \
 		--ignore=".idea" \
