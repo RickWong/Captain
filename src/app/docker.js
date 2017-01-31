@@ -5,7 +5,6 @@ import { escapeShell } from "./escapeShell";
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
-// Execute a single Docker command.
 export const containerCommand = (command, id) => {
   try {
     return execSync(`docker ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }).split("\n");
@@ -15,7 +14,6 @@ export const containerCommand = (command, id) => {
   }
 };
 
-// Retrieve Docker version.
 export const version = () => {
   try {
     return containerCommand("version")
@@ -28,12 +26,10 @@ export const version = () => {
   }
 };
 
-// Retrieve Docker containers.
 export const containerList = async () => {
   try {
     const list = {};
 
-    // Retrieve and parse container ids, names, statuses and ports.
     containerCommand("ps -a")
       .slice(1)
       .filter((line) => line.length > 0)
@@ -54,7 +50,6 @@ export const containerList = async () => {
         list[id] = { id, image, command, created, status, ports, name };
       });
 
-    // Asynchronously find out containers' OPEN_IN_BROWSER env variables.
     await Promise.all(
       Object.keys(list)
         .filter((id) => list[id].ports.length > 0)

@@ -1,4 +1,4 @@
-import {clipboard, shell} from "electron";
+import { clipboard, shell } from "electron";
 import ElectronClient from "electron-rpc/client";
 import { COMMANDS } from "../rpcCommands";
 import Package from "../../package.json";
@@ -76,7 +76,7 @@ export const clientStart = async (menuWindow) => {
     }
   });
 
-  updateWindowHeight({height: 3 * 22 + 18});
+  updateWindowHeight({ height: 3 * 22 + 18 });
   updateStatus("Looking for Docker");
   client.request(COMMANDS.VERSION);
   client.request(COMMANDS.CONTAINER_GROUPS);
@@ -117,10 +117,10 @@ const renderContainerGroups = (groups) => {
 const renderContainerGroupName = (listNode, groupName) => {
   const closed = closedGroups.has(groupName) ? "closed" : "";
 
-  const li     = document.createElement("li");
+  const li = document.createElement("li");
   li.className = ` group ${closed} `;
   li.innerHTML = `${groupName.replace(/^~/, "")}`;
-  li.onclick   = (event) => {
+  li.onclick = (event) => {
     if (closed) {
       closedGroups.delete(groupName);
     } else {
@@ -135,21 +135,21 @@ const renderContainerGroupName = (listNode, groupName) => {
 };
 
 const renderContainerGroupSeparator = (listNode) => {
-  const li     = document.createElement("li");
+  const li = document.createElement("li");
   li.className = "separator containers-separator";
   listNode.appendChild(li);
 };
 
 const renderContainerGroupItem = (listNode, item) => {
   const container = item;
-  const port      = container.ports.indexOf("443") >= 0 ? "443" : (container.ports.indexOf("80") >= 0 ? "80" : container.ports[0]);
-  const openable  = container.active && !container.paused && port && metaIsDown;
-  const killable  = container.active && !container.paused && ctrlIsDown;
+  const port = container.ports.indexOf("443") >= 0 ? "443" : (container.ports.indexOf("80") >= 0 ? "80" : container.ports[0]);
+  const openable = container.active && !container.paused && port && metaIsDown;
+  const killable = container.active && !container.paused && ctrlIsDown;
   const pauzeable = container.active && shiftIsDown;
 
-  const li     = document.createElement("li");
-  li.title     =
-`Image: ${container.image}
+  const li = document.createElement("li");
+  li.title =
+    `Image: ${container.image}
 Status: ${container.status}
 
 Click to ${container.active ? "\Stop" : "Start"}`;
@@ -234,5 +234,5 @@ Click to ${container.active ? "\Stop" : "Start"}`;
 const disableItem = (node) => {
   node.style.color = '#777';
   node.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-  node.onclick = () => {};
+  node.onclick = () => { };
 };

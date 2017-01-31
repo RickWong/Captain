@@ -11,7 +11,7 @@ let lastCacheMicrotime = Date.now();
 let updateInterval;
 const serverTrigger = (command, body) => {
   lastCacheMicrotime = 0;
-  setTimeout(() => server.methods[command]({body}), 1);
+  setTimeout(() => server.methods[command]({ body }), 1);
 };
 
 export const serverStart = async (menubar) => {
@@ -19,7 +19,7 @@ export const serverStart = async (menubar) => {
 
   menubar.on("show", async () => {
     clearInterval(updateInterval);
-    updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 5*1000);
+    updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 5 * 1000);
 
     serverTrigger(COMMANDS.VERSION);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
@@ -27,7 +27,7 @@ export const serverStart = async (menubar) => {
 
   menubar.on("hide", () => {
     clearInterval(updateInterval);
-    updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 60*1000);
+    updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 60 * 1000);
   });
 
   server.on(COMMANDS.APPLICATION_QUIT, () => {
@@ -70,7 +70,7 @@ export const serverStart = async (menubar) => {
     if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 1000) {
       debug("captain-rpc-server")("Using microcache");
 
-      server.send(COMMANDS.CONTAINER_GROUPS, {groups: cachedContainerGroups});
+      server.send(COMMANDS.CONTAINER_GROUPS, { groups: cachedContainerGroups });
       return;
     }
 
@@ -78,22 +78,22 @@ export const serverStart = async (menubar) => {
     const groups = {};
 
     for (const container of containers) {
-      let groupName     = "~others";
+      let groupName = "~others";
       let containerName = container.name;
 
-      const imageParts  = container.image.split("_");
-      const nameParts   = container.name.split("_");
+      const imageParts = container.image.split("_");
+      const nameParts = container.name.split("_");
 
       if (nameParts.length >= 3) {
-        groupName     = nameParts[0];
+        groupName = nameParts[0];
         containerName = nameParts.slice(1).join("_");
       } else if (imageParts.length >= 2) {
-        groupName     = imageParts[0];
+        groupName = imageParts[0];
         containerName = imageParts.slice(1).join("_");
       }
 
-      container.active    = container.status.indexOf("Up") >= 0;
-      container.paused    = container.status.indexOf("Paused") >= 0;
+      container.active = container.status.indexOf("Up") >= 0;
+      container.paused = container.status.indexOf("Paused") >= 0;
       container.shortName = containerName;
 
       groups[groupName] = Object.assign(
@@ -106,6 +106,6 @@ export const serverStart = async (menubar) => {
 
     cachedContainerGroups = Object.assign({}, groups);
     lastCacheMicrotime = Date.now();
-    server.send(COMMANDS.CONTAINER_GROUPS, {groups});
+    server.send(COMMANDS.CONTAINER_GROUPS, { groups });
   })
 };

@@ -2,6 +2,7 @@ import { remote } from "electron";
 import { clientStart } from "./rpcClient";
 
 const menuWindow = remote.getCurrentWindow();
+
 menuWindow.setVibrancy("light");
 menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
