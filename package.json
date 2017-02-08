@@ -16,5 +16,8 @@
     "electron-packager": "^8.5.1",
     "electron-rpc": "^2.0.1",
     "menubar": "^5.2.0"
+  },
+  "engine": {
+    "node": ">=6 <7"
   }
 }

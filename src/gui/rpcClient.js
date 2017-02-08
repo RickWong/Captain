@@ -145,7 +145,7 @@ const renderContainerGroupItem = (listNode, item) => {
   const port = container.ports.indexOf("443") >= 0 ? "443" : (container.ports.indexOf("80") >= 0 ? "80" : container.ports[0]);
   const openable = container.active && !container.paused && port && metaIsDown;
   const killable = container.active && !container.paused && ctrlIsDown;
-  const pauzeable = container.active && shiftIsDown;
+  const pauseable = container.active && shiftIsDown;
 
   const li = document.createElement("li");
   li.title =
@@ -162,8 +162,8 @@ Click to ${container.active ? "\Stop" : "Start"}`;
   if (killable) {
     li.className += ' killable ';
   }
-  if (pauzeable) {
-    li.className += ' pauzeable ';
+  if (pauseable) {
+    li.className += ' pauseable ';
   }
 
   if (altIsDown) {
@@ -172,8 +172,8 @@ Click to ${container.active ? "\Stop" : "Start"}`;
     li.innerHTML = `Open "${container.openInBrowser || `${container.hostname || "localhost"}:${port || 80}`}"`;
   } else if (killable) {
     li.innerHTML = `Kill ${container.shortName}`;
-  } else if (pauzeable) {
-    li.innerHTML = `${container.paused ? "Unpauze" : "Pauze"} ${container.shortName}`;
+  } else if (pauseable) {
+    li.innerHTML = `${container.paused ? "Unpause" : "Pause"} ${container.shortName}`;
   } else {
     li.innerHTML = `${container.shortName} ${container.paused ? `(paused)` : (port ? `(${port})` : "")}`;
   }
