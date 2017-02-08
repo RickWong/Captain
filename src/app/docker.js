@@ -7,7 +7,7 @@ process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
 export const containerCommand = (command, id) => {
   try {
-    return execSync(`docker ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }).split("\n");
+    return execSync(`$(which docker) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }).split("\n");
   } catch (error) {
     debug("captain-docker")(error);
     return [];
@@ -30,7 +30,7 @@ export const containerList = async () => {
   try {
     const list = {};
 
-    containerCommand("ps -a")
+    containerCommand("container ps -a")
       .slice(1)
       .filter((line) => line.length > 0)
       .forEach((item) => {
