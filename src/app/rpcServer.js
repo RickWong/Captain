@@ -4,6 +4,7 @@ import ElectronServer from "electron-rpc/server";
 import { COMMANDS } from "../rpcCommands";
 import * as Docker from "./docker";
 import { detectVibrancy } from "./detectVibrancy";
+import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 
 const server = new ElectronServer();
 let cachedContainerGroups = undefined;
@@ -14,7 +15,7 @@ const serverTrigger = (command, body) => {
   setTimeout(() => server.methods[command]({ body }), 1);
 };
 
-export const serverStart = async (menubar) => {
+export const serverStart = async (menubar, autoLauncher) => {
   server.configure(menubar.window.webContents);
 
   menubar.on("show", async () => {
@@ -35,7 +36,16 @@ export const serverStart = async (menubar) => {
   });
 
   server.on(COMMANDS.VERSION, async () => {
-    server.send(COMMANDS.VERSION, { vibrancy: detectVibrancy(), version: Docker.version() });
+    server.send(COMMANDS.VERSION, {
+      vibrancy: detectVibrancy(),
+      version: Docker.version(),
+      autoLaunch: await autoLaunchEnabled(),
+    });
+  });
+
+  server.on(COMMANDS.TOGGLE_AUTO_LAUNCH, async () => {
+    await toggleAutoLaunch();
+    serverTrigger(COMMANDS.VERSION);
   });
 
   server.on(COMMANDS.CONTAINER_KILL, ({body}) => {

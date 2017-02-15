@@ -13,8 +13,15 @@ const closedGroups = new Set;
 let cachedGroups = {};
 
 export const clientStart = async (menuWindow) => {
+  const autoLaunchLi = document.querySelector(".autoLaunch");
+
   window.clientStop = () => {
     client.request(COMMANDS.APPLICATION_QUIT);
+  };
+
+  window.toggleAutoLaunch = () => {
+    disableItem(autoLaunchLi);
+    client.request(COMMANDS.TOGGLE_AUTO_LAUNCH);
   };
 
   window.checkForUpdates = () => {
@@ -32,7 +39,7 @@ export const clientStart = async (menuWindow) => {
     menuWindow.hide();
   };
 
-  client.on(COMMANDS.VERSION, (error, {vibrancy, version}) => {
+  client.on(COMMANDS.VERSION, (error, { vibrancy, version, autoLaunch }) => {
     if (version) {
       updateStatus(`Using Docker ${version}`);
     } else {
@@ -41,6 +48,9 @@ export const clientStart = async (menuWindow) => {
 
     menuWindow.setVibrancy(vibrancy);
     document.querySelector(".menu").className = `menu ${vibrancy}`;
+
+    autoLaunchLi.classList.toggle("checked", autoLaunch);
+    enableItem(autoLaunchLi);
   });
 
   client.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
@@ -234,5 +244,14 @@ Click to ${container.active ? "\Stop" : "Start"}`;
 const disableItem = (node) => {
   node.style.color = '#777';
   node.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+  node.oldonclick = node.onclick;
   node.onclick = () => { };
+};
+
+const enableItem = (node) => {
+  node.style.color = "";
+  node.style.backgroundColor = "";
+  if (node.oldonclick) {
+    node.onclick = node.oldonclick;
+  }
 };

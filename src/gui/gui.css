@@ -17,7 +17,7 @@ li {
   margin: 0;
   padding: 0 8px 0 22px;
   line-height: 22px;
-  display: block;§
+  display: block;
   cursor: default;
   -webkit-user-select: none;
   user-select: none;
@@ -31,6 +31,15 @@ body .menu > li.status {
 .menu li.action:hover {
   background: rgb(0, 114, 238);
   color: #fff;
+}
+.menu li.action.checked:before {
+  content: "✓";
+  display: block;
+  position: absolute;
+  height: 22px;
+  line-height: 22px;
+  margin-left: -18px;
+  font-weight: 100;
 }
 .menu li .shortcut {
   float: right;

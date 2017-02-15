@@ -1,3 +1,4 @@
+import debug from "debug";
 import Menubar from "menubar";
 import Path from "path";
 import Package from "../../package.json";
@@ -18,6 +19,10 @@ const menubar = Menubar({
 menubar.on("focus-lost", () => menubar.window.hide());
 
 menubar.on("ready", async () => {
-  await moveToApplications();
-  serverStart(menubar);
+  try {
+    await moveToApplications();
+    serverStart(menubar);
+  } catch (e) {
+    debug("captain")(e.stack || e);
+  }
 });

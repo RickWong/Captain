@@ -2,6 +2,7 @@ SHELL := /bin/bash
 PATH  := node_modules/.bin:$(PATH)
 
 build:
+	npm prune
 	rm -rf ./Captain-darwin-x64/
 	NODE_ENV=production electron-packager . Captain \
 		--platform=darwin \
