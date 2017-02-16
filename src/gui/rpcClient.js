@@ -1,4 +1,4 @@
-import { clipboard, shell } from "electron";
+import { clipboard, shell, screen } from "electron";
 import ElectronClient from "electron-rpc/client";
 import { COMMANDS } from "../rpcCommands";
 import Package from "../../package.json";
@@ -33,6 +33,11 @@ export const clientStart = async (menuWindow) => {
       width || menuWindow.getSize()[0],
       height || (document.body.firstChild.offsetHeight + 8)
     );
+
+    document.querySelectorAll(".containers").forEach((node) => {
+      const { height } = screen.getPrimaryDisplay().workArea;
+      node.style.maxHeight = `${height - 150}px`;
+    });
   };
 
   window.hideWindow = () => {
@@ -103,7 +108,8 @@ const renderContainerGroups = (groups) => {
 
   const listNode = document.querySelector(".containers");
 
-  Object.keys(groups).forEach((groupName) => {
+  const groupNames = Object.keys(groups);
+  groupNames.forEach((groupName, index) => {
     renderContainerGroupName(listNode, groupName);
 
     if (!closedGroups.has(groupName)) {
@@ -112,7 +118,9 @@ const renderContainerGroups = (groups) => {
       });
     }
 
-    renderContainerGroupSeparator(listNode);
+    if (index + 1 < groupNames.length) {
+      renderContainerGroupSeparator(listNode);
+    }
   });
 
   document
@@ -160,9 +168,7 @@ const renderContainerGroupItem = (listNode, item) => {
   const li = document.createElement("li");
   li.title =
     `Image: ${container.image}
-Status: ${container.status}
-
-Click to ${container.active ? "\Stop" : "Start"}`;
+Status: ${container.status}`;
 
   li.className = `container ${container.active ? "active" : "inactive"}`;
 

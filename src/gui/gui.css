@@ -60,14 +60,15 @@ body .menu > li.status {
 .containers {
   visibility: hidden;
   height: 0;
+  overflow: scroll;
+  position: relative;
+  margin-left: -22px;
+  margin-right: -8px;
 }
 
 .menu .containers > li {
-  padding-left: 22px;
-  margin-left: -22px;
-  padding-right: 8px;
-  margin-right: -8px;
   color: #000;
+  position: relative;
 }
 .containers li.group {
   font-weight: 500;
