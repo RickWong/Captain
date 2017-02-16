@@ -76,6 +76,11 @@ export const serverStart = async (menubar, autoLauncher) => {
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
+  server.on(COMMANDS.CONTAINER_REMOVE, ({body}) => {
+    Docker.containerCommand("rm", body.id);
+    serverTrigger(COMMANDS.CONTAINER_GROUPS);
+  });
+
   server.on(COMMANDS.CONTAINER_GROUPS, async () => {
     if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 1000) {
       debug("captain-rpc-server")("Using microcache");

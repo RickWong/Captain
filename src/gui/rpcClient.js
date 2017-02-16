@@ -163,6 +163,7 @@ const renderContainerGroupItem = (listNode, item) => {
   const port = container.ports.indexOf("443") >= 0 ? "443" : (container.ports.indexOf("80") >= 0 ? "80" : container.ports[0]);
   const openable = container.active && !container.paused && port && metaIsDown;
   const killable = container.active && !container.paused && ctrlIsDown;
+  const removable = !container.paused && ctrlIsDown && altIsDown && metaIsDown;
   const pauseable = container.active && shiftIsDown;
 
   const li = document.createElement("li");
@@ -172,6 +173,9 @@ Status: ${container.status}`;
 
   li.className = `container ${container.active ? "active" : "inactive"}`;
 
+  if (removable) {
+    li.className += ' removable ';
+  }
   if (container.paused) {
     li.className += ' paused ';
   }
@@ -182,23 +186,40 @@ Status: ${container.status}`;
     li.className += ' pauseable ';
   }
 
-  if (altIsDown) {
+  if (removable) {
+    li.innerHTML = `Remove ${container.shortName}`;
+  }
+  else if (altIsDown) {
     li.innerHTML = `Copy "${container.id}"`;
-  } else if (openable) {
+  }
+  else if (openable) {
     li.innerHTML = `Open "${container.openInBrowser || `${container.hostname || "localhost"}:${port || 80}`}"`;
-  } else if (killable) {
+  }
+  else if (killable) {
     li.innerHTML = `Kill ${container.shortName}`;
-  } else if (pauseable) {
+  }
+  else if (pauseable) {
     li.innerHTML = `${container.paused ? "Unpause" : "Pause"} ${container.shortName}`;
-  } else {
+  }
+  else {
     li.innerHTML = `${container.shortName} ${container.paused ? `(paused)` : (port ? `(${port})` : "")}`;
   }
 
   li.onclick = (event) => {
     event.preventDefault();
 
+    // ⌃ Control + ⌥ Option + ⌘ Command.
+    if (event.ctrlKey && event.altKey && event.metaKey) {
+      if (removable) {
+        disableItem(event.target);
+        ctrlIsDown = false;
+        altIsDown = false;
+        metaIsDown = false;
+        client.request(COMMANDS.CONTAINER_REMOVE, container);
+      }
+    }
     // ⌃ Control.
-    if (event.ctrlKey) {
+    else if (event.ctrlKey) {
       if (killable) {
         disableItem(event.target);
         ctrlIsDown = false;

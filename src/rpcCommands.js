@@ -8,4 +8,5 @@ export const COMMANDS = {
   CONTAINER_START: "containerStart",
   CONTAINER_PAUSE: "containerPause",
   CONTAINER_UNPAUSE: "containerUnpause",
+  CONTAINER_REMOVE: "containerRemove",
 };

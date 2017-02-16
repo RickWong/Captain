@@ -114,6 +114,11 @@ body .menu > li.status {
   color:      #fff;
   cursor:     default;
 }
+.containers li.container.removable:hover {
+  background: rgb(88, 86, 214) !important;
+  color:      #fff;
+  cursor:     default;
+}
 .containers li.container:before {
   content: " ";
   display: inline-block;
