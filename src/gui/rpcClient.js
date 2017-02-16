@@ -110,7 +110,7 @@ const renderContainerGroups = (groups) => {
 
   const groupNames = Object.keys(groups);
   groupNames.forEach((groupName, index) => {
-    renderContainerGroupName(listNode, groupName);
+    renderContainerGroupName(listNode, groupName, groups[groupName]);
 
     if (!closedGroups.has(groupName)) {
       Object.keys(groups[groupName]).forEach((containerName) => {
@@ -132,12 +132,15 @@ const renderContainerGroups = (groups) => {
     });
 };
 
-const renderContainerGroupName = (listNode, groupName) => {
+const renderContainerGroupName = (listNode, groupName, group) => {
   const closed = closedGroups.has(groupName) ? "closed" : "";
+  const countAll = Object.keys(group).length;
+  const countActive = Object.keys(group).filter(containerName => group[containerName].active).length;
+  const countHTML = `<small>(${countActive}/${countAll})</small>`;
 
   const li = document.createElement("li");
   li.className = ` group ${closed} `;
-  li.innerHTML = `${groupName.replace(/^~/, "")}`;
+  li.innerHTML = `${groupName.replace(/^~/, "")} ${countHTML}`;
   li.onclick = (event) => {
     if (closed) {
       closedGroups.delete(groupName);

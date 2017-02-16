@@ -87,6 +87,12 @@ body .menu > li.status {
 .containers li.group.closed:before {
   content: "▸ ";
 }
+.containers li.group small {
+  font-weight: 100;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.7;
+}
 .containers li.container {
   overflow: hidden;
   text-overflow: ellipsis;
