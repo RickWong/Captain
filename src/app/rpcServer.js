@@ -109,7 +109,7 @@ export const serverStart = async (menubar, autoLauncher) => {
 
       container.active = container.status.indexOf("Up") >= 0;
       container.paused = container.status.indexOf("Paused") >= 0;
-      container.shortName = containerName;
+      container.shortName = containerName.replace(/^_+/, "");
 
       groups[groupName] = Object.assign(
         groups[groupName] || {},
