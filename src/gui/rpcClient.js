@@ -54,7 +54,7 @@ export const clientStart = async (menuWindow) => {
     menuWindow.setVibrancy(vibrancy);
     document.querySelector(".menu").className = `menu ${vibrancy}`;
 
-    autoLaunchLi.classList.toggle("checked", true);
+    autoLaunchLi.classList.toggle("checked", autoLaunch);
     enableItem(autoLaunchLi);
   });
 
@@ -98,7 +98,7 @@ export const clientStart = async (menuWindow) => {
 
 const updateStatus = (message, hideSeparator) => {
   document.querySelector(".status").innerHTML = message;
-  document.querySelector(".status ~ .separator").style.display = hideSeparator ? "none" : "block";
+  document.querySelector(".status ~ .separator").style.display = document.querySelector(".containers").childElementCount ? "block" : "none";
   updateWindowHeight();
 };
 
