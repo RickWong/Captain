@@ -207,7 +207,7 @@ Status: ${container.status}`;
     li.innerHTML = `${container.paused ? "Unpause" : "Pause"} ${container.shortName}`;
   }
   else {
-    li.innerHTML = `${container.shortName} ${container.paused ? `(paused)` : (port ? `(${port})` : "")}`;
+    li.innerHTML = `${container.shortName} <small>${container.paused ? `(paused)` : (port ? `(${port})` : "")}</small>`;
   }
 
   li.onclick = (event) => {
