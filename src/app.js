@@ -6,7 +6,6 @@ require("babel-register")({
 require("./app/index");
 
 /**
-  @todo Add `CONTAINER_GROUP` environment variable
   @todo Clean up rpcClient.js and open-source to GitHub
   @todo Detect Homebrew Docker
   @todo Minimize binary size

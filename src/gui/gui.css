@@ -33,13 +33,18 @@ body .menu > li.status {
   color: #fff;
 }
 .menu li.action.checked:before {
-  content: "✓";
+  content: " ";
   display: block;
   position: absolute;
+  width: 22px;
   height: 22px;
-  line-height: 22px;
-  margin-left: -18px;
-  font-weight: 100;
+  margin-left: -16px;
+  margin-top: 5px;
+  background: url("../../resources/checkmark.png") no-repeat;
+  background-size: 11px 11px;
+}
+.menu.ultra-dark li.action.checked:before {
+  filter: invert();
 }
 .menu li .shortcut {
   float: right;

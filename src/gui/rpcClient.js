@@ -48,13 +48,13 @@ export const clientStart = async (menuWindow) => {
     if (version) {
       updateStatus(`Using Docker ${version}`);
     } else {
-      updateStatus("Docker not available");
+      updateStatus("Docker not available", true);
     }
 
     menuWindow.setVibrancy(vibrancy);
     document.querySelector(".menu").className = `menu ${vibrancy}`;
 
-    autoLaunchLi.classList.toggle("checked", autoLaunch);
+    autoLaunchLi.classList.toggle("checked", true);
     enableItem(autoLaunchLi);
   });
 
@@ -91,14 +91,15 @@ export const clientStart = async (menuWindow) => {
     }
   });
 
-  updateWindowHeight({ height: 3 * 22 + 18 });
-  updateStatus("Looking for Docker");
+  updateStatus("Looking for Docker", true);
   client.request(COMMANDS.VERSION);
   client.request(COMMANDS.CONTAINER_GROUPS);
 };
 
-const updateStatus = (message) => {
+const updateStatus = (message, hideSeparator) => {
   document.querySelector(".status").innerHTML = message;
+  document.querySelector(".status ~ .separator").style.display = hideSeparator ? "none" : "block";
+  updateWindowHeight();
 };
 
 const renderContainerGroups = (groups) => {
