@@ -4,9 +4,3 @@ require("babel-register")({
 });
 
 require("./app/index");
-
-/**
-  @todo Clean up rpcClient.js and open-source to GitHub
-  @todo Detect Homebrew Docker
-  @todo Minimize binary size
-*/

@@ -165,10 +165,11 @@ const renderContainerGroupSeparator = (listNode) => {
 const renderContainerGroupItem = (listNode, item) => {
   const container = item;
   const port = container.ports.indexOf("443") >= 0 ? "443" : (container.ports.indexOf("80") >= 0 ? "80" : container.ports[0]);
-  const openable = container.active && !container.paused && port && metaIsDown;
-  const killable = container.active && !container.paused && ctrlIsDown;
-  const removable = !container.paused && ctrlIsDown && altIsDown && metaIsDown;
-  const pauseable = container.active && shiftIsDown;
+  const openable = container.active && !container.paused && port && !ctrlIsDown && !altIsDown && metaIsDown;
+  const killable = container.active && !container.paused && ctrlIsDown && !altIsDown && !metaIsDown;
+  const removable = !container.paused && !container.active && ctrlIsDown && altIsDown && metaIsDown;
+  const pauseable = container.active && shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
+  const copyable = !ctrlIsDown && altIsDown && !metaIsDown;
 
   const li = document.createElement("li");
   li.title =
@@ -177,23 +178,23 @@ Status: ${container.status}`;
 
   li.className = `container ${container.active ? "active" : "inactive"}`;
 
-  if (removable) {
-    li.className += ' removable ';
-  }
   if (container.paused) {
     li.className += ' paused ';
   }
-  if (killable) {
+  if (removable) {
+    li.className += ' removable ';
+  }
+  else if (killable) {
     li.className += ' killable ';
   }
-  if (pauseable) {
+  else if (pauseable) {
     li.className += ' pauseable ';
   }
 
   if (removable) {
     li.innerHTML = `Remove ${container.shortName}`;
   }
-  else if (altIsDown) {
+  else if (copyable) {
     li.innerHTML = `Copy "${container.id}"`;
   }
   else if (openable) {
