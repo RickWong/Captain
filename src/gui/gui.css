@@ -65,7 +65,7 @@ body .menu > li.status {
 .containers {
   visibility: hidden;
   height: 0;
-  overflow: scroll;
+  overflow: auto;
   position: relative;
   margin-left: -22px;
   margin-right: -8px;
