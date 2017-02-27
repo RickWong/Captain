@@ -37,8 +37,8 @@ export const serverStart = async (menubar, autoLauncher) => {
 
   server.on(COMMANDS.VERSION, async () => {
     server.send(COMMANDS.VERSION, {
-      vibrancy: detectVibrancy(),
-      version: Docker.version(),
+      vibrancy: await detectVibrancy(),
+      version: await Docker.version(),
       autoLaunch: await autoLaunchEnabled(),
     });
   });

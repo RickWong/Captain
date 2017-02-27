@@ -220,7 +220,7 @@ Status: ${container.status}`;
         ctrlIsDown = false;
         altIsDown = false;
         metaIsDown = false;
-        client.request(COMMANDS.CONTAINER_REMOVE, container);
+        setTimeout(() => client.request(COMMANDS.CONTAINER_REMOVE, container), 100);
       }
     }
     // ⌃ Control.
@@ -228,7 +228,7 @@ Status: ${container.status}`;
       if (killable) {
         disableItem(event.target);
         ctrlIsDown = false;
-        client.request(COMMANDS.CONTAINER_KILL, container);
+        setTimeout(() => client.request(COMMANDS.CONTAINER_KILL, container), 100);
       }
     }
     // ⌥ Option.
@@ -251,21 +251,25 @@ Status: ${container.status}`;
       if (container.active) {
         disableItem(event.target);
         shiftIsDown = false;
-        container.paused ?
-          client.request(COMMANDS.CONTAINER_UNPAUSE, container) :
-          client.request(COMMANDS.CONTAINER_PAUSE, container);
+        setTimeout(() => {
+          container.paused ?
+            client.request(COMMANDS.CONTAINER_UNPAUSE, container) :
+            client.request(COMMANDS.CONTAINER_PAUSE, container);
+        }, 100);
       }
     }
     // Default.
     else {
       if (!container.paused) {
         disableItem(event.target);
-        container.active ?
-          client.request(COMMANDS.CONTAINER_STOP, container) :
-          client.request(COMMANDS.CONTAINER_START, container);
+        setTimeout(() => {
+          container.active ?
+            client.request(COMMANDS.CONTAINER_STOP, container) :
+            client.request(COMMANDS.CONTAINER_START, container);
+        }, 100);
       } else {
         disableItem(event.target);
-        client.request(COMMANDS.CONTAINER_UNPAUSE, container);
+        setTimeout(() => client.request(COMMANDS.CONTAINER_UNPAUSE, container), 100);
       }
     }
   };

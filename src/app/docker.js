@@ -14,7 +14,7 @@ export const containerCommand = (command, id) => {
   }
 };
 
-export const version = () => {
+export const version = async () => {
   try {
     return containerCommand("version")
       .filter((line) => line.match(/Version:\s+(.*)/))
