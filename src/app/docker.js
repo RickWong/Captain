@@ -1,22 +1,29 @@
-import { execSync } from "child_process";
+import { exec } from "child_process";
 import debug from "debug";
 import { escapeShell } from "./escapeShell";
 
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
-export const containerCommand = (command, id) => {
-  try {
-    return execSync(`$(which docker) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }).split("\n");
-  } catch (error) {
-    debug("captain-docker")(error);
-    return [];
-  }
+export const containerCommand = async (command, id) => {
+  return await new Promise((resolve, reject) => {
+    exec(`$(which docker) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
+      if (stderr) {
+        return reject(stderr);
+      }
+
+      resolve(stdout.split("\n"));
+    });
+  })
+    .catch(error => {
+      debug("captain-docker")(error);
+      return [];
+    });
 };
 
 export const version = async () => {
   try {
-    return containerCommand("version")
+    return (await containerCommand("version"))
       .filter((line) => line.match(/Version:\s+(.*)/))
       .map((version) => (version.match(/Version:\s+(.*)/) || [])[1])
       .shift();
@@ -30,7 +37,7 @@ export const containerList = async () => {
   try {
     const list = {};
 
-    containerCommand("container ps -a")
+    (await containerCommand("container ps -a"))
       .slice(1)
       .filter((line) => line.length > 0)
       .forEach((item) => {

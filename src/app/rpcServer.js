@@ -48,36 +48,36 @@ export const serverStart = async (menubar, autoLauncher) => {
     serverTrigger(COMMANDS.VERSION);
   });
 
-  server.on(COMMANDS.CONTAINER_KILL, ({body}) => {
-    Docker.containerCommand("kill", body.id);
+  server.on(COMMANDS.CONTAINER_KILL, async ({body}) => {
+    await Docker.containerCommand("kill", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_STOP, ({body}) => {
-    Docker.containerCommand("stop", body.id);
+  server.on(COMMANDS.CONTAINER_STOP, async ({body}) => {
+    await Docker.containerCommand("stop", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_START, ({body}) => {
-    Docker.containerCommand("start", body.id);
+  server.on(COMMANDS.CONTAINER_START, async ({body}) => {
+    await Docker.containerCommand("start", body.id);
 
     setTimeout(() => {
       serverTrigger(COMMANDS.CONTAINER_GROUPS);
     }, 333);
   });
 
-  server.on(COMMANDS.CONTAINER_PAUSE, ({body}) => {
-    Docker.containerCommand("pause", body.id);
+  server.on(COMMANDS.CONTAINER_PAUSE, async ({body}) => {
+    await Docker.containerCommand("pause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_UNPAUSE, ({body}) => {
-    Docker.containerCommand("unpause", body.id);
+  server.on(COMMANDS.CONTAINER_UNPAUSE, async ({body}) => {
+    await Docker.containerCommand("unpause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_REMOVE, ({body}) => {
-    Docker.containerCommand("rm", body.id);
+  server.on(COMMANDS.CONTAINER_REMOVE, async ({body}) => {
+    await Docker.containerCommand("rm", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
