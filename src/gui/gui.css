@@ -93,7 +93,7 @@ body .menu > li.status {
   content: "▸ ";
 }
 .containers li small {
-  font-weight: 100;
+  font-weight: 300;
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0.7;
