@@ -23,7 +23,7 @@ package:
 	NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg
 
 test:
-	NODE_ENV=production electron .
+	NODE_ENV=production DEBUG=captain* electron .
 
 start:
 	NODE_ENV=development DEBUG=captain* electron .

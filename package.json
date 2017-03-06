@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "captain",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "description": "Docker menubar",
   "main": "src/app.js",
   "author": "Rick Wong <rick@webambition.nl>",
@@ -12,10 +12,10 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.22.0",
-    "bluebird": "3.4.7",
+    "bluebird": "3.5.0",
     "electron": "1.5.0",
-    "electron-lets-move": "0.0.4",
-    "electron-packager": "^8.5.1",
+    "electron-lets-move": "0.0.5",
+    "electron-packager": "^8.5.2",
     "electron-rpc": "^2.0.1",
     "menubar": "^5.2.0"
   },
