@@ -3,7 +3,7 @@ import AutoLaunch from "auto-launch-patched";
 const autoLauncher = new AutoLaunch({
   name: "Captain",
   mac: {
-    useLaunchAgent: true,
+    useLaunchAgent: false,
   },
 });
 
