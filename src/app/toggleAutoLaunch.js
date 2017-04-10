@@ -1,9 +1,9 @@
-import AutoLaunch from "auto-launch";
+import AutoLaunch from "auto-launch-patched";
 
 const autoLauncher = new AutoLaunch({
   name: "Captain",
   mac: {
-    useLaunchAgent: false,
+    useLaunchAgent: true,
   },
 });
 

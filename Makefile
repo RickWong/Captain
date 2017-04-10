@@ -1,6 +1,8 @@
 SHELL := /bin/bash
 PATH  := node_modules/.bin:$(PATH)
 
+all: build
+
 build:
 	npm prune
 	rm -rf ./Captain-darwin-x64/
