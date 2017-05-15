@@ -5,6 +5,7 @@ const autoLauncher = new AutoLaunch({
   mac: {
     useLaunchAgent: false,
   },
+  isHidden: true, // Launch without active window.
 });
 
 export const toggleAutoLaunch = async () => {
