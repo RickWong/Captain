@@ -4,6 +4,8 @@
     "noImplicitAny": true,
     "sourceMap": true,
     "outDir": "dist",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]

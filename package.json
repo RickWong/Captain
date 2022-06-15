@@ -4,11 +4,11 @@
   "name": "captain",
   "version": "9.0.0",
   "description": "Docker menubar",
-  "main": "src/app.js",
+  "main": "src/backend/index",
   "author": "Rick Wong <tangos_erasure0x@icloud.com>",
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
-    "dev": "env NODE_ENV=development DEBUG=captain* electron .",
+    "dev": "env NODE_ENV=development DEBUG=captain* tsc-watch --onSuccess 'electron -js-flags=\"--require=ts-node/register\" .'",
     "start": "env NODE_ENV=production DEBUG=captain* electron .",
     "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v node_modules/ | xargs prettier --write",
     "typecheck": "tsc --noEmit --pretty",
@@ -22,17 +22,20 @@
     "printWidth": 120
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/electron": "^1.6.10",
+    "electron-packager": "^15.5.1",
     "prettier": "^2.7.0",
-    "ts-node": "^10.8.1",
-    "typescript": "^4.7.3"
+    "tsc-watch": "^5.0.3"
   },
   "dependencies": {
     "@electron/remote": "^2.0.8",
     "auto-launch-patched": "^5.0.2",
     "electron": "^19.0.4",
     "electron-lets-move": "^0.0.5",
-    "electron-packager": "^15.5.1",
     "electron-rpc": "^2.0.1",
-    "menubar": "^9.2.0"
+    "menubar": "^9.2.0",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
   }
 }

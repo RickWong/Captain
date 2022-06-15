@@ -1,21 +1,21 @@
-import { execSync } from "child_process";
 import debug from "debug";
 import ElectronServer from "electron-rpc/server";
+import { ipcMain } from "electron";
 import { COMMANDS } from "../rpcCommands";
 import * as Docker from "./docker";
-import { detectVibrancy } from "./detectVibrancy";
 import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
+import { Menubar } from "menubar/lib/Menubar";
 
 const server = new ElectronServer();
 let cachedContainerGroups = undefined;
 let lastCacheMicrotime = Date.now();
-let updateInterval;
-const serverTrigger = (command, body) => {
+let updateInterval: NodeJS.Timer;
+const serverTrigger = (command: string, body?: any) => {
   lastCacheMicrotime = 0;
   setTimeout(() => server.methods[command]({ body }), 1);
 };
 
-export const serverStart = async (menubar, autoLauncher) => {
+export const serverStart = async (menubar: Menubar) => {
   server.configure(menubar.window.webContents);
   require("@electron/remote/main").enable(menubar.window.webContents);
 
@@ -38,7 +38,6 @@ export const serverStart = async (menubar, autoLauncher) => {
 
   server.on(COMMANDS.VERSION, async () => {
     server.send(COMMANDS.VERSION, {
-      vibrancy: await detectVibrancy(),
       version: await Docker.version(),
       autoLaunch: await autoLaunchEnabled(),
     });

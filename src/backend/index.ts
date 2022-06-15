@@ -10,18 +10,16 @@ require("@electron/remote/main").initialize();
 const captainMenubar = menubar({
   dir: __dirname,
   icon: Path.join(__dirname, "../../resources/iconTemplate.png"),
-  index: `file://${Path.join(__dirname, "../gui/gui.html")}`,
+  index: `file://${Path.join(__dirname, "../web/index.html")}`,
   browserWindow: {
     width: 256,
     height: 30,
     transparent: true,
-    vibrancy:'under-window',
-    backgroundColor:'#00000000',
+    vibrancy: 'under-window',
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
       backgroundThrottling: false,
-      transparent: true,
     },
   },
   windowPosition: "trayLeft",

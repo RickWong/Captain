@@ -5,7 +5,7 @@ import { escapeShell } from "./escapeShell";
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
-export const containerCommand = async (command, id) => {
+export const containerCommand = async (command: string, id?: string): string[] => {
   return await new Promise((resolve, reject) => {
     exec(`$(which docker) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
       if (stderr) {
@@ -16,6 +16,7 @@ export const containerCommand = async (command, id) => {
     });
   }).catch((error) => {
     debug("captain-docker")(error);
+
     return [];
   });
 };

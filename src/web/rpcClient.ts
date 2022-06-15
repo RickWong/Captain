@@ -1,4 +1,4 @@
-import { clipboard, shell, screen } from "electron";
+import { clipboard, shell, screen, IpcRenderer } from "electron";
 import ElectronClient from "electron-rpc/client";
 import { COMMANDS } from "../rpcCommands";
 import Package from "../../package.json";
