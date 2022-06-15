@@ -1,11 +1,28 @@
 {
   "private": true,
+  "license": "UNLICENSED",
   "name": "captain",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "description": "Docker menubar",
   "main": "src/app.js",
-  "author": "Rick Wong <rick@webambition.nl>",
-  "license": "private",
+  "author": "Rick Wong <tangos_erasure0x@icloud.com>",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "lint": "eslint -c .eslintrc --ext .ts ./src",
+    "start": "npm run build && electron ./dist/main.js"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "trailingComma": "all",
+    "printWidth": 120
+  },
+  "devDependencies": {
+    "prettier": "^2.6.2",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
   "dependencies": {
     "auto-launch-patched": "5.0.2",
     "babel-polyfill": "^6.22.0",
@@ -18,8 +35,5 @@
     "electron-packager": "^8.5.2",
     "electron-rpc": "^2.0.1",
     "menubar": "^5.2.0"
-  },
-  "engine": {
-    "node": ">=6 <7"
   }
 }
