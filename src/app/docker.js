@@ -14,11 +14,10 @@ export const containerCommand = async (command, id) => {
 
       resolve(stdout.split("\n"));
     });
-  })
-    .catch(error => {
-      debug("captain-docker")(error);
-      return [];
-    });
+  }).catch((error) => {
+    debug("captain-docker")(error);
+    return [];
+  });
 };
 
 export const version = async () => {
@@ -49,7 +48,7 @@ export const containerList = async () => {
         }
 
         if (ports) {
-          ports = (ports.match(/:([0-9]+)->/g) || []).map(s => s.replace(/[^0-9]+/g, ""));
+          ports = (ports.match(/:([0-9]+)->/g) || []).map((s) => s.replace(/[^0-9]+/g, ""));
         } else {
           ports = [];
         }
@@ -60,10 +59,12 @@ export const containerList = async () => {
     await Promise.all(
       Object.keys(list)
         .filter((id) => list[id].ports.length > 0)
-        .map((id) => Promise.resolve().then(async () => {
-          const lines = await containerCommand(`exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`);
-          list[id].openInBrowser = lines ? lines[0] : undefined;
-        }))
+        .map((id) =>
+          Promise.resolve().then(async () => {
+            const lines = await containerCommand(`exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`);
+            list[id].openInBrowser = lines ? lines[0] : undefined;
+          }),
+        ),
     );
 
     return Object.values(list);

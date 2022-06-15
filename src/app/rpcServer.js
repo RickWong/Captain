@@ -48,17 +48,17 @@ export const serverStart = async (menubar, autoLauncher) => {
     serverTrigger(COMMANDS.VERSION);
   });
 
-  server.on(COMMANDS.CONTAINER_KILL, async ({body}) => {
+  server.on(COMMANDS.CONTAINER_KILL, async ({ body }) => {
     await Docker.containerCommand("kill", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_STOP, async ({body}) => {
+  server.on(COMMANDS.CONTAINER_STOP, async ({ body }) => {
     await Docker.containerCommand("stop", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_START, async ({body}) => {
+  server.on(COMMANDS.CONTAINER_START, async ({ body }) => {
     await Docker.containerCommand("start", body.id);
 
     setTimeout(() => {
@@ -66,17 +66,17 @@ export const serverStart = async (menubar, autoLauncher) => {
     }, 333);
   });
 
-  server.on(COMMANDS.CONTAINER_PAUSE, async ({body}) => {
+  server.on(COMMANDS.CONTAINER_PAUSE, async ({ body }) => {
     await Docker.containerCommand("pause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_UNPAUSE, async ({body}) => {
+  server.on(COMMANDS.CONTAINER_UNPAUSE, async ({ body }) => {
     await Docker.containerCommand("unpause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_REMOVE, async ({body}) => {
+  server.on(COMMANDS.CONTAINER_REMOVE, async ({ body }) => {
     await Docker.containerCommand("rm", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
@@ -111,16 +111,13 @@ export const serverStart = async (menubar, autoLauncher) => {
       container.paused = container.status.indexOf("Paused") >= 0;
       container.shortName = containerName.replace(/^_+/, "");
 
-      groups[groupName] = Object.assign(
-        groups[groupName] || {},
-        {
-          [containerName]: container,
-        }
-      );
+      groups[groupName] = Object.assign(groups[groupName] || {}, {
+        [containerName]: container,
+      });
     }
 
     cachedContainerGroups = Object.assign({}, groups);
     lastCacheMicrotime = Date.now();
     server.send(COMMANDS.CONTAINER_GROUPS, { groups });
-  })
+  });
 };

@@ -9,7 +9,7 @@ menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
 menuWindow.setResizable(false);
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   menuWindow.setResizable(true);
   menuWindow.openDevTools();
 }

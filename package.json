@@ -7,11 +7,14 @@
   "main": "src/app.js",
   "author": "Rick Wong <tangos_erasure0x@icloud.com>",
   "scripts": {
+    "preinstall": "git submodule update --init --recursive",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && electron ./dist/main.js"
+    "start": "npm run build && electron ./dist/main.js",
+    "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v node_modules/ | xargs prettier --write",
+    "typecheck": "tsc --noEmit --pretty"
   },
   "prettier": {
     "arrowParens": "always",

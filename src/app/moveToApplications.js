@@ -1,4 +1,4 @@
-import LetsMove from 'electron-lets-move';
+import LetsMove from "electron-lets-move";
 import debug from "debug";
 
 export const moveToApplications = async () => {

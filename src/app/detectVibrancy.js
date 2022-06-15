@@ -7,4 +7,4 @@ export const detectVibrancy = async () => {
   } catch (e) {
     return "light";
   }
-}
+};

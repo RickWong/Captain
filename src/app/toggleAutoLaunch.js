@@ -32,4 +32,4 @@ export const autoLaunchEnabled = async () => {
   } catch (error) {
     return false;
   }
-}
+};

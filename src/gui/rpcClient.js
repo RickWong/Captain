@@ -9,7 +9,7 @@ let altIsDown = false;
 let ctrlIsDown = false;
 let metaIsDown = false;
 let shiftIsDown = false;
-const closedGroups = new Set;
+const closedGroups = new Set();
 let cachedGroups = {};
 
 export const clientStart = async (menuWindow) => {
@@ -28,11 +28,8 @@ export const clientStart = async (menuWindow) => {
     shell.openExternal(`http://getcaptain.co/?since=${Package.version.split(".")[0]}`);
   };
 
-  window.updateWindowHeight = ({width, height} = {}) => {
-    menuWindow.setSize(
-      width || menuWindow.getSize()[0],
-      height || (document.body.firstChild.offsetHeight + 8)
-    );
+  window.updateWindowHeight = ({ width, height } = {}) => {
+    menuWindow.setSize(width || menuWindow.getSize()[0], height || document.body.firstChild.offsetHeight + 8);
 
     document.querySelectorAll(".containers").forEach((node) => {
       const { height } = screen.getPrimaryDisplay().workArea;
@@ -59,7 +56,7 @@ export const clientStart = async (menuWindow) => {
   });
 
   client.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
-    renderContainerGroups(cachedGroups = body.groups);
+    renderContainerGroups((cachedGroups = body.groups));
     updateWindowHeight();
   });
 
@@ -83,10 +80,12 @@ export const clientStart = async (menuWindow) => {
 
   // Manually propagate ⌃ Control clicks, or rather rightclicks.
   window.addEventListener("contextmenu", (event) => {
-    if (event.target &&
+    if (
+      event.target &&
       event.target.nodeName === "LI" &&
       event.target.className.indexOf("container") >= 0 &&
-      event.target.className.indexOf("active") >= 0) {
+      event.target.className.indexOf("active") >= 0
+    ) {
       event.target.onclick(event);
     }
   });
@@ -98,7 +97,9 @@ export const clientStart = async (menuWindow) => {
 
 const updateStatus = (message, hideSeparator) => {
   document.querySelector(".status").innerHTML = message;
-  document.querySelector(".status ~ .separator").style.display = document.querySelector(".containers").childElementCount ? "block" : "none";
+  document.querySelector(".status ~ .separator").style.display = document.querySelector(".containers").childElementCount
+    ? "block"
+    : "none";
   updateWindowHeight();
 };
 
@@ -124,19 +125,17 @@ const renderContainerGroups = (groups) => {
     }
   });
 
-  document
-    .querySelectorAll(".containers")
-    .forEach((node) => {
-      node.style.height = (listNode.childElementCount ? 'auto' : '0');
-      node.style.visibility = (listNode.childElementCount ? 'visible' : 'hidden');
-      node.style.margin = (listNode.childElementCount ? '' : '0px');
-    });
+  document.querySelectorAll(".containers").forEach((node) => {
+    node.style.height = listNode.childElementCount ? "auto" : "0";
+    node.style.visibility = listNode.childElementCount ? "visible" : "hidden";
+    node.style.margin = listNode.childElementCount ? "" : "0px";
+  });
 };
 
 const renderContainerGroupName = (listNode, groupName, group) => {
   const closed = closedGroups.has(groupName) ? "closed" : "";
   const countAll = Object.keys(group).length;
-  const countActive = Object.keys(group).filter(containerName => group[containerName].active).length;
+  const countActive = Object.keys(group).filter((containerName) => group[containerName].active).length;
   const countHTML = `<small>(${countActive}/${countAll})</small>`;
 
   const li = document.createElement("li");
@@ -164,7 +163,8 @@ const renderContainerGroupSeparator = (listNode) => {
 
 const renderContainerGroupItem = (listNode, item) => {
   const container = item;
-  const port = container.ports.indexOf("443") >= 0 ? "443" : (container.ports.indexOf("80") >= 0 ? "80" : container.ports[0]);
+  const port =
+    container.ports.indexOf("443") >= 0 ? "443" : container.ports.indexOf("80") >= 0 ? "80" : container.ports[0];
   const openable = container.active && !container.paused && port && !ctrlIsDown && !altIsDown && metaIsDown;
   const killable = container.active && !container.paused && ctrlIsDown && !altIsDown && !metaIsDown;
   const removable = !container.paused && !container.active && ctrlIsDown && altIsDown && metaIsDown;
@@ -172,42 +172,34 @@ const renderContainerGroupItem = (listNode, item) => {
   const copyable = !ctrlIsDown && altIsDown && !metaIsDown;
 
   const li = document.createElement("li");
-  li.title =
-    `Image: ${container.image}
+  li.title = `Image: ${container.image}
 Status: ${container.status}`;
 
   li.className = `container ${container.active ? "active" : "inactive"}`;
 
   if (container.paused) {
-    li.className += ' paused ';
+    li.className += " paused ";
   }
   if (removable) {
-    li.className += ' removable ';
-  }
-  else if (killable) {
-    li.className += ' killable ';
-  }
-  else if (pauseable) {
-    li.className += ' pauseable ';
+    li.className += " removable ";
+  } else if (killable) {
+    li.className += " killable ";
+  } else if (pauseable) {
+    li.className += " pauseable ";
   }
 
   if (removable) {
     li.innerHTML = `Remove ${container.shortName}`;
-  }
-  else if (copyable) {
+  } else if (copyable) {
     li.innerHTML = `Copy "${container.id}"`;
-  }
-  else if (openable) {
+  } else if (openable) {
     li.innerHTML = `Open "${container.openInBrowser || `${container.hostname || "localhost"}:${port || 80}`}"`;
-  }
-  else if (killable) {
+  } else if (killable) {
     li.innerHTML = `Kill ${container.shortName}`;
-  }
-  else if (pauseable) {
+  } else if (pauseable) {
     li.innerHTML = `${container.paused ? "Unpause" : "Pause"} ${container.shortName}`;
-  }
-  else {
-    li.innerHTML = `${container.shortName} <small>${container.paused ? `(paused)` : (port ? `(${port})` : "")}</small>`;
+  } else {
+    li.innerHTML = `${container.shortName} <small>${container.paused ? `(paused)` : port ? `(${port})` : ""}</small>`;
   }
 
   li.onclick = (event) => {
@@ -252,9 +244,9 @@ Status: ${container.status}`;
         disableItem(event.target);
         shiftIsDown = false;
         setTimeout(() => {
-          container.paused ?
-            client.request(COMMANDS.CONTAINER_UNPAUSE, container) :
-            client.request(COMMANDS.CONTAINER_PAUSE, container);
+          container.paused
+            ? client.request(COMMANDS.CONTAINER_UNPAUSE, container)
+            : client.request(COMMANDS.CONTAINER_PAUSE, container);
         }, 100);
       }
     }
@@ -263,9 +255,9 @@ Status: ${container.status}`;
       if (!container.paused) {
         disableItem(event.target);
         setTimeout(() => {
-          container.active ?
-            client.request(COMMANDS.CONTAINER_STOP, container) :
-            client.request(COMMANDS.CONTAINER_START, container);
+          container.active
+            ? client.request(COMMANDS.CONTAINER_STOP, container)
+            : client.request(COMMANDS.CONTAINER_START, container);
         }, 100);
       } else {
         disableItem(event.target);
@@ -278,10 +270,10 @@ Status: ${container.status}`;
 };
 
 const disableItem = (node) => {
-  node.style.color = '#777';
-  node.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+  node.style.color = "#777";
+  node.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
   node.oldonclick = node.onclick;
-  node.onclick = () => { };
+  node.onclick = () => {};
 };
 
 const enableItem = (node) => {
