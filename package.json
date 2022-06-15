@@ -8,16 +8,16 @@
   "author": "Rick Wong <tangos_erasure0x@icloud.com>",
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && electron ./dist/main.js",
+    "dev": "env NODE_ENV=development DEBUG=captain* electron .",
+    "start": "env NODE_ENV=production DEBUG=captain* electron .",
     "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v node_modules/ | xargs prettier --write",
-    "typecheck": "tsc --noEmit --pretty"
+    "typecheck": "tsc --noEmit --pretty",
+    "package": "electron-osx-sign ./Captain-darwin-x64/Captain.app && rm -rf ./Captain-darwin-x64/Captain.dmg && env NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg",
+    "build": "npm prune && rm -rf ./Captain-darwin-x64/ && env NODE_ENV=production electron-packager . Captain --platform=darwin --arch=x64 --electron-version=1.5.0 --icon=resources/Icon.icns --no-prune --overwrite"
   },
   "prettier": {
     "arrowParens": "always",
+    "endOfLine": "lf",
     "trailingComma": "all",
     "printWidth": 120
   },
