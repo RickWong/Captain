@@ -1,9 +1,8 @@
-import { remote } from "electron";
+const remote = require("@electron/remote");
 import { clientStart } from "./rpcClient";
 
 const menuWindow = remote.getCurrentWindow();
 
-menuWindow.setVibrancy("light");
 menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
@@ -14,6 +13,7 @@ if (process.env.NODE_ENV === "development") {
   menuWindow.openDevTools();
 }
 
+// Allow Cmd+Q.
 window.addEventListener("keydown", (event) => {
   if (String.fromCharCode(event.which).toUpperCase() !== "Q") {
     event.preventDefault();

@@ -4,7 +4,6 @@ import { COMMANDS } from "../rpcCommands";
 import Package from "../../package.json";
 
 const client = new ElectronClient();
-let vibrancy = "light";
 let altIsDown = false;
 let ctrlIsDown = false;
 let metaIsDown = false;

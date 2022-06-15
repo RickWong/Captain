@@ -17,6 +17,7 @@ const serverTrigger = (command, body) => {
 
 export const serverStart = async (menubar, autoLauncher) => {
   server.configure(menubar.window.webContents);
+  require("@electron/remote/main").enable(menubar.window.webContents);
 
   menubar.on("show", async () => {
     clearInterval(updateInterval);
