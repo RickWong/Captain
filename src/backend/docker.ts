@@ -5,19 +5,16 @@ import { escapeShell } from "./escapeShell";
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
-export const containerCommand = async (command: string, id?: string): string[] => {
-  return await new Promise((resolve, reject) => {
+export const containerCommand = async (command: string, id?: string): Promise<string[]> => {
+  return new Promise((resolve, reject) => {
     exec(`$(which docker) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
       if (stderr) {
-        return reject(stderr);
+        debug("captain-docker")(stderr);
+        return reject([]);
       }
 
       resolve(stdout.split("\n"));
     });
-  }).catch((error) => {
-    debug("captain-docker")(error);
-
-    return [];
   });
 };
 
@@ -35,21 +32,22 @@ export const version = async () => {
 
 export const containerList = async () => {
   try {
-    const list = {};
+    const list: Record<string, any> = {};
 
     (await containerCommand("container ps -a"))
       .slice(1)
       .filter((line) => line.length > 0)
       .forEach((item) => {
-        let [id, image, command, created, status, ports, name] = item.split(/\s{3,}/g);
+        let [id, image, command, created, status, _ports, name] = item.split(/\s{3,}/g);
 
         if (!name) {
-          name = ports;
-          ports = undefined;
+          name = _ports;
+          _ports = undefined;
         }
 
-        if (ports) {
-          ports = (ports.match(/:([0-9]+)->/g) || []).map((s) => s.replace(/[^0-9]+/g, ""));
+        let ports: string[] = [];
+        if (_ports) {
+          ports = (_ports.match(/:([0-9]+)->/g) || []).map((s) => s.replace(/[^0-9]+/g, ""));
         } else {
           ports = [];
         }

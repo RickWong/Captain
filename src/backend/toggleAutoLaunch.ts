@@ -1,4 +1,6 @@
+// @ts-ignore
 import AutoLaunch from "auto-launch-patched";
+import debug from "debug";
 
 const autoLauncher = new AutoLaunch({
   name: "Captain",

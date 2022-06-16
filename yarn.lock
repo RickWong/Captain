@@ -9,7 +9,7 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@electron/get@^1.14.1", "@electron/get@^1.6.0":
+"@electron/get@^1.13.0", "@electron/get@^1.14.1", "@electron/get@^1.6.0":
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/@electron/get/-/get-1.14.1.tgz#16ba75f02dffb74c23965e72d617adc721d27f40"
   integrity sha512-BrZYyL/6m0ZXz/lDxy/nlVhQz+WF+iPS6qXolEU8atw7h6v1aYkjwJZ63m+bJMBTxDE66X+r2tPS4a/8C82sZw==
@@ -107,6 +107,13 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/electron-positioner@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@types/electron-positioner/-/electron-positioner-4.1.1.tgz#76a22403f2ad2435cb78e0f7d52c081035d36fd5"
+  integrity sha512-yAEmInmGpw39IYyc2P/f9q9gjqrPtyRlufJJ7NsvoB9m74sQZUeM6SraZx6zD86B8P+m1wepfTRdeIJK6ReKiw==
+  dependencies:
+    electron "^15.3.1"
+
 "@types/electron@^1.6.10":
   version "1.6.10"
   resolved "https://registry.yarnpkg.com/@types/electron/-/electron-1.6.10.tgz#7e87888ed3888767cca68e92772c2c8ea46bc873"
@@ -136,6 +143,11 @@
   version "17.0.43"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.43.tgz#7f16898cdd791c9d64069000ad448b47b3ca8353"
   integrity sha512-jnUpgw8fL9kP2iszfIDyBQtw5Mf4/XSqy0Loc1J9pI14ejL83XcCEvSf50Gs/4ET0I9VCCDoOfufQysj0S66xA==
+
+"@types/node@^14.6.2":
+  version "14.18.21"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.21.tgz#0155ee46f6be28b2ff0342ca1a9b9fd4468bef41"
+  integrity sha512-x5W9s+8P4XteaxT/jKF0PSb7XEvo5VmqEWgsMlyeY4ZlLK8I6aH6g5TPPyDlLAep+GYf4kefb7HFyc7PAO3m+Q==
 
 "@types/node@^16.11.26":
   version "16.11.40"
@@ -437,13 +449,6 @@ duplexer@~0.1.1:
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.2.tgz#3abe43aef3835f8ae077d136ddce0f276b0400e6"
   integrity sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==
 
-electron-lets-move@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/electron-lets-move/-/electron-lets-move-0.0.5.tgz#c0ce753eccabeab62c3290c85fdb582879846c65"
-  integrity sha512-XDPL17GR/Ip/RJ/tjjM0rHdv2m8LZjcKnG13RPCE8kmRYxyJzInO20Ivu82GJxCO9hYncxZlqWpNR7dbxyY6QA==
-  dependencies:
-    sudo-prompt "^6.2.0"
-
 electron-notarize@^1.1.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/electron-notarize/-/electron-notarize-1.2.1.tgz#347c18eca8e29dddadadee511b870c13d4008baf"
@@ -494,11 +499,6 @@ electron-positioner@^4.1.0:
   resolved "https://registry.yarnpkg.com/electron-positioner/-/electron-positioner-4.1.0.tgz#e158f8f6aabd6725a8a9b4f2279b9504bcbea1b0"
   integrity sha512-726DfbI9ZNoCg+Fcu6XLuTKTnzf+6nFqv7h+K/V6Ug7IbaPMI7s9S8URnGtWFCy5N5PL4HSzRFF2mXuinftDdg==
 
-electron-rpc@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/electron-rpc/-/electron-rpc-2.0.1.tgz#0495f1dcf32597320f8661190cff2304a07bddc4"
-  integrity sha512-X7h+lgk1+/ZLsOGQtZaSzm8+OPTnT+ASTsPIxhRWJgAQNsdzdvszApN24Enx5ZgO5pDa9TsSkXqfFMpPWq3ehw==
-
 electron@*, electron@^19.0.4:
   version "19.0.4"
   resolved "https://registry.yarnpkg.com/electron/-/electron-19.0.4.tgz#a88d5e542868c4abd7704228ec62c553605605a0"
@@ -506,6 +506,15 @@ electron@*, electron@^19.0.4:
   dependencies:
     "@electron/get" "^1.14.1"
     "@types/node" "^16.11.26"
+    extract-zip "^1.0.3"
+
+electron@^15.3.1:
+  version "15.5.7"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-15.5.7.tgz#aadb0081c504f2c2d8f81ea5fd23e38881afe86a"
+  integrity sha512-n4mVlxoMc4eYx07wWFWGficL+iOMz5xZEf5dBtE/wwLm0fQpYVyW4AlknMFG9F8Css0MM0JSwNMOyRg5e1vDtg==
+  dependencies:
+    "@electron/get" "^1.13.0"
+    "@types/node" "^14.6.2"
     extract-zip "^1.0.3"
 
 encodeurl@^1.0.2:
@@ -1381,11 +1390,6 @@ strip-outer@^1.0.1:
   integrity sha512-k55yxKHwaXnpYGsOzg4Vl8+tDrWylxDEpknGjhTiZB8dFRU5rTo9CAzeycivxV3s+zlTKwrs6WxMxR95n26kwg==
   dependencies:
     escape-string-regexp "^1.0.2"
-
-sudo-prompt@^6.2.0:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/sudo-prompt/-/sudo-prompt-6.2.1.tgz#1079211ac2cf21f5230ffbeb124ffc22cee4c2b6"
-  integrity sha512-9y73A1KghdKvEjVQxXTXN9AwiLpX7fs+4LVRs7gNumveowhGkDEHPE7h2FkLK76VPLVazWXR3a5cUjGn15QAQw==
 
 sumchecker@^3.0.1:
   version "3.0.1"

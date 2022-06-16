@@ -1,7 +1,5 @@
 <meta charset="utf-8" />
 
-<script src="../web.js"></script>
-
 <style>
   @import "./web.css";
 </style>
@@ -13,7 +11,11 @@
     <ul class="containers"></ul>
   </li>
   <li class="separator"></li>
-  <li class="action autoLaunch" onClick="toggleAutoLaunch()">Start Captain at Login</li>
-  <li class="action" onClick="checkForUpdates()">Check for Updates...</li>
-  <li class="action" onClick="clientStop()">Quit Captain <span class="shortcut">⌘Q</span></li>
+  <li class="action autoLaunch" onClick="window.toggleAutoLaunch()">Start Captain at Login</li>
+  <li class="action" onClick="window.checkForUpdates()">Check for Updates...</li>
+  <li class="action" onClick="window.clientStop()">Quit Captain <span class="shortcut">⌘Q</span></li>
 </ul>
+
+<script>
+  require("./web.js");
+</script>

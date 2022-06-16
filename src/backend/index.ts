@@ -1,21 +1,25 @@
 import debug from "debug";
 import { menubar } from "menubar";
 import Path from "path";
-import Package from "../../package.json";
 import { moveToApplications } from "./moveToApplications";
 import { serverStart } from "./rpcServer";
+import { app } from "electron";
+
+app.commandLine.appendSwitch("remote-debugging-port", "9222");
 
 require("@electron/remote/main").initialize();
+
+const serverVersion = process.env.npm_package_version;
 
 const captainMenubar = menubar({
   dir: __dirname,
   icon: Path.join(__dirname, "../../resources/iconTemplate.png"),
-  index: `file://${Path.join(__dirname, "../web/index.html")}`,
+  index: `file://${Path.join(__dirname, "../../dist/web/index.html")}`,
   browserWindow: {
     width: 256,
-    height: 30,
+    height: 256,
     transparent: true,
-    vibrancy: 'under-window',
+    vibrancy: "under-window",
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -23,7 +27,7 @@ const captainMenubar = menubar({
     },
   },
   windowPosition: "trayLeft",
-  tooltip: `Captain ${Package.version}`,
+  tooltip: `Captain ${serverVersion}`,
   preloadWindow: true,
   showDockIcon: false,
 });
@@ -34,8 +38,8 @@ captainMenubar.on("focus-lost", () => captainMenubar.window.hide());
 
 captainMenubar.on("ready", async () => {
   try {
-    await moveToApplications();
-    serverStart(captainMenubar);
+    await moveToApplications(captainMenubar.window);
+    serverStart(captainMenubar).catch((error) => console.error(error));
   } catch (e) {
     debug("captain")(e.stack || e);
   }

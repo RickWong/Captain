@@ -1,25 +1,24 @@
 import debug from "debug";
-import ElectronServer from "electron-rpc/server";
 import { ipcMain } from "electron";
-import { COMMANDS } from "../rpcCommands";
+import { COMMANDS } from "../web/rpcCommands";
 import * as Docker from "./docker";
 import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 import { Menubar } from "menubar/lib/Menubar";
 
-const server = new ElectronServer();
-let cachedContainerGroups = undefined;
-let lastCacheMicrotime = Date.now();
-let updateInterval: NodeJS.Timer;
-const serverTrigger = (command: string, body?: any) => {
-  lastCacheMicrotime = 0;
-  setTimeout(() => server.methods[command]({ body }), 1);
-};
-
 export const serverStart = async (menubar: Menubar) => {
-  server.configure(menubar.window.webContents);
   require("@electron/remote/main").enable(menubar.window.webContents);
 
+  let cachedContainerGroups: Record<string, any> = undefined;
+  let lastCacheMicrotime = Date.now();
+  let updateInterval: NodeJS.Timer;
+  const serverTrigger = (command: string, body?: any) => {
+    lastCacheMicrotime = 0;
+    setTimeout(() => ipcMain.emit(command, { body }, 1));
+  };
+
   menubar.on("show", async () => {
+    debug("captain-rpc-server")("Show");
+
     clearInterval(updateInterval);
     updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 5 * 1000);
 
@@ -28,37 +27,48 @@ export const serverStart = async (menubar: Menubar) => {
   });
 
   menubar.on("hide", () => {
+    debug("captain-rpc-server")("Hide");
+
     clearInterval(updateInterval);
     updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 60 * 1000);
   });
 
-  server.on(COMMANDS.APPLICATION_QUIT, () => {
+  ipcMain.on(COMMANDS.APPLICATION_QUIT, () => {
+    debug("captain-rpc-server")("Quit");
+
     menubar.app.quit();
   });
 
-  server.on(COMMANDS.VERSION, async () => {
-    server.send(COMMANDS.VERSION, {
+  ipcMain.on(COMMANDS.VERSION, async () => {
+    debug("captain-rpc-server")("Version");
+
+    menubar.window.webContents.send(COMMANDS.VERSION, {
       version: await Docker.version(),
       autoLaunch: await autoLaunchEnabled(),
     });
   });
 
-  server.on(COMMANDS.TOGGLE_AUTO_LAUNCH, async () => {
+  ipcMain.on(COMMANDS.TOGGLE_AUTO_LAUNCH, async () => {
+    debug("captain-rpc-server")("Toggle auto launch");
+
     await toggleAutoLaunch();
     serverTrigger(COMMANDS.VERSION);
   });
 
-  server.on(COMMANDS.CONTAINER_KILL, async ({ body }) => {
+  ipcMain.on(COMMANDS.CONTAINER_KILL, async (event, { body }) => {
+    debug("captain-rpc-server")("Container kill");
     await Docker.containerCommand("kill", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_STOP, async ({ body }) => {
+  ipcMain.on(COMMANDS.CONTAINER_STOP, async (event, { body }) => {
+    debug("captain-rpc-server")("Container stop");
     await Docker.containerCommand("stop", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_START, async ({ body }) => {
+  ipcMain.on(COMMANDS.CONTAINER_START, async (event, { body }) => {
+    debug("captain-rpc-server")("Container start");
     await Docker.containerCommand("start", body.id);
 
     setTimeout(() => {
@@ -66,31 +76,35 @@ export const serverStart = async (menubar: Menubar) => {
     }, 333);
   });
 
-  server.on(COMMANDS.CONTAINER_PAUSE, async ({ body }) => {
+  ipcMain.on(COMMANDS.CONTAINER_PAUSE, async (event, { body }) => {
+    debug("captain-rpc-server")("Container pause");
     await Docker.containerCommand("pause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_UNPAUSE, async ({ body }) => {
+  ipcMain.on(COMMANDS.CONTAINER_UNPAUSE, async (event, { body }) => {
+    debug("captain-rpc-server")("Container unpause");
     await Docker.containerCommand("unpause", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_REMOVE, async ({ body }) => {
+  ipcMain.on(COMMANDS.CONTAINER_REMOVE, async (event, { body }) => {
+    debug("captain-rpc-server")("Container remove");
+
     await Docker.containerCommand("rm", body.id);
     serverTrigger(COMMANDS.CONTAINER_GROUPS);
   });
 
-  server.on(COMMANDS.CONTAINER_GROUPS, async () => {
+  ipcMain.on(COMMANDS.CONTAINER_GROUPS, async () => {
     if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 1000) {
       debug("captain-rpc-server")("Using microcache");
 
-      server.send(COMMANDS.CONTAINER_GROUPS, { groups: cachedContainerGroups });
+      menubar.window.webContents.send(COMMANDS.CONTAINER_GROUPS, { groups: cachedContainerGroups });
       return;
     }
 
     const containers = await Docker.containerList();
-    const groups = {};
+    const groups: Record<string, any> = {};
 
     for (const container of containers) {
       let groupName = "~others";
@@ -118,6 +132,6 @@ export const serverStart = async (menubar: Menubar) => {
 
     cachedContainerGroups = Object.assign({}, groups);
     lastCacheMicrotime = Date.now();
-    server.send(COMMANDS.CONTAINER_GROUPS, { groups });
+    menubar.window.webContents.send(COMMANDS.CONTAINER_GROUPS, { groups });
   });
 };

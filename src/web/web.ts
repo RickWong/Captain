@@ -20,4 +20,4 @@ window.addEventListener("keydown", (event) => {
   }
 });
 
-clientStart(menuWindow);
+clientStart(menuWindow).catch((error) => console.error(error));

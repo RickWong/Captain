@@ -1,37 +1,50 @@
-import { clipboard, shell, screen, IpcRenderer } from "electron";
-import ElectronClient from "electron-rpc/client";
-import { COMMANDS } from "../rpcCommands";
-import Package from "../../package.json";
+import { clipboard, shell, ipcRenderer, BrowserWindow } from "electron";
+import * as remote from "@electron/remote";
+import { COMMANDS } from "./rpcCommands";
 
-const client = new ElectronClient();
+declare global {
+  interface Window {
+    updateWindowHeight: (dimensions?: any) => void;
+    clientStop: () => void;
+    clientStart: (window: BrowserWindow) => Promise<void>;
+    toggleAutoLaunch: () => void;
+    checkForUpdates: () => void;
+    hideWindow: () => void;
+  }
+}
+
 let altIsDown = false;
 let ctrlIsDown = false;
 let metaIsDown = false;
 let shiftIsDown = false;
 const closedGroups = new Set();
 let cachedGroups = {};
+let serverVersion = "";
 
-export const clientStart = async (menuWindow) => {
+export const clientStart = async (menuWindow: BrowserWindow) => {
   const autoLaunchLi = document.querySelector(".autoLaunch");
 
   window.clientStop = () => {
-    client.request(COMMANDS.APPLICATION_QUIT);
+    ipcRenderer.send(COMMANDS.APPLICATION_QUIT);
   };
 
   window.toggleAutoLaunch = () => {
     disableItem(autoLaunchLi);
-    client.request(COMMANDS.TOGGLE_AUTO_LAUNCH);
+    ipcRenderer.send(COMMANDS.TOGGLE_AUTO_LAUNCH);
   };
 
   window.checkForUpdates = () => {
-    shell.openExternal(`http://getcaptain.co/?since=${Package.version.split(".")[0]}`);
+    shell.openExternal(`https://getcaptain.co/?since=${serverVersion}`);
   };
 
-  window.updateWindowHeight = ({ width, height } = {}) => {
-    menuWindow.setSize(width || menuWindow.getSize()[0], height || document.body.firstChild.offsetHeight + 8);
+  window.updateWindowHeight = (dimensions: any = {}) => {
+    menuWindow.setSize(
+      dimensions.width || menuWindow.getSize()[0],
+      dimensions.height || (document.body.firstChild as HTMLElement).offsetHeight + 8,
+    );
 
-    document.querySelectorAll(".containers").forEach((node) => {
-      const { height } = screen.getPrimaryDisplay().workArea;
+    document.querySelectorAll(".containers").forEach((node: HTMLElement) => {
+      const { height } = remote.screen.getPrimaryDisplay().workArea;
       node.style.maxHeight = `${height - 150}px`;
     });
   };
@@ -40,11 +53,12 @@ export const clientStart = async (menuWindow) => {
     menuWindow.hide();
   };
 
-  client.on(COMMANDS.VERSION, (error, { vibrancy, version, autoLaunch }) => {
+  ipcRenderer.on(COMMANDS.VERSION, (error, { vibrancy, version, autoLaunch }) => {
     if (version) {
-      updateStatus(`Using Docker ${version}`);
+      serverVersion = version;
+      updateStatus(`Using Docker ${serverVersion}`);
     } else {
-      updateStatus("Docker not available", true);
+      updateStatus("Docker not available");
     }
 
     menuWindow.setVibrancy(vibrancy);
@@ -54,13 +68,13 @@ export const clientStart = async (menuWindow) => {
     enableItem(autoLaunchLi);
   });
 
-  client.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
+  ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
     renderContainerGroups((cachedGroups = body.groups));
-    updateWindowHeight();
+    window.updateWindowHeight();
   });
 
   // Keep track of ⌥ Option and ⌃ Control keys.
-  let watchModifierKeys = (event) => {
+  let watchModifierKeys = (event: KeyboardEvent) => {
     if (altIsDown !== event.altKey) {
       altIsDown = event.altKey;
     } else if (ctrlIsDown !== event.ctrlKey) {
@@ -72,42 +86,44 @@ export const clientStart = async (menuWindow) => {
     }
 
     renderContainerGroups(cachedGroups);
-    updateWindowHeight();
+    window.updateWindowHeight();
   };
   window.addEventListener("keydown", watchModifierKeys);
   window.addEventListener("keyup", watchModifierKeys);
 
   // Manually propagate ⌃ Control clicks, or rather rightclicks.
   window.addEventListener("contextmenu", (event) => {
+    const node = event.target as HTMLElement;
     if (
-      event.target &&
-      event.target.nodeName === "LI" &&
-      event.target.className.indexOf("container") >= 0 &&
-      event.target.className.indexOf("active") >= 0
+      node &&
+      node.nodeName === "LI" &&
+      node.className.indexOf("container") >= 0 &&
+      node.className.indexOf("active") >= 0
     ) {
-      event.target.onclick(event);
+      node.onclick(event);
     }
   });
 
-  updateStatus("Looking for Docker", true);
-  client.request(COMMANDS.VERSION);
-  client.request(COMMANDS.CONTAINER_GROUPS);
+  updateStatus("Looking for Docker");
+  ipcRenderer.send(COMMANDS.VERSION);
+  ipcRenderer.send(COMMANDS.CONTAINER_GROUPS);
 };
 
-const updateStatus = (message, hideSeparator) => {
+const updateStatus = (message: string) => {
   document.querySelector(".status").innerHTML = message;
-  document.querySelector(".status ~ .separator").style.display = document.querySelector(".containers").childElementCount
+  document.querySelector<HTMLElement>(".status ~ .separator").style.display = document.querySelector(".containers")
+    .childElementCount
     ? "block"
     : "none";
-  updateWindowHeight();
+  window.updateWindowHeight();
 };
 
-const renderContainerGroups = (groups) => {
+const renderContainerGroups = (groups: Record<string, any>) => {
   document
     .querySelectorAll(".containers .group, .containers .container, .containers .separator")
     .forEach((node) => node.remove());
 
-  const listNode = document.querySelector(".containers");
+  const listNode = document.querySelector(".containers") as HTMLUListElement;
 
   const groupNames = Object.keys(groups);
   groupNames.forEach((groupName, index) => {
@@ -124,14 +140,14 @@ const renderContainerGroups = (groups) => {
     }
   });
 
-  document.querySelectorAll(".containers").forEach((node) => {
+  document.querySelectorAll(".containers").forEach((node: HTMLElement) => {
     node.style.height = listNode.childElementCount ? "auto" : "0";
     node.style.visibility = listNode.childElementCount ? "visible" : "hidden";
     node.style.margin = listNode.childElementCount ? "" : "0px";
   });
 };
 
-const renderContainerGroupName = (listNode, groupName, group) => {
+const renderContainerGroupName = (listNode: HTMLUListElement, groupName: string, group: Record<string, any>) => {
   const closed = closedGroups.has(groupName) ? "closed" : "";
   const countAll = Object.keys(group).length;
   const countActive = Object.keys(group).filter((containerName) => group[containerName].active).length;
@@ -140,7 +156,7 @@ const renderContainerGroupName = (listNode, groupName, group) => {
   const li = document.createElement("li");
   li.className = ` group ${closed} `;
   li.innerHTML = `${groupName.replace(/^~/, "")} ${countHTML}`;
-  li.onclick = (event) => {
+  li.onclick = (_event) => {
     if (closed) {
       closedGroups.delete(groupName);
     } else {
@@ -148,19 +164,19 @@ const renderContainerGroupName = (listNode, groupName, group) => {
     }
 
     renderContainerGroups(cachedGroups);
-    updateWindowHeight();
+    window.updateWindowHeight();
   };
 
   listNode.appendChild(li);
 };
 
-const renderContainerGroupSeparator = (listNode) => {
+const renderContainerGroupSeparator = (listNode: HTMLUListElement) => {
   const li = document.createElement("li");
   li.className = "separator containers-separator";
   listNode.appendChild(li);
 };
 
-const renderContainerGroupItem = (listNode, item) => {
+const renderContainerGroupItem = (listNode: Element, item: any) => {
   const container = item;
   const port =
     container.ports.indexOf("443") >= 0 ? "443" : container.ports.indexOf("80") >= 0 ? "80" : container.ports[0];
@@ -211,7 +227,7 @@ Status: ${container.status}`;
         ctrlIsDown = false;
         altIsDown = false;
         metaIsDown = false;
-        setTimeout(() => client.request(COMMANDS.CONTAINER_REMOVE, container), 100);
+        setTimeout(() => ipcRenderer.send(COMMANDS.CONTAINER_REMOVE, container), 100);
       }
     }
     // ⌃ Control.
@@ -219,22 +235,24 @@ Status: ${container.status}`;
       if (killable) {
         disableItem(event.target);
         ctrlIsDown = false;
-        setTimeout(() => client.request(COMMANDS.CONTAINER_KILL, container), 100);
+        setTimeout(() => ipcRenderer.send(COMMANDS.CONTAINER_KILL, container), 100);
       }
     }
     // ⌥ Option.
     else if (event.altKey) {
       clipboard.writeText(container.id);
       altIsDown = false;
-      hideWindow();
+      window.hideWindow();
     }
     // ⌘ Command.
     else if (event.metaKey) {
       if (openable) {
         disableItem(event.target);
         metaIsDown = false;
-        shell.openExternal(container.openInBrowser || `http${port == 443 ? "s" : ""}://localhost:${port || 80}`);
-        hideWindow();
+        shell
+          .openExternal(container.openInBrowser || `http${port == 443 ? "s" : ""}://localhost:${port || 80}`)
+          .catch((error) => console.error(error));
+        window.hideWindow();
       }
     }
     // ⇧ Shift.
@@ -244,8 +262,8 @@ Status: ${container.status}`;
         shiftIsDown = false;
         setTimeout(() => {
           container.paused
-            ? client.request(COMMANDS.CONTAINER_UNPAUSE, container)
-            : client.request(COMMANDS.CONTAINER_PAUSE, container);
+            ? ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, container)
+            : ipcRenderer.send(COMMANDS.CONTAINER_PAUSE, container);
         }, 100);
       }
     }
@@ -255,12 +273,12 @@ Status: ${container.status}`;
         disableItem(event.target);
         setTimeout(() => {
           container.active
-            ? client.request(COMMANDS.CONTAINER_STOP, container)
-            : client.request(COMMANDS.CONTAINER_START, container);
+            ? ipcRenderer.send(COMMANDS.CONTAINER_STOP, container)
+            : ipcRenderer.send(COMMANDS.CONTAINER_START, container);
         }, 100);
       } else {
         disableItem(event.target);
-        setTimeout(() => client.request(COMMANDS.CONTAINER_UNPAUSE, container), 100);
+        setTimeout(() => ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, container), 100);
       }
     }
   };
@@ -268,17 +286,17 @@ Status: ${container.status}`;
   listNode.appendChild(li);
 };
 
-const disableItem = (node) => {
+const disableItem = (node: any) => {
   node.style.color = "#777";
   node.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
-  node.oldonclick = node.onclick;
+  node.old_onclick = node.onclick;
   node.onclick = () => {};
 };
 
-const enableItem = (node) => {
+const enableItem = (node: any) => {
   node.style.color = "";
   node.style.backgroundColor = "";
-  if (node.oldonclick) {
-    node.onclick = node.oldonclick;
+  if (node.old_onclick) {
+    node.onclick = node.old_onclick;
   }
 };

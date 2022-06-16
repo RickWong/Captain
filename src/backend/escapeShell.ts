@@ -1,1 +1,1 @@
-export const escapeShell = (arg) => `'${arg.replace(/(["\s'$\`\\])/g, "\\$1")}'`;
+export const escapeShell = (arg: string) => `'${arg.replace(/(["\s'$\`\\])/g, "\\$1")}'`;
