@@ -1,16 +1,8 @@
 {
+  "extends": "electron-snowpack/config/tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "noImplicitAny": true,
-    "inlineSources": true,
-    "sourceMap": true,
-    "outDir": "build/",
-    "esModuleInterop": true,
-    "baseUrl": "./",
-    "rootDir": "./src/",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"]
+  "include": ["./src/**/*", "./types/"]
 }

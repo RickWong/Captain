@@ -3,16 +3,14 @@ import { menubar } from "menubar";
 import Path from "path";
 import { moveToApplications } from "./moveToApplications";
 import { serverStart } from "./rpcServer";
-import { app } from "electron";
-
-app.commandLine.appendSwitch("remote-debugging-port", "9222");
+import { getAssetURL } from "electron-snowpack";
 
 require("@electron/remote/main").initialize();
 
 const captainMenubar = menubar({
   dir: __dirname,
-  icon: Path.join(__dirname, "../../resources/iconTemplate.png"),
-  index: `file://${Path.join(__dirname, "../../build/web/index.html")}`,
+  icon: Path.join(__dirname, "../../public/iconTemplate.png"),
+  index: getAssetURL("index.html"),
   browserWindow: {
     width: 256,
     height: 256,

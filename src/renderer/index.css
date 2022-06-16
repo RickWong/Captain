@@ -43,7 +43,7 @@ body .menu > li.status {
   height: 22px;
   margin-left: -15px;
   margin-top: 5px;
-  background: url("../../resources/checkmark.png") no-repeat;
+  background: url("public/checkmark.png") no-repeat;
   background-size: 11px 11px;
 }
 .menu.ultra-dark li.action.checked:before {

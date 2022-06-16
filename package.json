@@ -4,19 +4,18 @@
   "name": "captain",
   "version": "10.0.0",
   "description": "Docker menubar",
-  "main": "./src/backend/_main.js",
+  "main": "./dist/main/index.js",
   "author": "Rick Wong <tangos_erasure0x@icloud.com>",
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
-    "clean": "rm -rf build/* dist/*",
-    "copy-src": "cp -R ./src/web/ ./build/web/",
-    "watch": "env NODE_ENV=development tsc-watch --onSuccess 'yarn dev'",
-    "dev": "yarn copy-src && env NODE_ENV=development DEBUG=* electron --inspect=9991 ./",
-    "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v build/ | grep -v dist/ | grep -v node_modules/ | xargs prettier --write",
+    "clean": "rm -rf dist/ && electron-snowpack clean",
+    "watch": "env NODE_ENV=development DEBUG=* electron-snowpack dev -- --inspect=9991",
+    "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v dist/ | grep -v node_modules/ | xargs prettier --write",
     "typecheck": "tsc --noEmit --pretty",
-    "build": "yarn clean && yarn prettier && tsc && yarn copy-src",
+    "build": "yarn && yarn clean && yarn prettier && yarn typecheck && electron-snowpack build",
     "start": "yarn build && env NODE_ENV=production DEBUG=captain* electron ./",
     "package": "yarn build && export CSC_IDENTITY_AUTO_DISCOVERY=\"true\"; electron-builder --mac --x64 --arm64 -p always",
+    "open": "open dist/mac/${npm_package_name}.app",
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
@@ -30,6 +29,7 @@
     "printWidth": 120
   },
   "build": {
+    "extends": "electron-snowpack/config/electron-builder.js",
     "productName": "Captain",
     "files": [
       "**/*",
@@ -41,17 +41,18 @@
         "dmg",
         "zip"
       ],
-      "icon": "./resources/Icon.icns"
+      "icon": "./public/Icon.icns"
     }
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/electron": "^1.6.10",
     "@types/electron-positioner": "^4.1.1",
+    "@types/snowpack-env": "^2.3.4",
     "electron": "^19.0.4",
     "electron-builder": "^23.0.3",
-    "prettier": "^2.7.0",
-    "tsc-watch": "^5.0.3"
+    "electron-snowpack": "^0.13.0",
+    "prettier": "^2.7.0"
   },
   "dependencies": {
     "@electron/remote": "^2.0.8",

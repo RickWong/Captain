@@ -1,8 +1,11 @@
-<meta charset="utf-8" />
-
-<style>
-  @import "./web.css";
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Captain</title>
+  <link rel="stylesheet" type="text/css" href="%SNOWPACK_PUBLIC_RENDERER_BASE_HREF%/index.css" />
+</head>
+<body>
 
 <ul class="menu">
   <li class="status">&nbsp;</li>
@@ -16,6 +19,6 @@
   <li class="action" onClick="window.clientStop()">Quit Captain <span class="shortcut">⌘Q</span></li>
 </ul>
 
-<script>
-  require("./web.js");
-</script>
+<script type="module" src="%SNOWPACK_PUBLIC_RENDERER_BASE_HREF%/index.js"></script>
+</body>
+</html>

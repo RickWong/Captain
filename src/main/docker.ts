@@ -1,9 +1,10 @@
 import { exec } from "child_process";
 import debug from "debug";
-import { escapeShell } from "./escapeShell";
 
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
+
+export const escapeShell = (arg: string) => `'${arg.replace(/(["\s'$\`\\])/g, "\\$1")}'`;
 
 export const containerCommand = async (command: string, id?: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {

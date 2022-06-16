@@ -1,6 +1,6 @@
 import debug from "debug";
 import { ipcMain } from "electron";
-import { COMMANDS } from "../web/rpcCommands";
+import { COMMANDS } from "../renderer/rpcCommands";
 import * as Docker from "./docker";
 import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 import { Menubar } from "menubar/lib/Menubar";
