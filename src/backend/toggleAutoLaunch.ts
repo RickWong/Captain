@@ -1,6 +1,7 @@
 // @ts-ignore
 import AutoLaunch from "auto-launch-patched";
 import debug from "debug";
+import { app } from "electron";
 
 const autoLauncher = new AutoLaunch({
   name: "Captain",
@@ -11,7 +12,7 @@ const autoLauncher = new AutoLaunch({
 });
 
 export const toggleAutoLaunch = async () => {
-  if (process.title && process.title.indexOf("Electron.app") >= 0) {
+  if (!app.isPackaged) {
     return;
   }
 
