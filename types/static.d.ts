@@ -57,3 +57,10 @@ declare module "*.png" {
 }
 
 /* CUSTOM: ADD YOUR OWN HERE */
+
+declare interface Window {
+  ipcRenderer: {
+    send: (channel: string, data?: any) => void;
+    on: (channel: string, listener: (event: any, data?: any) => void) => void;
+  };
+}

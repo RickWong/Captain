@@ -10,6 +10,7 @@ menuWindow.setResizable(false);
 
 if (process.env.NODE_ENV === "development") {
   menuWindow.setResizable(true);
+  // @ts-ignore
   menuWindow.openDevTools();
 }
 

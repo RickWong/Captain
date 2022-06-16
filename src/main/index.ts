@@ -1,6 +1,6 @@
 import debug from "debug";
 import { menubar } from "menubar";
-import Path from "path";
+import path from "path";
 import { moveToApplications } from "./moveToApplications";
 import { serverStart } from "./rpcServer";
 import { getAssetURL } from "electron-snowpack";
@@ -9,17 +9,18 @@ require("@electron/remote/main").initialize();
 
 const captainMenubar = menubar({
   dir: __dirname,
-  icon: Path.join(__dirname, "../../public/iconTemplate.png"),
+  icon: path.join(__dirname, "../../public/iconTemplate.png"),
   index: getAssetURL("index.html"),
   browserWindow: {
-    width: 256,
-    height: 256,
+    width: 500,
+    height: 500,
     transparent: true,
     vibrancy: "under-window",
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
       backgroundThrottling: false,
+      // preload: path.join(__dirname, "preload.js"),
     },
   },
   windowPosition: "trayLeft",
