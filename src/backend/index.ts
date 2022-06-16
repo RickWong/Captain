@@ -9,8 +9,6 @@ app.commandLine.appendSwitch("remote-debugging-port", "9222");
 
 require("@electron/remote/main").initialize();
 
-const serverVersion = process.env.npm_package_version;
-
 const captainMenubar = menubar({
   dir: __dirname,
   icon: Path.join(__dirname, "../../resources/iconTemplate.png"),
@@ -27,7 +25,7 @@ const captainMenubar = menubar({
     },
   },
   windowPosition: "trayLeft",
-  tooltip: `Captain ${serverVersion}`,
+  tooltip: `Captain ${process.env.npm_package_version}`,
   preloadWindow: true,
   showDockIcon: false,
 });

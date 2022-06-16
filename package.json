@@ -2,7 +2,7 @@
   "private": true,
   "license": "UNLICENSED",
   "name": "captain",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "Docker menubar",
   "main": "src/backend/index.ts",
   "author": "Rick Wong <tangos_erasure0x@icloud.com>",

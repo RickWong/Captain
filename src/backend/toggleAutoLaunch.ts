@@ -19,8 +19,10 @@ export const toggleAutoLaunch = async () => {
     const isEnabled = await autoLauncher.isEnabled();
 
     if (isEnabled) {
+      debug("captain-auto-launch")("Disable auto launch");
       await autoLauncher.disable();
     } else {
+      debug("captain-auto-launch")("Enable auto launch");
       await autoLauncher.enable();
     }
   } catch (error) {

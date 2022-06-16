@@ -53,16 +53,13 @@ export const clientStart = async (menuWindow: BrowserWindow) => {
     menuWindow.hide();
   };
 
-  ipcRenderer.on(COMMANDS.VERSION, (error, { vibrancy, version, autoLaunch }) => {
+  ipcRenderer.on(COMMANDS.VERSION, (error, { version, dockerVersion, autoLaunch }) => {
     if (version) {
       serverVersion = version;
-      updateStatus(`Using Docker ${serverVersion}`);
+      updateStatus(`Using Docker ${dockerVersion}`);
     } else {
       updateStatus("Docker not available");
     }
-
-    menuWindow.setVibrancy(vibrancy);
-    document.querySelector(".menu").className = `menu ${vibrancy}`;
 
     autoLaunchLi.classList.toggle("checked", autoLaunch);
     enableItem(autoLaunchLi);
