@@ -12,10 +12,10 @@
     "watch": "env NODE_ENV=development tsc-watch --onSuccess 'yarn dev'",
     "dev": "cp -R ./src/web/ ./dist/web/ && env NODE_ENV=development DEBUG=* electron --require ts-node/register --inspect=9991 ./",
     "start": "env NODE_ENV=production DEBUG=captain* electron --require ts-node/register ./",
-    "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v node_modules/ | xargs prettier --write",
+    "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v dist/ | grep -v node_modules/ | xargs prettier --write",
     "typecheck": "tsc --noEmit --pretty",
-    "package": "electron-osx-sign ./Captain-darwin-x64/Captain.app && rm -rf ./Captain-darwin-x64/Captain.dmg && env NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg",
-    "build": "npm prune && rm -rf ./Captain-darwin-x64/ && env NODE_ENV=production electron-packager ./ Captain --platform=darwin --arch=x64 --electron-version=1.5.0 --icon=resources/Icon.icns --no-prune --overwrite"
+    "build": "npm prune && rm -rf ./Captain-darwin-x64/ && env NODE_ENV=production electron-packager ./ Captain --platform=darwin --arch=x64 --electron-version=1.5.0 --icon=resources/Icon.icns --no-prune --overwrite",
+    "package": "electron-osx-sign ./Captain-darwin-x64/Captain.app && rm -rf ./Captain-darwin-x64/Captain.dmg && env NODE_ENV=production appdmg ./dmg.json ./Captain-darwin-x64/Captain.dmg"
   },
   "prettier": {
     "arrowParens": "always",
