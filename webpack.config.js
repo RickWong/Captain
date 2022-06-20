@@ -1,14 +1,16 @@
 const lodash = require("lodash");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const ReactRefreshTypeScript = require("react-refresh-typescript");
 
-const isEnvProduction = process.env.NODE_ENV === "production";
-const isEnvDevelopment = process.env.NODE_ENV === "development";
+const isProduction = process.env.NODE_ENV === "production";
+const isDevelopment = process.env.NODE_ENV === "development";
 
 // #region Common settings
 const commonConfig = {
-  devtool: isEnvDevelopment ? "source-map" : false,
-  mode: isEnvProduction ? "production" : "development",
+  devtool: isDevelopment ? "source-map" : false,
+  mode: isProduction ? "production" : "development",
   output: { path: path.join(__dirname, "dist") },
   node: { __dirname: false, __filename: false },
   resolve: {
@@ -27,7 +29,17 @@ const commonConfig = {
       {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        loader: "ts-loader",
+        use: [
+          {
+            loader: require.resolve("ts-loader"),
+            options: {
+              getCustomTransformers: () => ({
+                before: [isDevelopment && ReactRefreshTypeScript()].filter(Boolean),
+              }),
+              transpileOnly: isDevelopment,
+            },
+          },
+        ],
       },
       {
         test: /\.(scss|css)$/,
@@ -49,18 +61,23 @@ const rendererConfig = lodash.cloneDeep(commonConfig);
 rendererConfig.entry = ["./src/renderer/index.tsx"];
 rendererConfig.target = "electron-renderer";
 rendererConfig.output.filename = "./renderer.bundle.js";
-rendererConfig.devServer = {
-  hot: true,
-  compress: true,
-  port: 9999,
-  static: {
-    directory: path.join(__dirname, "./public/"),
-  },
-};
 rendererConfig.plugins = [
   new HtmlWebpackPlugin({
     template: path.resolve(__dirname, "./public/index.html"),
   }),
 ];
+
+if (isDevelopment) {
+  rendererConfig.devServer = {
+    hot: true,
+    compress: true,
+    port: 9999,
+    static: {
+      directory: path.join(__dirname, "./public/"),
+    },
+  };
+
+  rendererConfig.plugins.push(new ReactRefreshWebpackPlugin());
+}
 
 module.exports = [rendererConfig];

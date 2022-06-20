@@ -40,7 +40,7 @@ export const clientStart = async (menuWindow: any) => {
   window.updateWindowHeight = (dimensions: any = {}) => {
     menuWindow.setSize(
       dimensions.width || menuWindow.getSize()[0],
-      dimensions.height || (document.querySelectorAll(".menu")[0] as HTMLElement).offsetHeight + 8,
+      dimensions.height || (document.querySelectorAll(".menu")[0] as HTMLElement).offsetHeight + 8 + 300,
     );
 
     document.querySelectorAll(".containers").forEach((node: HTMLElement) => {

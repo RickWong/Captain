@@ -1,7 +1,7 @@
 import electron from "electron";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./App";
+import { App } from "./Components/App";
 import { clientStart } from "./rpcClient";
 import "./index.css";
 
@@ -19,9 +19,5 @@ if (!remote.app.isPackaged) {
 
 clientStart(menuWindow).catch((error) => console.error(error));
 
-// Hot Module Replacement for App.
-if (module.hot) {
-  module.hot.accept("./App", () => {
-    createRoot(document.body).render(<App />);
-  });
-}
+const reactRoot = createRoot(document.querySelector("#App")!);
+reactRoot.render(<App />);

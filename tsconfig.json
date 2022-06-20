@@ -19,6 +19,7 @@
     "sourceMap": true,
     "target": "esnext",
     "skipLibCheck": true,
+    "allowJs": false,
     "inlineSources": true,
     "outDir": "build/",
     "esModuleInterop": true,
