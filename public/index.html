@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Captain</title>
-  <link rel="stylesheet" type="text/css" href="%SNOWPACK_PUBLIC_RENDERER_BASE_HREF%/index.css" />
-</head>
-<body>
-
-<ul class="menu">
-  <li class="status">&nbsp;</li>
-  <li class="separator"></li>
-  <li>
-    <ul class="containers"></ul>
-  </li>
-  <li class="separator"></li>
-  <li class="action autoLaunch" onClick="window.toggleAutoLaunch()">Start Captain at Login</li>
-  <li class="action" onClick="window.checkForUpdates()">Check for Updates...</li>
-  <li class="action" onClick="window.clientStop()">Quit Captain <span class="shortcut">⌘Q</span></li>
-</ul>
-
-<script>
-  require("%SNOWPACK_PUBLIC_RENDERER_BASE_HREF%/index.js");
-</script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Captain</title>
+  </head>
+  <body>
+    <ul class="menu">
+      <li class="status">&nbsp;</li>
+      <li class="separator"></li>
+      <li>
+        <ul class="containers"></ul>
+      </li>
+      <li class="separator"></li>
+      <li class="action autoLaunch" onClick="window.toggleAutoLaunch()">Start Captain at Login</li>
+      <li class="action" onClick="window.checkForUpdates()">Check for Updates...</li>
+      <li class="action" onClick="window.clientStop()">Quit Captain <span class="shortcut">⌘Q</span></li>
+    </ul>
+  </body>
 </html>

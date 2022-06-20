@@ -43,11 +43,11 @@ export const containerList = async () => {
 
         if (!name) {
           name = _ports;
-          _ports = undefined;
+          _ports = "";
         }
 
         let ports: string[] = [];
-        if (_ports) {
+        if (_ports.length) {
           ports = (_ports.match(/:([0-9]+)->/g) || []).map((s) => s.replace(/[^0-9]+/g, ""));
         } else {
           ports = [];

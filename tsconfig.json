@@ -1,10 +1,29 @@
 {
-  "extends": "electron-snowpack/config/tsconfig.json",
   "compilerOptions": {
-    "module": "es6",
-    "target": "es6",
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "jsx": "react",
+    "paths": {
+      "_/*": ["src/*"],
+      "_public/*": ["public/*"],
+      "_main/*": ["src/main/*"],
+      "_models/*": ["src/models/*"],
+      "_renderer/*": ["src/renderer/*"],
+      "_utils/*": ["src/utils/*"],
+      "*": ["node_modules/*"]
+    },
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "target": "esnext",
+    "skipLibCheck": true,
+    "inlineSources": true,
+    "outDir": "build/",
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "rootDir": "./src/"
   },
-  "include": ["./src/**/*", "./types/"]
+  "include": ["./src/main/*"]
 }

@@ -6,9 +6,9 @@ import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 import { Menubar } from "menubar/lib/Menubar";
 
 export const serverStart = async (menubar: Menubar) => {
-  require("@electron/remote/main").enable(menubar.window.webContents);
+  require("@electron/remote/main").enable(menubar.window!.webContents);
 
-  let cachedContainerGroups: Record<string, any> = undefined;
+  let cachedContainerGroups: Record<string, any> = {};
   let lastCacheMicrotime = Date.now();
   let updateInterval: NodeJS.Timer;
   const serverTrigger = (command: string, body?: any) => {
@@ -42,7 +42,7 @@ export const serverStart = async (menubar: Menubar) => {
   ipcMain.on(COMMANDS.VERSION, async () => {
     debug("captain-rpc-server")("Version");
 
-    menubar.window.webContents.send(COMMANDS.VERSION, {
+    menubar.window!.webContents.send(COMMANDS.VERSION, {
       version: process.env.npm_package_version,
       dockerVersion: await Docker.version(),
       autoLaunch: await autoLaunchEnabled(),
@@ -100,7 +100,9 @@ export const serverStart = async (menubar: Menubar) => {
     if (cachedContainerGroups && Date.now() < lastCacheMicrotime + 1000) {
       debug("captain-rpc-server")("Using microcache");
 
-      menubar.window.webContents.send(COMMANDS.CONTAINER_GROUPS, { groups: cachedContainerGroups });
+      menubar.window!.webContents.send(COMMANDS.CONTAINER_GROUPS, {
+        groups: cachedContainerGroups,
+      });
       return;
     }
 
@@ -133,6 +135,6 @@ export const serverStart = async (menubar: Menubar) => {
 
     cachedContainerGroups = Object.assign({}, groups);
     lastCacheMicrotime = Date.now();
-    menubar.window.webContents.send(COMMANDS.CONTAINER_GROUPS, { groups });
+    menubar.window!.webContents.send(COMMANDS.CONTAINER_GROUPS, { groups });
   });
 };

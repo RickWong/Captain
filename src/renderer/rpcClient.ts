@@ -1,4 +1,5 @@
-const remote = require("@electron/remote");
+import { clipboard, ipcRenderer, shell } from "electron";
+import * as remote from "@electron/remote";
 import { COMMANDS } from "./rpcCommands";
 
 declare global {
@@ -24,22 +25,22 @@ export const clientStart = async (menuWindow: any) => {
   const autoLaunchLi = document.querySelector(".autoLaunch");
 
   window.clientStop = () => {
-    window.ipcRenderer.send(COMMANDS.APPLICATION_QUIT);
+    ipcRenderer.send(COMMANDS.APPLICATION_QUIT);
   };
 
   window.toggleAutoLaunch = () => {
     disableItem(autoLaunchLi);
-    window.ipcRenderer.send(COMMANDS.TOGGLE_AUTO_LAUNCH);
+    ipcRenderer.send(COMMANDS.TOGGLE_AUTO_LAUNCH);
   };
 
   window.checkForUpdates = () => {
-    remote.shell.openExternal(`https://getcaptain.co/?since=${serverVersion}`);
+    shell.openExternal(`https://getcaptain.co/?since=${serverVersion}`);
   };
 
   window.updateWindowHeight = (dimensions: any = {}) => {
     menuWindow.setSize(
       dimensions.width || menuWindow.getSize()[0],
-      dimensions.height || (document.body.firstChild as HTMLElement).offsetHeight + 8,
+      dimensions.height || (document.querySelectorAll(".menu")[0] as HTMLElement).offsetHeight + 8,
     );
 
     document.querySelectorAll(".containers").forEach((node: HTMLElement) => {
@@ -52,7 +53,7 @@ export const clientStart = async (menuWindow: any) => {
     menuWindow.hide();
   };
 
-  window.ipcRenderer.on(COMMANDS.VERSION, (error, { version, dockerVersion, autoLaunch }) => {
+  ipcRenderer.on(COMMANDS.VERSION, (error, { version, dockerVersion, autoLaunch }) => {
     if (version) {
       serverVersion = version;
       updateStatus(`Using Docker ${dockerVersion}`);
@@ -60,11 +61,11 @@ export const clientStart = async (menuWindow: any) => {
       updateStatus("Docker not available");
     }
 
-    autoLaunchLi.classList.toggle("checked", autoLaunch);
+    autoLaunchLi?.classList.toggle("checked", autoLaunch);
     enableItem(autoLaunchLi);
   });
 
-  window.ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
+  ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, (error, body) => {
     renderContainerGroups((cachedGroups = body.groups));
     window.updateWindowHeight();
   });
@@ -96,18 +97,18 @@ export const clientStart = async (menuWindow: any) => {
       node.className.indexOf("container") >= 0 &&
       node.className.indexOf("active") >= 0
     ) {
-      node.onclick(event);
+      node.onclick?.(event);
     }
   });
 
   updateStatus("Looking for Docker");
-  window.ipcRenderer.send(COMMANDS.VERSION);
-  window.ipcRenderer.send(COMMANDS.CONTAINER_GROUPS);
+  ipcRenderer.send(COMMANDS.VERSION);
+  ipcRenderer.send(COMMANDS.CONTAINER_GROUPS);
 };
 
 const updateStatus = (message: string) => {
-  document.querySelector(".status").innerHTML = message;
-  document.querySelector<HTMLElement>(".status ~ .separator").style.display = document.querySelector(".containers")
+  document.querySelector(".status")!.innerHTML = message;
+  document.querySelector<HTMLElement>(".status ~ .separator")!.style.display = document.querySelector(".containers")!
     .childElementCount
     ? "block"
     : "none";
@@ -223,7 +224,7 @@ Status: ${container.status}`;
         ctrlIsDown = false;
         altIsDown = false;
         metaIsDown = false;
-        setTimeout(() => window.ipcRenderer.send(COMMANDS.CONTAINER_REMOVE, container), 100);
+        setTimeout(() => ipcRenderer.send(COMMANDS.CONTAINER_REMOVE, container), 100);
       }
     }
     // ⌃ Control.
@@ -231,12 +232,12 @@ Status: ${container.status}`;
       if (killable) {
         disableItem(event.target);
         ctrlIsDown = false;
-        setTimeout(() => window.ipcRenderer.send(COMMANDS.CONTAINER_KILL, container), 100);
+        setTimeout(() => ipcRenderer.send(COMMANDS.CONTAINER_KILL, container), 100);
       }
     }
     // ⌥ Option.
     else if (event.altKey) {
-      remote.clipboard.writeText(container.id);
+      clipboard.writeText(container.id);
       altIsDown = false;
       window.hideWindow();
     }
@@ -245,9 +246,9 @@ Status: ${container.status}`;
       if (openable) {
         disableItem(event.target);
         metaIsDown = false;
-        remote.shell
+        shell
           .openExternal(container.openInBrowser || `http${port == 443 ? "s" : ""}://localhost:${port || 80}`)
-          .catch((error) => console.error(error));
+          .catch((error: Error) => console.error(error));
         window.hideWindow();
       }
     }
@@ -258,8 +259,8 @@ Status: ${container.status}`;
         shiftIsDown = false;
         setTimeout(() => {
           container.paused
-            ? window.ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, container)
-            : window.ipcRenderer.send(COMMANDS.CONTAINER_PAUSE, container);
+            ? ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, container)
+            : ipcRenderer.send(COMMANDS.CONTAINER_PAUSE, container);
         }, 100);
       }
     }
@@ -269,12 +270,12 @@ Status: ${container.status}`;
         disableItem(event.target);
         setTimeout(() => {
           container.active
-            ? window.ipcRenderer.send(COMMANDS.CONTAINER_STOP, container)
-            : window.ipcRenderer.send(COMMANDS.CONTAINER_START, container);
+            ? ipcRenderer.send(COMMANDS.CONTAINER_STOP, container)
+            : ipcRenderer.send(COMMANDS.CONTAINER_START, container);
         }, 100);
       } else {
         disableItem(event.target);
-        setTimeout(() => window.ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, container), 100);
+        setTimeout(() => ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, container), 100);
       }
     }
   };

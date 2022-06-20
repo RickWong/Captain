@@ -1,18 +1,20 @@
 import debug from "debug";
+import { app } from "electron";
 import { menubar } from "menubar";
 import path from "path";
 import { moveToApplications } from "./moveToApplications";
 import { serverStart } from "./rpcServer";
-import { getAssetURL } from "electron-snowpack";
 
 require("@electron/remote/main").initialize();
 
+const isPackaged = app.isPackaged;
+
 const captainMenubar = menubar({
   dir: __dirname,
-  icon: path.join(__dirname, "../../public/iconTemplate.png"),
-  index: getAssetURL("index.html"),
+  icon: path.join(__dirname, isPackaged ? "../public/iconTemplate.png" : "../public/iconTemplate.png"),
+  index: "file://" + path.join(__dirname, isPackaged ? "../public/index.html" : "../dist/index.html"),
   browserWindow: {
-    width: 500,
+    width: 240,
     height: 500,
     transparent: true,
     vibrancy: "under-window",
@@ -20,7 +22,6 @@ const captainMenubar = menubar({
       nodeIntegration: true,
       contextIsolation: false,
       backgroundThrottling: false,
-      // preload: path.join(__dirname, "preload.js"),
     },
   },
   windowPosition: "trayLeft",
@@ -29,13 +30,13 @@ const captainMenubar = menubar({
   showDockIcon: false,
 });
 
-captainMenubar.on("before-load", () => require("@electron/remote/main").enable(captainMenubar.window.webContents));
+captainMenubar.on("before-load", () => require("@electron/remote/main").enable(captainMenubar.window!.webContents));
 
-captainMenubar.on("focus-lost", () => captainMenubar.window.hide());
+captainMenubar.on("focus-lost", () => captainMenubar.window!.hide());
 
 captainMenubar.on("ready", async () => {
   try {
-    await moveToApplications(captainMenubar.window);
+    await moveToApplications(captainMenubar.window!);
     serverStart(captainMenubar).catch((error) => console.error(error));
   } catch (e) {
     debug("captain")(e.stack || e);
