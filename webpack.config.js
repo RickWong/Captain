@@ -4,13 +4,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const ReactRefreshTypeScript = require("react-refresh-typescript");
 
-const isProduction = process.env.NODE_ENV === "production";
 const isDevelopment = process.env.NODE_ENV === "development";
 
 // #region Common settings
 const commonConfig = {
   devtool: isDevelopment ? "source-map" : false,
-  mode: isProduction ? "production" : "development",
+  mode: isDevelopment ? "development" : "production",
   output: { path: path.join(__dirname, "dist") },
   node: { __dirname: false, __filename: false },
   resolve: {

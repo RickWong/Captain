@@ -11,6 +11,7 @@ menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
 menuWindow.setResizable(false);
+
 if (!remote.app.isPackaged) {
   menuWindow.setResizable(true);
   // @ts-ignore
@@ -19,5 +20,4 @@ if (!remote.app.isPackaged) {
 
 clientStart(menuWindow).catch((error) => console.error(error));
 
-const reactRoot = createRoot(document.querySelector("#App")!);
-reactRoot.render(<App />);
+createRoot(document.querySelector("#App")!).render(<App />);
