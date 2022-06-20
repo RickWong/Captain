@@ -61,7 +61,9 @@ export const containerList = async () => {
         .filter((id) => list[id].ports.length > 0)
         .map((id) =>
           Promise.resolve().then(async () => {
-            const lines = await containerCommand(`exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`);
+            const lines = await containerCommand(`exec ${escapeShell(id)} sh -c 'echo $OPEN_IN_BROWSER'`).catch(
+              () => {},
+            );
             list[id].openInBrowser = lines ? lines[0] : undefined;
           }),
         ),
