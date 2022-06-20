@@ -11,8 +11,8 @@ const isPackaged = app.isPackaged;
 
 const captainMenubar = menubar({
   dir: __dirname,
-  icon: path.join(__dirname, isPackaged ? "../public/iconTemplate.png" : "../public/iconTemplate.png"),
-  index: "file://" + path.join(__dirname, isPackaged ? "../public/index.html" : "../dist/index.html"),
+  icon: path.join(__dirname, isPackaged ? "../public/iconTemplate.png" : "../../public/iconTemplate.png"),
+  index: "http://localhost:9999/index.html",
   browserWindow: {
     width: 240,
     height: 500,

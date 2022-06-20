@@ -1,7 +1,6 @@
 const lodash = require("lodash");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 function srcPaths(src) {
   return path.join(__dirname, src);
@@ -50,54 +49,16 @@ const commonConfig = {
 };
 // #endregion
 
-const mainConfig = lodash.cloneDeep(commonConfig);
-mainConfig.entry = "./src/main/index.ts";
-mainConfig.target = "electron-main";
-mainConfig.output.filename = "main.bundle.js";
-mainConfig.plugins = [
-  new CopyPlugin({
-    patterns: [
-      {
-        from: "package.json",
-        to: "package.json",
-        transform: (content, _path) => {
-          // eslint-disable-line no-unused-vars
-          const jsonContent = JSON.parse(content);
-
-          delete jsonContent.devDependencies;
-          delete jsonContent.scripts;
-          delete jsonContent.build;
-
-          jsonContent.main = "./main.bundle.js";
-          jsonContent.scripts = { start: "electron ./main.bundle.js" };
-          jsonContent.postinstall = "electron-builder install-app-deps";
-
-          return JSON.stringify(jsonContent, undefined, 2);
-        },
-      },
-    ],
-  }),
-];
-
-const preloadConfig = lodash.cloneDeep(commonConfig);
-preloadConfig.entry = "./src/main/preload.ts";
-preloadConfig.target = "electron-preload";
-preloadConfig.output.filename = "preload.bundle.js";
-
 const rendererConfig = lodash.cloneDeep(commonConfig);
-rendererConfig.entry = [
-  "webpack-dev-server/client?http://localhost:9999/",
-  "webpack/hot/dev-server",
-  "./src/renderer/index.ts",
-];
+rendererConfig.entry = ["./src/renderer/index.tsx"];
 rendererConfig.target = "electron-renderer";
-rendererConfig.output.filename = "renderer.bundle.js";
+rendererConfig.output.filename = "./renderer.bundle.js";
 rendererConfig.devServer = {
   hot: true,
   compress: true,
   port: 9999,
   static: {
-    directory: path.join(__dirname, "public"),
+    directory: path.join(__dirname, "./public/"),
   },
 };
 rendererConfig.plugins = [
@@ -106,4 +67,4 @@ rendererConfig.plugins = [
   }),
 ];
 
-module.exports = [rendererConfig, mainConfig];
+module.exports = [rendererConfig];

@@ -1,34 +1,27 @@
-const electron = require("electron");
-const remote = process.type === "browser" ? electron : require("@electron/remote");
+import electron from "electron";
+import * as React from "react";
+import { createRoot } from "react-dom/client";
+import { App } from "./App";
 import { clientStart } from "./rpcClient";
 import "_public/index.css";
 
+const remote = process.type === "browser" ? electron : require("@electron/remote");
 const menuWindow = remote.getCurrentWindow();
-
 menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
 menuWindow.setResizable(false);
-
 if (!remote.app.isPackaged) {
   menuWindow.setResizable(true);
   // @ts-ignore
   menuWindow.openDevTools();
 }
 
-// Allow Cmd+Q.
-window.addEventListener("keydown", (event) => {
-  if (String.fromCharCode(event.which).toUpperCase() !== "Q") {
-    event.preventDefault();
-  }
-});
-
 clientStart(menuWindow).catch((error) => console.error(error));
 
-// Webpack hot reloading
+// Hot Module Replacement for App.
 if (module.hot) {
-  module.hot.accept((err) => {
-    console.error(err);
-    alert(1);
+  module.hot.accept("./App", () => {
+    createRoot(document.body).render(<App />);
   });
 }
