@@ -8,7 +8,7 @@ interface Props {
 
 export const StartAtLogin = ({ autoLaunch }: Props) => (
   <li
-    className={`action checked autoLaunch ${autoLaunch ? "checked" : ""}`}
+    className={`action autoLaunch ${autoLaunch ? "checked" : ""}`}
     onClick={() => ipcRenderer.send(COMMANDS.TOGGLE_AUTO_LAUNCH)}
   >
     Start Captain at Login

@@ -18,6 +18,15 @@ export const App = () => {
       setDockerVersion(dockerVersion || "");
       setAutoLaunch(autoLaunch);
     });
+
+    ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, (error, { groups }) => {
+      console.log(groups);
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners(COMMANDS.VERSION);
+      ipcRenderer.removeAllListeners(COMMANDS.CONTAINER_GROUPS);
+    };
   });
 
   return (
@@ -33,7 +42,7 @@ export const App = () => {
         </ul>
       </li>
       <li className="separator"></li>
-      <StartAtLogin autoLaunch={!autoLaunch} />
+      <StartAtLogin autoLaunch={autoLaunch} />
       <CheckForUpdates serverVersion={serverVersion} />
       <QuitCaptain />
     </ul>
