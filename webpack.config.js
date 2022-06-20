@@ -2,10 +2,6 @@ const lodash = require("lodash");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-function srcPaths(src) {
-  return path.join(__dirname, src);
-}
-
 const isEnvProduction = process.env.NODE_ENV === "production";
 const isEnvDevelopment = process.env.NODE_ENV === "development";
 
@@ -13,16 +9,16 @@ const isEnvDevelopment = process.env.NODE_ENV === "development";
 const commonConfig = {
   devtool: isEnvDevelopment ? "source-map" : false,
   mode: isEnvProduction ? "production" : "development",
-  output: { path: srcPaths("dist") },
+  output: { path: path.join(__dirname, "dist") },
   node: { __dirname: false, __filename: false },
   resolve: {
     alias: {
-      _: srcPaths("src"),
-      _main: srcPaths("src/main"),
-      _models: srcPaths("src/models"),
-      _public: srcPaths("public"),
-      _renderer: srcPaths("src/renderer"),
-      _utils: srcPaths("src/utils"),
+      _: path.join(__dirname, "src"),
+      _main: path.join(__dirname, "src/main"),
+      _models: path.join(__dirname, "src/models"),
+      _public: path.join(__dirname, "public"),
+      _renderer: path.join(__dirname, "src/renderer"),
+      _utils: path.join(__dirname, "src/utils"),
     },
     extensions: [".js", ".json", ".ts", ".tsx"],
   },

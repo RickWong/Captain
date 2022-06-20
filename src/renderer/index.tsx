@@ -3,7 +3,7 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import { clientStart } from "./rpcClient";
-import "_public/index.css";
+import "./index.css";
 
 const remote = process.type === "browser" ? electron : require("@electron/remote");
 const menuWindow = remote.getCurrentWindow();

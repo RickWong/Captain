@@ -16,10 +16,11 @@ export const moveToApplications = async (currentWindow: BrowserWindow) => {
   }
 
   try {
-    app.moveToApplicationsFolder();
+    debug("captain-move-app")("Moved to Applications");
 
     // Electron will restart Captain after moving to Applications folder.
+    app.moveToApplicationsFolder();
   } catch (error) {
-    debug("captain-electron")("Failed to move app");
+    debug("captain-move-app")("Failed to move app");
   }
 };
