@@ -6,7 +6,7 @@ body {
   color: #888;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 0.85em;
+  font-size: 0.8em;
   line-height: 22px;
   padding: 0;
   margin: 0;
@@ -17,8 +17,9 @@ ul {
   padding: 0;
 }
 li {
-  margin: 0;
-  padding: 0 8px 0 22px;
+  margin: 0 5px;
+  border-radius: 5px;
+  padding: 0 8px 0 20px;
   line-height: 22px;
   display: block;
   cursor: default;
@@ -72,14 +73,18 @@ body .menu > li.status {
 }
 
 .containers {
-  visibility: hidden;
-  height: 0;
+  visibility: visible;
+  height: auto;
   overflow: auto;
   position: relative;
   margin-left: -22px;
   margin-right: -8px;
 }
-
+.containers:empty {
+  height: 0;
+  visibility: hidden;
+  margin: 0;
+}
 .menu .containers > li {
   color: #000;
   position: relative;

@@ -1,7 +1,7 @@
-import classnames from "classnames";
 import * as React from "react";
-import { useEffect, useMemo } from "react";
-import { ipcRenderer, shell } from "electron";
+import { useEffect, useState } from "react";
+import classnames from "classnames";
+import { clipboard, ipcRenderer, shell } from "electron";
 import { COMMANDS } from "../rpcCommands";
 
 const remote = process.type === "browser" ? require("electron") : require("@electron/remote");
@@ -17,30 +17,31 @@ interface Props {
   openInBrowser: string;
   active: boolean;
   paused: boolean;
+  keysPressed: Set<string>;
 }
 
-export const Container = (container: Props) => {
-  const [disabled, setDisabled] = React.useState(false);
-  const { id, name, shortName, hostname, image, status, ports, openInBrowser, active, paused } = container;
-
-  const ctrlIsDown = false,
-    shiftIsDown = false,
-    altIsDown = false,
-    metaIsDown = false;
-
-  const port = ports.indexOf("443") >= 0 ? 443 : ports.indexOf("80") >= 0 ? 80 : parseInt(ports[0]);
-  const openable = active && !paused && port && !ctrlIsDown && !altIsDown && metaIsDown;
-  const killable = active && !paused && ctrlIsDown && !altIsDown && !metaIsDown;
-  const stoppable = !paused && active;
-  const startable = !active;
-  const unpauseable = paused && active;
-  const removeable = !paused && !active && ctrlIsDown && altIsDown && metaIsDown;
-  const pauseable = active && shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
-  const copyable = !ctrlIsDown && altIsDown && !metaIsDown;
+export const Container = (props: Props) => {
+  const [disabled, setDisabled] = useState(false);
+  const { id, name, shortName, hostname, image, status, ports, openInBrowser, active, paused, keysPressed } = props;
 
   useEffect(() => {
     setDisabled(false);
   }, [status, ports, openInBrowser, active, paused]);
+
+  const ctrlIsDown = keysPressed.has("Control"),
+    shiftIsDown = keysPressed.has("Shift"),
+    altIsDown = keysPressed.has("Alt"),
+    metaIsDown = keysPressed.has("Meta");
+
+  const port = ports.indexOf("443") >= 0 ? 443 : ports.indexOf("80") >= 0 ? 80 : parseInt(ports[0]);
+  const openable = active && !paused && port && !ctrlIsDown && !altIsDown && metaIsDown;
+  const killable = active && !paused && ctrlIsDown && !altIsDown && !metaIsDown;
+  const stoppable = !paused && active && !shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
+  const startable = !active && !shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
+  const unpauseable = paused && !ctrlIsDown && !altIsDown && !metaIsDown;
+  const removeable = !paused && !active && ctrlIsDown && altIsDown && metaIsDown;
+  const pauseable = !paused && active && shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
+  const copyable = !ctrlIsDown && altIsDown && !metaIsDown;
 
   const __html = removeable
     ? `Remove ${shortName}`
@@ -51,7 +52,7 @@ export const Container = (container: Props) => {
     : killable
     ? `Kill ${shortName}`
     : pauseable
-    ? `${paused ? "Unpause" : "Pause"} ${shortName}`
+    ? `Pause ${shortName}`
     : `${shortName} <small>${paused ? `(paused)` : port ? `(${port})` : ""}</small>`;
 
   return (
@@ -71,29 +72,40 @@ Status: ${status}`}
         copyable,
         disabled,
       })}
-      dangerouslySetInnerHTML={{ __html }}
+      onContextMenu={() => {
+        if (!disabled) {
+          ipcRenderer.send(COMMANDS.CONTAINER_KILL, props);
+          setDisabled(true);
+        }
+      }}
       onClick={() => {
         if (disabled) {
           return;
         } else if (openable) {
           shell
-            .openExternal(container.openInBrowser || `http${port === 443 ? "s" : ""}://localhost:${port || 80}`)
+            .openExternal(props.openInBrowser || `http${port === 443 ? "s" : ""}://localhost:${port || 80}`)
             .catch((error: Error) => console.error(error));
           remote.getCurrentWindow().hide();
+          keysPressed.clear();
         } else if (killable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_KILL, container);
+          // Control + OnClick = OnContextMenu, see above.
         } else if (stoppable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_STOP, container);
+          ipcRenderer.send(COMMANDS.CONTAINER_STOP, props);
         } else if (pauseable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_PAUSE, container);
+          ipcRenderer.send(COMMANDS.CONTAINER_PAUSE, props);
         } else if (unpauseable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, container);
+          ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, props);
         } else if (startable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_START, container);
+          ipcRenderer.send(COMMANDS.CONTAINER_START, props);
+        } else if (copyable) {
+          clipboard.writeText(id);
+          remote.getCurrentWindow().hide();
+          keysPressed.clear();
         }
 
         setDisabled(true);
       }}
+      dangerouslySetInnerHTML={{ __html }}
     ></li>
   );
 };
