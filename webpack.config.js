@@ -10,7 +10,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 const commonConfig = {
   devtool: isDevelopment ? "inline-source-map" : false,
   mode: isDevelopment ? "development" : "production",
-  output: { path: path.join(__dirname, "dist") },
+  output: { path: path.join(__dirname, "build") },
   node: { __dirname: false, __filename: false },
   resolve: {
     alias: {

@@ -1,7 +1,7 @@
 import debug from "debug";
+import path from "path";
 import { app } from "electron";
 import { menubar } from "menubar";
-import path from "path";
 import { moveToApplications } from "./moveToApplications";
 import { serverStart } from "./rpcServer";
 
@@ -11,8 +11,8 @@ const isPackaged = app.isPackaged;
 
 const captainMenubar = menubar({
   dir: __dirname,
-  icon: path.join(__dirname, isPackaged ? "../public/iconTemplate.png" : "../../public/iconTemplate.png"),
-  index: isPackaged ? "../public/index.html" : "http://localhost:9999/index.html",
+  icon: path.join(__dirname, "../../public/iconTemplate.png"),
+  index: isPackaged ? "file://" + path.join(__dirname, "../index.html") : "http://localhost:9999/index.html",
   browserWindow: {
     width: 240,
     height: 240,
@@ -25,7 +25,7 @@ const captainMenubar = menubar({
     },
   },
   windowPosition: "trayLeft",
-  tooltip: `Captain ${process.env.npm_package_version}`,
+  tooltip: `Captain ${app.getVersion()}`,
   preloadWindow: true,
   showDockIcon: false,
 });

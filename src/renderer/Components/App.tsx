@@ -21,51 +21,42 @@ const updateWindowHeight = () => {
 };
 
 export const App = () => {
-  const [serverVersion, setServerVersion] = React.useState("");
   const [dockerVersion, setDockerVersion] = React.useState<string | undefined>(undefined);
   const [autoLaunch, setAutoLaunch] = React.useState(false);
   const [groups, setGroups] = React.useState<Record<string, any>>({});
   const [keysPressed, setKeyPressed] = useState(new Set<string>([]));
 
+  const deleteReleasedSpecialKeys = (event: KeyboardEvent, keysPressed: Set<string>) => {
+    if (!event.altKey) {
+      keysPressed.delete("Alt");
+    }
+    if (!event.ctrlKey) {
+      keysPressed.delete("Control");
+    }
+    if (!event.metaKey) {
+      keysPressed.delete("Meta");
+    }
+    if (!event.shiftKey) {
+      keysPressed.delete("Shift");
+    }
+  };
+
   const downHandler = (event: KeyboardEvent) => {
     setKeyPressed((keysPressed) => {
-      if (!event.altKey) {
-        keysPressed.delete("Alt");
-      }
-      if (!event.ctrlKey) {
-        keysPressed.delete("Control");
-      }
-      if (!event.metaKey) {
-        keysPressed.delete("Meta");
-      }
-      if (!event.shiftKey) {
-        keysPressed.delete("Shift");
-      }
+      deleteReleasedSpecialKeys(event, keysPressed);
       return new Set([event.key, ...keysPressed]);
     });
   };
 
   const upHandler = (event: KeyboardEvent) => {
     setKeyPressed((keysPressed) => {
-      if (!event.altKey) {
-        keysPressed.delete("Alt");
-      }
-      if (!event.ctrlKey) {
-        keysPressed.delete("Control");
-      }
-      if (!event.metaKey) {
-        keysPressed.delete("Meta");
-      }
-      if (!event.shiftKey) {
-        keysPressed.delete("Shift");
-      }
+      deleteReleasedSpecialKeys(event, keysPressed);
       keysPressed.delete(event.key);
       return new Set([...keysPressed]);
     });
   };
 
-  const onVersion = (event: IpcRendererEvent, { version, dockerVersion, autoLaunch }: any) => {
-    setServerVersion(version);
+  const onVersion = (event: IpcRendererEvent, { dockerVersion, autoLaunch }: any) => {
     setDockerVersion(dockerVersion || "");
     setAutoLaunch(autoLaunch);
   };
@@ -118,7 +109,7 @@ export const App = () => {
         </ul>
       </li>
       <StartAtLogin autoLaunch={autoLaunch} />
-      <CheckForUpdates serverVersion={serverVersion} />
+      <CheckForUpdates />
       <QuitCaptain />
     </ul>
   );
