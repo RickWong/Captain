@@ -11,7 +11,7 @@
     "postinstall": "electron-builder install-app-deps",
     "clean": "rm -rf dist/* build/*",
     "dev": "yarn && run-p dev:main dev:renderer",
-    "dev:main": "tsc-watch --onSuccess 'env NODE_ENV=development DEBUG=* electron --inspect=9991 ./'",
+    "dev:main": "tsc-watch --excludeFiles ./src/renderer/ --onSuccess 'env NODE_ENV=development DEBUG=* electron --inspect=9991 ./'",
     "dev:renderer": "env NODE_ENV=development DEBUG=* webpack serve --progress --color",
     "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v dist/ | grep -v build/ | grep -v node_modules/ | xargs prettier --write",
     "typecheck": "tsc --noEmit --pretty",

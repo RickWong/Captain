@@ -26,5 +26,5 @@
     "baseUrl": "./",
     "rootDir": "./src/"
   },
-  "include": ["./src/main/**/*"]
+  "include": ["./src/**/*"]
 }
