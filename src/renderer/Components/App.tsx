@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Container } from "./Container";
 import { Status } from "./Status";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, IpcRendererEvent } from "electron";
 import { COMMANDS } from "../rpcCommands";
 import { CheckForUpdates } from "./CheckForUpdates";
 import { QuitCaptain } from "./QuitCaptain";
@@ -11,37 +11,48 @@ export const App = () => {
   const [serverVersion, setServerVersion] = React.useState("");
   const [dockerVersion, setDockerVersion] = React.useState<string | undefined>(undefined);
   const [autoLaunch, setAutoLaunch] = React.useState(false);
+  const [groups, setGroups] = React.useState<Record<string, any>>({});
 
   React.useEffect(() => {
-    ipcRenderer.on(COMMANDS.VERSION, (error, { version, dockerVersion, autoLaunch }) => {
+    const onVersion = (event: IpcRendererEvent, { version, dockerVersion, autoLaunch }: any) => {
       setServerVersion(version);
       setDockerVersion(dockerVersion || "");
       setAutoLaunch(autoLaunch);
-    });
+    };
 
-    ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, (error, { groups }) => {
+    const onGroups = (event: IpcRendererEvent, { groups }: any) => {
+      setGroups(groups);
       console.log(groups);
-    });
+    };
+
+    ipcRenderer.on(COMMANDS.VERSION, onVersion);
+    ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, onGroups);
 
     return () => {
-      ipcRenderer.removeAllListeners(COMMANDS.VERSION);
-      ipcRenderer.removeAllListeners(COMMANDS.CONTAINER_GROUPS);
+      ipcRenderer.off(COMMANDS.VERSION, onVersion);
+      ipcRenderer.off(COMMANDS.CONTAINER_GROUPS, onGroups);
     };
   });
 
   return (
     <ul className="menu">
-      <li className="status">&nbsp;</li>
       <Status dockerVersion={dockerVersion} />
       <li className="separator"></li>
       <li>
         <ul className="containers">
-          {[0, 2].map(() => (
-            <Container key={Math.random()} />
+          {Object.keys(groups).map((groupName) => (
+            <React.Fragment key={groupName}>
+              <li className="group">
+                {`${groupName.replace(/^~/, "")}`} <small>(0/1)</small>
+              </li>
+              {Object.keys(groups[groupName]).map((containerName) => (
+                <Container key={containerName} {...groups[groupName][containerName]} />
+              ))}
+              <li className="separator"></li>
+            </React.Fragment>
           ))}
         </ul>
       </li>
-      <li className="separator"></li>
       <StartAtLogin autoLaunch={autoLaunch} />
       <CheckForUpdates serverVersion={serverVersion} />
       <QuitCaptain />

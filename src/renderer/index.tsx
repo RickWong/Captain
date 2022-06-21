@@ -1,11 +1,10 @@
-import electron from "electron";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./Components/App";
 import { clientStart } from "./rpcClient";
 import "./index.css";
 
-const remote = process.type === "browser" ? electron : require("@electron/remote");
+const remote = process.type === "browser" ? require("electron") : require("@electron/remote");
 const menuWindow = remote.getCurrentWindow();
 menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
@@ -21,3 +20,10 @@ if (!remote.app.isPackaged) {
 clientStart(menuWindow).catch((error) => console.error(error));
 
 createRoot(document.querySelector("#App")!).render(<App />);
+
+// Only allow Cmd+Q.
+window.addEventListener("keydown", (event) => {
+  if (event.key !== "q") {
+    event.preventDefault();
+  }
+});

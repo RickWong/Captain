@@ -8,7 +8,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 // #region Common settings
 const commonConfig = {
-  devtool: isDevelopment ? "source-map" : false,
+  devtool: isDevelopment ? "inline-source-map" : false,
   mode: isDevelopment ? "development" : "production",
   output: { path: path.join(__dirname, "dist") },
   node: { __dirname: false, __filename: false },

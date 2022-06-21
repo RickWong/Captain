@@ -61,6 +61,11 @@ body .menu > li.status {
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Hide double separators */
+.menu li.separator + .separator {
+  /*display: none;*/
+}
+
 .menu.ultra-dark li,
 .menu.ultra-dark .containers li {
   color: rgba(255, 255, 255, 0.9);
@@ -109,6 +114,10 @@ body .menu > li.status {
   padding-right: 8px;
   max-height: 22px;
   white-space: pre;
+}
+.containers li.container.disabled {
+  color: #777 !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }
 .containers li.container:hover {
   background: rgb(0, 122, 255);
