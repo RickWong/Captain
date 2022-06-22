@@ -8,7 +8,7 @@ require("@electron/remote/main").initialize();
 
 const captainMenubar = menubar({
   dir: __dirname,
-  icon: path.join(__dirname, "../../public/iconTemplate.png"),
+  icon: path.join(__dirname, "../public/iconTemplate.png"),
   index: app.isPackaged ? "file://" + path.join(__dirname, "../index.html") : "http://localhost:9999/index.html",
   browserWindow: {
     width: 240,

@@ -9,16 +9,11 @@ const isDevelopment = process.env.NODE_ENV === "development";
 const commonConfig = {
   devtool: isDevelopment ? "inline-source-map" : false,
   mode: isDevelopment ? "development" : "production",
-  output: { path: path.join(__dirname, "build") },
+  output: { path: path.join(__dirname, "./build/") },
   node: { __dirname: false, __filename: false },
   resolve: {
     alias: {
-      _: path.join(__dirname, "src"),
-      _main: path.join(__dirname, "src/main"),
-      _models: path.join(__dirname, "src/models"),
-      _public: path.join(__dirname, "public"),
-      _renderer: path.join(__dirname, "src/renderer"),
-      _utils: path.join(__dirname, "src/utils"),
+      _: path.join(__dirname, "./src/"),
     },
     extensions: [".js", ".json", ".ts", ".tsx"],
   },
