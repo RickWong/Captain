@@ -91,7 +91,6 @@ export const App = () => {
   return (
     <ul className="menu">
       <Status dockerVersion={dockerVersion} />
-      <li className="separator"></li>
       <li>
         <ul className="containers">
           {Object.keys(groups).map((groupName) => (

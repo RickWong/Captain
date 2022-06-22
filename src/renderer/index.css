@@ -1,7 +1,6 @@
 * {
   box-sizing: border-box;
 }
-
 body {
   color: #888;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
@@ -28,6 +27,7 @@ li {
 }
 body .menu > li.status {
   color: #aaa;
+  font-size: 0.8em;
 }
 .menu li.action {
   color: #222;
@@ -47,29 +47,18 @@ body .menu > li.status {
   background: url("../../public/checkmark.png") no-repeat;
   background-size: 11px 11px;
 }
-.menu.ultra-dark li.action.checked:before {
-  filter: invert();
-}
 .menu li .shortcut {
   float: right;
 }
 
 .menu li.separator {
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-  margin: 4px 0;
-}
-.menu.ultra-dark li.separator {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 6px 10px 2px;
 }
 
 /* Hide double separators */
 .menu li.separator + .separator {
   /*display: none;*/
-}
-
-.menu.ultra-dark li,
-.menu.ultra-dark .containers li {
-  color: rgba(255, 255, 255, 0.9);
 }
 
 .containers {
@@ -160,11 +149,56 @@ body .menu > li.status {
   box-shadow: 0 0 1px rgba(127, 127, 127, 0.8);
 }
 .containers li.container.active:before {
-  background: rgb(76, 217, 100);
+  background: rgb(52, 199, 89);
 }
 .containers li.container.paused:before {
   background: rgb(255, 204, 0);
 }
 .containers li.container.inactive:before {
   background: rgb(255, 59, 48);
+}
+
+/*
+  https://developer.apple.com/design/human-interface-guidelines/foundations/color/#specifications
+*/
+@media (prefers-color-scheme: dark) {
+  body .menu > li.status {
+    color: #888;
+  }
+  .menu li.action {
+    color: #aaa;
+  }
+  .menu li.action.checked:before {
+    filter: invert();
+  }
+  .menu li.separator {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .menu .containers > li {
+    color: #eee;
+  }
+  .containers li.container:hover {
+    background: rgb(0, 132, 255);
+  }
+  .containers li.container.active:hover {
+    background: rgb(0, 132, 255);
+  }
+  .containers li.container.active.killable:hover {
+    background: rgb(255, 69, 58);
+  }
+  .containers li.container.active.pausable:hover {
+    background: rgb(255, 159, 10);
+  }
+  .containers li.container.removable:hover {
+    background: rgb(94, 92, 230) !important;
+  }
+  .containers li.container.active:before {
+    background: rgb(48, 209, 88);
+  }
+  .containers li.container.paused:before {
+    background: rgb(255, 214, 10);
+  }
+  .containers li.container.inactive:before {
+    background: rgb(255, 69, 58);
+  }
 }

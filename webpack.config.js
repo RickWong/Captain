@@ -92,7 +92,7 @@ if (isDevelopment) {
       directory: path.join(__dirname, "./public/"),
     },
     devMiddleware: {
-      writeToDisk: true,
+      writeToDisk: (name) => name.includes(".bundle."),
     },
   };
 

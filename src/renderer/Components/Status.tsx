@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const Status = ({ dockerVersion }: Props) => (
-  <li className="Status">
+  <li className="status">
     {dockerVersion === undefined
       ? "Looking for Docker"
       : dockerVersion === ""
