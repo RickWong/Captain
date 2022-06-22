@@ -11,7 +11,7 @@
   <img src="https://github.com/RickWong/Captain/blob/main/github_cover.png?v=2" width="300" alt="cover" draggable="false"><br>
   <h6 align="center">INTRODUCTION</h6>
   <p align="center">Manage Docker containers. Instantly from the menu bar. 
-<br>See which containers are running and which have stopped. Conveniently start and stop any container directly from the menu bar. Containers are grouped automatically if their names contain 2+ underscores.</p>
+<br>See which containers are running and which have stopped. Conveniently start and stop any container directly from the menu bar. Containers are grouped automatically if they are created via Docker Compose.</p>
   <p align="center"><a href="https://getcaptain.co">Read more and download Captain for free.</a></p>
 </p>
 
@@ -47,6 +47,7 @@ or assisting in other parts of development, here's how to get started:
 ###### Friends:
 
 * [Giel Cobben](https://github.com/gielcobben)
+* [Ernesto Navarro](https://github.com/enavarrocu)
 
 <br>
 
