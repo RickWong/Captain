@@ -33,10 +33,9 @@ or assisting in other parts of development, here's how to get started:
 3. Install the dependencies: `yarn install`
 4. Run the app by starting electron, building the code and watch for changes:
    `yarn dev`
-   ###### To build for production (should not generally be used):
-5. Build the actual app for all platforms (Mac x64 and arm64 Apple Silicon): `yarn package`
 
-<br>
+###### To build for production (should not generally be used):
+1. Build the actual app for all platforms (Mac x64 and arm64 Apple Silicon): `yarn package`
 
 <br>
 
