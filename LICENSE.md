@@ -552,7 +552,7 @@ to the start of each source file to most effectively state the exclusion of warr
 and each file should have at least the “copyright” line and a pointer to
 where the full notice is found.
 
-    Manage Docker containers. Instantly from the menu bar.
+    Captain. Manage Docker containers. Instantly from the menu bar.
     Copyright (C) 2022 Rick Wong <tangos_erasure0x@icloud.com>
 
     This program is free software: you can redistribute it and/or modify
