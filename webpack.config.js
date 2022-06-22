@@ -1,5 +1,6 @@
 const lodash = require("lodash");
 const path = require("path");
+const NodemonPlugin = require("nodemon-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const ReactRefreshTypeScript = require("react-refresh-typescript");
@@ -29,7 +30,6 @@ const commonConfig = {
               getCustomTransformers: () => ({
                 before: [isDevelopment && ReactRefreshTypeScript()].filter(Boolean),
               }),
-              transpileOnly: isDevelopment,
             },
           },
         ],
@@ -49,6 +49,31 @@ const commonConfig = {
   },
 };
 
+const mainConfig = lodash.cloneDeep(commonConfig);
+mainConfig.watch = isDevelopment;
+mainConfig.entry = ["./src/main/index.ts"];
+mainConfig.target = "electron-main";
+mainConfig.output.filename = "./main.bundle.js";
+mainConfig.plugins = [];
+
+if (isDevelopment) {
+  mainConfig.plugins.push(
+    new NodemonPlugin({
+      script: "./build/main.bundle.js",
+      watch: "./build/main.bundle.js",
+      execMap: {
+        js: "electron",
+      },
+      nodeArgs: ["--inspect=9991"],
+      env: {
+        NODE_ENV: "development",
+        DEBUG: "*",
+      },
+      verbose: true,
+    }),
+  );
+}
+
 const rendererConfig = lodash.cloneDeep(commonConfig);
 rendererConfig.entry = ["./src/renderer/index.tsx"];
 rendererConfig.target = "electron-renderer";
@@ -67,9 +92,12 @@ if (isDevelopment) {
     static: {
       directory: path.join(__dirname, "./public/"),
     },
+    devMiddleware: {
+      writeToDisk: true,
+    },
   };
 
   rendererConfig.plugins.push(new ReactRefreshWebpackPlugin());
 }
 
-module.exports = [rendererConfig];
+module.exports = [mainConfig, rendererConfig];
