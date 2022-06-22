@@ -2,7 +2,7 @@ import debug from "debug";
 import { app, dialog, BrowserWindow } from "electron";
 
 export const moveToApplications = async (currentWindow: BrowserWindow) => {
-  if (!app.isPackaged) {
+  if (!app.isPackaged || app.isInApplicationsFolder()) {
     return;
   }
 

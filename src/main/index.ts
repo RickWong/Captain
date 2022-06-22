@@ -2,7 +2,6 @@ import debug from "debug";
 import path from "path";
 import { app } from "electron";
 import { menubar } from "menubar";
-import { moveToApplications } from "./moveToApplications";
 import { serverStart } from "./rpcServer";
 
 require("@electron/remote/main").initialize();
@@ -34,7 +33,6 @@ captainMenubar.on("focus-lost", () => captainMenubar.window!.hide());
 
 captainMenubar.on("after-create-window", async () => {
   try {
-    await moveToApplications(captainMenubar.window!);
     serverStart(captainMenubar).catch((error) => console.error(error));
   } catch (e) {
     debug("captain")(e.stack || e);

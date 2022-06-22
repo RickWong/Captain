@@ -4,6 +4,7 @@ import { COMMANDS } from "../renderer/rpcCommands";
 import * as Docker from "./docker";
 import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 import { Menubar } from "menubar/lib/Menubar";
+import { moveToApplications } from "./moveToApplications";
 
 export const serverStart = async (menubar: Menubar) => {
   require("@electron/remote/main").enable(menubar.window!.webContents);
@@ -33,9 +34,10 @@ export const serverStart = async (menubar: Menubar) => {
     updateInterval = setInterval(() => serverTrigger(COMMANDS.CONTAINER_GROUPS), 60 * 1000);
   });
 
-  ipcMain.on(COMMANDS.APPLICATION_QUIT, () => {
+  ipcMain.on(COMMANDS.APPLICATION_QUIT, async () => {
     debug("captain-rpc-server")("Quit");
 
+    await moveToApplications(menubar.window!);
     menubar.app.quit();
   });
 
@@ -53,6 +55,7 @@ export const serverStart = async (menubar: Menubar) => {
     debug("captain-rpc-server")("Toggle auto launch");
 
     await toggleAutoLaunch();
+    await moveToApplications(menubar.window!);
     serverTrigger(COMMANDS.VERSION);
   });
 
