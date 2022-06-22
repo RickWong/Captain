@@ -19,6 +19,19 @@ export const containerCommand = async (command: string, id?: string): Promise<st
   });
 };
 
+export const composeContainerCommand = async (command: string, id?: string): Promise<string[]> => {
+  return new Promise((resolve, reject) => {
+    exec(`$(which docker-compose) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
+      if (stderr) {
+        debug("captain-docker-compose")(stderr);
+        return reject([]);
+      }
+
+      resolve(stdout.split("\n"));
+    });
+  });
+};
+
 export const version = async () => {
   try {
     return (await containerCommand("version"))
@@ -28,6 +41,24 @@ export const version = async () => {
   } catch (error) {
     debug("captain-docker")(error);
     return undefined;
+  }
+};
+
+export const composeContainerList = async () => {
+  try {
+    const list: Record<string, any> = {};
+    (await composeContainerCommand("ls -a"))
+      .slice(1)
+      .filter((line) => line.length > 0)
+      .forEach(item => {
+        let [name] = item.split(/\s{3,}/g);
+        list[name] = name;
+      });
+
+    return Object.values(list);
+  } catch (error) {
+    debug("captain-docker-compose")(error);
+    return [];
   }
 };
 
