@@ -50,7 +50,6 @@ const commonConfig = {
 };
 
 const mainConfig = lodash.cloneDeep(commonConfig);
-mainConfig.watch = isDevelopment;
 mainConfig.entry = ["./src/main/index.ts"];
 mainConfig.target = "electron-main";
 mainConfig.output.filename = "./main.bundle.js";

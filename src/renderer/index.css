@@ -138,7 +138,7 @@ body .menu > li.status {
   color: #fff;
   cursor: default;
 }
-.containers li.container.active.pauseable:hover {
+.containers li.container.active.pausable:hover {
   background: rgb(255, 149, 0);
   color: #fff;
   cursor: default;

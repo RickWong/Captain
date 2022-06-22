@@ -38,12 +38,46 @@ export const Container = (props: Props) => {
   const killable = active && !paused && ctrlIsDown && !altIsDown && !metaIsDown;
   const stoppable = !paused && active && !shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
   const startable = !active && !shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
-  const unpauseable = paused && !ctrlIsDown && !altIsDown && !metaIsDown;
-  const removeable = !paused && !active && ctrlIsDown && altIsDown && metaIsDown;
-  const pauseable = !paused && active && shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
+  const unpausable = paused && !ctrlIsDown && !altIsDown && !metaIsDown;
+  const removable = !paused && !active && ctrlIsDown && altIsDown && metaIsDown;
+  const pausable = !paused && active && shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
   const copyable = !ctrlIsDown && altIsDown && !metaIsDown;
 
-  const __html = removeable
+  const onClick = () => {
+    if (disabled) {
+      return;
+    } else if (openable) {
+      shell
+        .openExternal(props.openInBrowser || `http${port === 443 ? "s" : ""}://localhost:${port || 80}`)
+        .catch((error: Error) => console.error(error));
+      remote.getCurrentWindow().hide();
+      keysPressed.clear();
+    } else if (killable) {
+      ipcRenderer.send(COMMANDS.CONTAINER_KILL, props);
+      setDisabled(true);
+    } else if (removable) {
+      ipcRenderer.send(COMMANDS.CONTAINER_REMOVE, props);
+      setDisabled(true);
+    } else if (stoppable) {
+      ipcRenderer.send(COMMANDS.CONTAINER_STOP, props);
+      setDisabled(true);
+    } else if (pausable) {
+      ipcRenderer.send(COMMANDS.CONTAINER_PAUSE, props);
+      setDisabled(true);
+    } else if (unpausable) {
+      ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, props);
+      setDisabled(true);
+    } else if (startable) {
+      ipcRenderer.send(COMMANDS.CONTAINER_START, props);
+      setDisabled(true);
+    } else if (copyable) {
+      clipboard.writeText(id);
+      remote.getCurrentWindow().hide();
+      keysPressed.clear();
+    }
+  };
+
+  const __html = removable
     ? `Remove ${shortName}`
     : copyable
     ? `Copy "${id}"`
@@ -51,7 +85,7 @@ export const Container = (props: Props) => {
     ? `Open "${openInBrowser || `${hostname || "localhost"}:${port || 80}`}"`
     : killable
     ? `Kill ${shortName}`
-    : pauseable
+    : pausable
     ? `Pause ${shortName}`
     : `${shortName} <small>${paused ? `(paused)` : port ? `(${port})` : ""}</small>`;
 
@@ -67,44 +101,13 @@ Status: ${status}`}
         openable,
         killable,
         stoppable,
-        removeable,
-        pauseable,
+        removable,
+        pausable,
         copyable,
         disabled,
       })}
-      onContextMenu={() => {
-        if (!disabled) {
-          ipcRenderer.send(COMMANDS.CONTAINER_KILL, props);
-          setDisabled(true);
-        }
-      }}
-      onClick={() => {
-        if (disabled) {
-          return;
-        } else if (openable) {
-          shell
-            .openExternal(props.openInBrowser || `http${port === 443 ? "s" : ""}://localhost:${port || 80}`)
-            .catch((error: Error) => console.error(error));
-          remote.getCurrentWindow().hide();
-          keysPressed.clear();
-        } else if (killable) {
-          // Control + OnClick = OnContextMenu, see above.
-        } else if (stoppable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_STOP, props);
-        } else if (pauseable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_PAUSE, props);
-        } else if (unpauseable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_UNPAUSE, props);
-        } else if (startable) {
-          ipcRenderer.send(COMMANDS.CONTAINER_START, props);
-        } else if (copyable) {
-          clipboard.writeText(id);
-          remote.getCurrentWindow().hide();
-          keysPressed.clear();
-        }
-
-        setDisabled(true);
-      }}
+      onContextMenu={onClick}
+      onClick={onClick}
       dangerouslySetInnerHTML={{ __html }}
     ></li>
   );
