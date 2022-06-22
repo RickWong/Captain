@@ -61,9 +61,8 @@ if (isDevelopment) {
       script: "./build/main.bundle.js",
       watch: "./build/main.bundle.js",
       execMap: {
-        js: "electron",
+        js: "electron --inspect=9991",
       },
-      nodeArgs: ["--inspect=9991"],
       env: {
         NODE_ENV: "development",
         DEBUG: "*",
