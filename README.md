@@ -51,4 +51,4 @@ or assisting in other parts of development, here's how to get started:
 
 ## 🔑 License
 
-Copyright © 2022 Rick Wong. All rights reserved.
+GPL 3.0. Copyright © 2022 Rick Wong. All rights reserved.

@@ -7,12 +7,10 @@ import { serverStart } from "./rpcServer";
 
 require("@electron/remote/main").initialize();
 
-const isPackaged = app.isPackaged;
-
 const captainMenubar = menubar({
   dir: __dirname,
   icon: path.join(__dirname, "../../public/iconTemplate.png"),
-  index: isPackaged ? "file://" + path.join(__dirname, "../index.html") : "http://localhost:9999/index.html",
+  index: app.isPackaged ? "file://" + path.join(__dirname, "../index.html") : "http://localhost:9999/index.html",
   browserWindow: {
     width: 240,
     height: 240,

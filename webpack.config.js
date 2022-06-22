@@ -6,7 +6,6 @@ const ReactRefreshTypeScript = require("react-refresh-typescript");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-// #region Common settings
 const commonConfig = {
   devtool: isDevelopment ? "inline-source-map" : false,
   mode: isDevelopment ? "development" : "production",
@@ -54,7 +53,6 @@ const commonConfig = {
     ],
   },
 };
-// #endregion
 
 const rendererConfig = lodash.cloneDeep(commonConfig);
 rendererConfig.entry = ["./src/renderer/index.tsx"];

@@ -1,6 +1,6 @@
 {
-  "private": true,
-  "license": "UNLICENSED",
+  "private": false,
+  "license": "GPL-3.0",
   "name": "captain",
   "version": "10.0.0",
   "description": "Docker menubar",
