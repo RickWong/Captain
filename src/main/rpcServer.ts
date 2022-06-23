@@ -117,27 +117,21 @@ export const serverStart = async (menubar: Menubar) => {
     }
 
     const containers = await Docker.containerList();
-    const composeContainers = await Docker.composeContainerList();
-    const groups: Record<string, any> = {};
+    const composeProjects = await Docker.composeProjectsList();
+    const groups: Record<string, any> = { "~others": {} }; // Make sure ~others exist as first group.
 
     for (const container of containers) {
       let groupName = "~others";
       let containerName = container.name;
 
-      const composeContainerNames = composeContainers
-        .filter((name: string) => container.name.startsWith(name))
-        .map((name: string) => ({
-          composeGroupName: name,
-          composeContainerName: container.name.replace(name, "").replace(/^[-_+]/, ""),
-        }))
-        .shift();
-
-      if (composeContainerNames) {
-        groupName = composeContainerNames.composeGroupName;
-        containerName = composeContainerNames.composeContainerName;
+      const composeProject = composeProjects.find((projectName: string) => container.name.startsWith(projectName));
+      if (composeProject) {
+        groupName = composeProject;
+        containerName = container.name.replace(composeProject, "");
       } else {
-        const imageParts = container.image.split("_");
+        // If there's no Compose project name, try container name, then image name.
         const nameParts = container.name.split("_");
+        const imageParts = container.image.split("_");
 
         if (nameParts.length >= 3) {
           groupName = nameParts[0];
@@ -148,8 +142,6 @@ export const serverStart = async (menubar: Menubar) => {
         }
       }
 
-      container.active = container.status.indexOf("Up") >= 0;
-      container.paused = container.status.indexOf("Paused") >= 0;
       container.shortName = containerName.replace(/^_+/, "");
 
       groups[groupName] = Object.assign(groups[groupName] || {}, {

@@ -4,7 +4,7 @@ import { exec } from "child_process";
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
-const escapeShell = (arg: string) => `'${arg.replace(/(["\s'$\`\\])/g, "\\$1")}'`;
+const escapeShell = (arg: string) => `'${arg.replace(/(["\s'$`\\])/g, "\\$1")}'`;
 
 export const containerCommand = async (command: string, id?: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
@@ -21,7 +21,7 @@ export const containerCommand = async (command: string, id?: string): Promise<st
 
 export const composeContainerCommand = async (command: string, id?: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
-    exec(`$(which docker-compose) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
+    exec(`$(which docker) compose ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
       if (stderr) {
         debug("captain-docker-compose")(stderr);
         return reject([]);
@@ -44,7 +44,7 @@ export const version = async () => {
   }
 };
 
-export const composeContainerList = async () => {
+export const composeProjectsList = async (): Promise<string[]> => {
   try {
     const list: Record<string, any> = {};
     (await composeContainerCommand("ls -a"))
@@ -62,9 +62,23 @@ export const composeContainerList = async () => {
   }
 };
 
-export const containerList = async () => {
+interface Container {
+  id: string;
+  image: string;
+  command: string;
+  created: string;
+  status: string;
+  ports: string[];
+  name: string;
+  active: boolean;
+  paused: boolean;
+  shortName: string;
+  openInBrowser?: string;
+}
+
+export const containerList = async (): Promise<Container[]> => {
   try {
-    const list: Record<string, any> = {};
+    const list: Record<string, Container> = {};
 
     (await containerCommand("container ps -a"))
       .slice(1)
@@ -84,7 +98,11 @@ export const containerList = async () => {
           ports = [];
         }
 
-        list[id] = { id, image, command, created, status, ports, name };
+        const active = status.indexOf("Up") >= 0;
+        const paused = status.indexOf("Paused") >= 0;
+        const shortName = name;
+
+        list[id] = { id, image, command, created, status, ports, name, shortName, active, paused };
       });
 
     await Promise.all(
