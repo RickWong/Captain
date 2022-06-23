@@ -5,9 +5,7 @@ import { app } from "electron";
 
 const autoLauncher = new AutoLaunch({
   name: "Captain",
-  mac: {
-    useLaunchAgent: false,
-  },
+  mac: { useLaunchAgent: false },
   isHidden: true, // Launch without active window.
 });
 

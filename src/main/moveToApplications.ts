@@ -5,10 +5,11 @@ export const moveToApplications = async (currentWindow: BrowserWindow) => {
   const buttonId = dialog.showMessageBoxSync(currentWindow, {
     message: "Move Captain to Applications folder?",
     buttons: ["OK", "Maybe later"],
-    defaultId: 0,
+    defaultId: 0, // OK
   });
 
   if (buttonId == 1) {
+    // Maybe later
     return;
   }
 

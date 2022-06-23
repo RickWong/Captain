@@ -58,10 +58,11 @@ mainConfig.plugins = [];
 if (isDevelopment) {
   mainConfig.plugins.push(
     new NodemonPlugin({
+      // This plugin will run nodemon and restart if the main.bundle.js changes.
       script: "./build/main.bundle.js",
       watch: "./build/main.bundle.js",
       execMap: {
-        js: "electron --inspect=9991",
+        js: "electron --inspect=9991", // Allow debugging Electron's main process.
       },
       env: {
         NODE_ENV: "development",
@@ -78,11 +79,13 @@ rendererConfig.target = "electron-renderer";
 rendererConfig.output.filename = "./renderer.bundle.js";
 rendererConfig.plugins = [
   new HtmlWebpackPlugin({
+    // This plugin will automatically inject <script> tags for us.
     template: path.resolve(__dirname, "./public/index.html"),
   }),
 ];
 
 if (isDevelopment) {
+  // Run webpack-dev-server on localhost with hot reloading.
   rendererConfig.devServer = {
     hot: true,
     compress: true,
@@ -91,11 +94,14 @@ if (isDevelopment) {
       directory: path.join(__dirname, "./public/"),
     },
     devMiddleware: {
+      // Write bundles to disk, so nodemon can restart on changes to main.bundle.js.
       writeToDisk: (name) => name.includes(".bundle."),
     },
   };
 
+  // This plugin improves the React hot reloading experience.
   rendererConfig.plugins.push(new ReactRefreshWebpackPlugin());
 }
 
+// Webpack will build separate bundles for Electon's main and renderer processes.
 module.exports = [mainConfig, rendererConfig];
