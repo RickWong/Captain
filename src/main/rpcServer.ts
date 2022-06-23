@@ -39,7 +39,6 @@ export const serverStart = async (menubar: Menubar) => {
     debug("captain-rpc-server")("Quit");
 
     await autoUpdater.checkForUpdatesAndNotify().catch((error) => debug("captain-rpc-server")(error));
-    await moveToApplications(menubar.window!);
     menubar.app.quit();
   });
 
