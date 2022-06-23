@@ -127,7 +127,7 @@ export const serverStart = async (menubar: Menubar) => {
       const composeProject = composeProjects.find((projectName: string) => container.name.startsWith(projectName));
       if (composeProject) {
         groupName = composeProject;
-        containerName = container.name.replace(composeProject, "");
+        containerName = container.name.replace(composeProject, "").replace(/^[-_+]/, "");
       } else {
         // If there's no Compose project name, try container name, then image name.
         const nameParts = container.name.split("_");
