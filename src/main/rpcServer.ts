@@ -5,6 +5,7 @@ import * as Docker from "./docker";
 import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 import { Menubar } from "menubar/lib/Menubar";
 import { moveToApplications } from "./moveToApplications";
+import { autoUpdater } from "electron-updater";
 
 export const serverStart = async (menubar: Menubar) => {
   require("@electron/remote/main").enable(menubar.window!.webContents);
@@ -37,6 +38,7 @@ export const serverStart = async (menubar: Menubar) => {
   ipcMain.on(COMMANDS.APPLICATION_QUIT, async () => {
     debug("captain-rpc-server")("Quit");
 
+    await autoUpdater.checkForUpdatesAndNotify().catch((error) => debug("captain-rpc-server")(error));
     await moveToApplications(menubar.window!);
     menubar.app.quit();
   });
@@ -57,6 +59,12 @@ export const serverStart = async (menubar: Menubar) => {
     await toggleAutoLaunch();
     await moveToApplications(menubar.window!);
     serverTrigger(COMMANDS.VERSION);
+  });
+
+  ipcMain.on(COMMANDS.CHECK_FOR_UPDATES, async () => {
+    debug("captain-rpc-server")("Check for updates");
+
+    await autoUpdater.checkForUpdatesAndNotify().catch((error) => debug("captain-rpc-server")(error));
   });
 
   ipcMain.on(COMMANDS.CONTAINER_KILL, async (_event, body) => {
@@ -117,12 +125,13 @@ export const serverStart = async (menubar: Menubar) => {
       let groupName = "~others";
       let containerName = container.name;
 
-      const composeContainerNames = composeContainers.filter((name: string) => container.name.startsWith(name))
+      const composeContainerNames = composeContainers
+        .filter((name: string) => container.name.startsWith(name))
         .map((name: string) => ({
           composeGroupName: name,
-          composeContainerName: container.name.replace(name, "")
-            .replace(/^[-_+]/, ""),
-        })).shift();
+          composeContainerName: container.name.replace(name, "").replace(/^[-_+]/, ""),
+        }))
+        .shift();
 
       if (composeContainerNames) {
         groupName = composeContainerNames.composeGroupName;
@@ -133,7 +142,7 @@ export const serverStart = async (menubar: Menubar) => {
 
         if (nameParts.length >= 3) {
           groupName = nameParts[0];
-        containerName = nameParts.slice(1).join("_");
+          containerName = nameParts.slice(1).join("_");
         } else if (imageParts.length >= 2) {
           groupName = imageParts[0];
           containerName = imageParts.slice(1).join("_");

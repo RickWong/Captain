@@ -1,6 +1,7 @@
 export const COMMANDS = {
   APPLICATION_QUIT: "applicationQuit",
   VERSION: "version",
+  CHECK_FOR_UPDATES: "checkForUpdates",
   TOGGLE_AUTO_LAUNCH: "toggleAutoLaunch",
   CONTAINER_GROUPS: "containerGroups",
   CONTAINER_KILL: "containerKill",

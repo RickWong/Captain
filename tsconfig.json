@@ -4,11 +4,6 @@
     "jsx": "react",
     "paths": {
       "_/*": ["src/*"],
-      "_public/*": ["public/*"],
-      "_main/*": ["src/main/*"],
-      "_models/*": ["src/models/*"],
-      "_renderer/*": ["src/renderer/*"],
-      "_utils/*": ["src/utils/*"],
       "*": ["node_modules/*"]
     },
     "module": "commonjs",

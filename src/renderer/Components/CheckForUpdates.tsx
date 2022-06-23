@@ -1,9 +1,9 @@
 import * as React from "react";
-import { shell } from "electron";
-import * as remote from "@electron/remote";
+import { ipcRenderer } from "electron";
+import { COMMANDS } from "../rpcCommands";
 
 export const CheckForUpdates = () => (
-  <li className="action" onClick={() => shell.openExternal(`https://getcaptain.co/?since=${remote.app.getVersion()}`)}>
+  <li className="action" onClick={() => ipcRenderer.send(COMMANDS.CHECK_FOR_UPDATES)}>
     Check for Updates...
   </li>
 );

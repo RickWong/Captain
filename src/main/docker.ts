@@ -50,7 +50,7 @@ export const composeContainerList = async () => {
     (await composeContainerCommand("ls -a"))
       .slice(1)
       .filter((line) => line.length > 0)
-      .forEach(item => {
+      .forEach((item) => {
         let [name] = item.split(/\s{3,}/g);
         list[name] = name;
       });
