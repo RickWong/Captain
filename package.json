@@ -30,7 +30,7 @@
     "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v dist/ | grep -v build/ | grep -v node_modules/ | xargs prettier --write",
     "typecheck": "tsc --noEmit --pretty",
     "build": "yarn && yarn clean && yarn prettier && env NODE_ENV=production webpack --progress --color",
-    "package": "yarn build && export CSC_IDENTITY_AUTO_DISCOVERY=\"true\"; node --require dotenv/config ./node_modules/.bin/electron-builder --mac --x64 --arm64 --publish always"
+    "package": "yarn build && node --require dotenv/config ./node_modules/.bin/electron-builder --mac --x64 --arm64 --publish always"
   },
   "engines": {
     "npm": "please-use-yarn",
@@ -52,6 +52,7 @@
     "asar": true,
     "compression": "maximum",
     "mac": {
+      "forceCodeSigning": true,
       "icon": "./public/Icon.icns",
       "target": [
         "dmg"
