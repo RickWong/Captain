@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://github.com/RickWong/Captain/blob/10.0.0-rc/public/Icon.png?v=2" width="100" alt="icon" draggable="false"><br>
+  <img src="https://github.com/RickWong/Captain/blob/main/public/Icon.png?v=2" width="100" alt="icon" draggable="false"><br>
   Captain
   <br>
   <br>
