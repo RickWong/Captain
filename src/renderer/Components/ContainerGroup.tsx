@@ -17,6 +17,10 @@ export const ContainerGroup = ({ groupName, containers, updateWindowHeight, chil
 
   useEffect(() => updateWindowHeight); // Runs after every render.
 
+  if (totalContainers < 1) {
+    return <></>;
+  }
+
   return (
     <>
       <li className={classnames("group", { closed })} onClick={() => setClosed(!closed)}>
