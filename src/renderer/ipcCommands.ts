@@ -1,3 +1,8 @@
+/**
+ * Commands for Inter-Process Communication (IPC) between Electron's main and renderer processes.
+ *
+ * @TODO Add typing for command parameters.
+ */
 export const COMMANDS = {
   APPLICATION_QUIT: "applicationQuit",
   VERSION: "version",

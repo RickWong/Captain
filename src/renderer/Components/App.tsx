@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "./Container";
 import { Status } from "./Status";
 import { ipcRenderer, IpcRendererEvent } from "electron";
-import { COMMANDS } from "../rpcCommands";
+import { COMMANDS } from "../ipcCommands";
 import { CheckForUpdates } from "./CheckForUpdates";
 import { QuitCaptain } from "./QuitCaptain";
 import { StartAtLogin } from "./StartAtLogin";
@@ -10,6 +10,9 @@ import { useEffect, useState } from "react";
 import { ContainerGroup } from "./ContainerGroup";
 import * as remote from "@electron/remote";
 
+/**
+ * Resizes the popup menu based on its content's height.
+ */
 const updateWindowHeight = () => {
   const menubar = remote.getCurrentWindow();
   menubar.setSize(menubar.getSize()[0], (document.querySelectorAll(".menu")[0] as HTMLElement).offsetHeight + 10);
@@ -26,32 +29,30 @@ export const App = () => {
   const [groups, setGroups] = React.useState<Record<string, any>>({});
   const [keysPressed, setKeyPressed] = useState(new Set<string>([]));
 
-  const deleteReleasedSpecialKeys = (event: KeyboardEvent, keysPressed: Set<string>) => {
-    if (!event.altKey) {
-      keysPressed.delete("Alt");
-    }
-    if (!event.ctrlKey) {
-      keysPressed.delete("Control");
-    }
-    if (!event.metaKey) {
-      keysPressed.delete("Meta");
-    }
-    if (!event.shiftKey) {
-      keysPressed.delete("Shift");
-    }
-  };
-
-  const downHandler = (event: KeyboardEvent) => {
+  /**
+   * Keeps track of which modifier keys are held down currently.
+   */
+  const trackModifierKeys = (event: KeyboardEvent) => {
     setKeyPressed((keysPressed) => {
-      deleteReleasedSpecialKeys(event, keysPressed);
-      return new Set([event.key, ...keysPressed]);
-    });
-  };
+      if (!event.altKey) {
+        keysPressed.delete("Alt");
+      }
+      if (!event.ctrlKey) {
+        keysPressed.delete("Control");
+      }
+      if (!event.metaKey) {
+        keysPressed.delete("Meta");
+      }
+      if (!event.shiftKey) {
+        keysPressed.delete("Shift");
+      }
 
-  const upHandler = (event: KeyboardEvent) => {
-    setKeyPressed((keysPressed) => {
-      deleteReleasedSpecialKeys(event, keysPressed);
-      keysPressed.delete(event.key);
+      if (event.type === "keydown") {
+        keysPressed.add(event.key);
+      } else if (event.type === "keyup") {
+        keysPressed.delete(event.key);
+      }
+
       return new Set([...keysPressed]);
     });
   };
@@ -66,8 +67,8 @@ export const App = () => {
   };
 
   useEffect(() => {
-    window.addEventListener("keydown", downHandler);
-    window.addEventListener("keyup", upHandler);
+    window.addEventListener("keydown", trackModifierKeys);
+    window.addEventListener("keyup", trackModifierKeys);
 
     ipcRenderer.on(COMMANDS.VERSION, onVersion);
     ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, onGroups);
@@ -79,8 +80,8 @@ export const App = () => {
       ipcRenderer.off(COMMANDS.VERSION, onVersion);
       ipcRenderer.off(COMMANDS.CONTAINER_GROUPS, onGroups);
 
-      window.removeEventListener("keydown", downHandler);
-      window.removeEventListener("keyup", upHandler);
+      window.removeEventListener("keydown", trackModifierKeys);
+      window.removeEventListener("keyup", trackModifierKeys);
     };
   }, []);
 

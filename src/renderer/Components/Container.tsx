@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import classnames from "classnames";
 import { clipboard, ipcRenderer, shell } from "electron";
-import { COMMANDS } from "../rpcCommands";
+import { COMMANDS } from "../ipcCommands";
 
 const remote = process.type === "browser" ? require("electron") : require("@electron/remote");
 

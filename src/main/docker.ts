@@ -4,8 +4,14 @@ import { exec } from "child_process";
 // Fix environment PATH to find the "docker" binary.
 process.env.PATH = process.env.PATH + ":/usr/local/bin";
 
+/**
+ * Returns escaped command line parameter for safe usage in exec().
+ */
 const escapeShell = (arg: string) => `'${arg.replace(/(["\s'$`\\])/g, "\\$1")}'`;
 
+/**
+ * Executes a docker command, returns stdout as an array of lines.
+ */
 export const containerCommand = async (command: string, id?: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     exec(`$(which docker) ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
@@ -19,6 +25,9 @@ export const containerCommand = async (command: string, id?: string): Promise<st
   });
 };
 
+/**
+ * Executes a docker compose command, returns stdout as an array of lines.
+ */
 export const composeContainerCommand = async (command: string, id?: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     exec(`$(which docker) compose ${command} ${id ? escapeShell(id) : ""}`, { encoding: "utf-8" }, (stderr, stdout) => {
@@ -32,7 +41,10 @@ export const composeContainerCommand = async (command: string, id?: string): Pro
   });
 };
 
-export const version = async () => {
+/**
+ * Queries the docker version, returns semver string.
+ */
+export const version = async (): Promise<string | undefined> => {
   try {
     return (await containerCommand("version"))
       .filter((line) => line.match(/Version:\s+(.*)/))
@@ -44,6 +56,9 @@ export const version = async () => {
   }
 };
 
+/**
+ * Queries the docker compose project list, returns array of project names.
+ */
 export const composeProjectsList = async (): Promise<string[]> => {
   try {
     const list: Record<string, any> = {};
@@ -76,6 +91,9 @@ interface Container {
   openInBrowser?: string;
 }
 
+/**
+ * Queries the docker container list, returns array of Containers.
+ */
 export const containerList = async (): Promise<Container[]> => {
   try {
     const list: Record<string, Container> = {};

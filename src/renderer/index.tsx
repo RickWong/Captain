@@ -26,17 +26,26 @@ menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
 menuWindow.setResizable(false);
+
+/**
+ * Open development tools for debugging.
+ */
 if (!remote.app.isPackaged) {
   menuWindow.setResizable(true);
-  // @ts-ignore
   menuWindow.openDevTools();
 }
 
-createRoot(document.querySelector("#App")!).render(<App />);
-
+/**
+ * Prevent shortcuts like cmd+r.
+ */
 window.addEventListener("keydown", (event) => {
   // Only allow cmd+q and alt+cmd+i.
   if (!["q", "i"].includes(event.key)) {
     event.preventDefault();
   }
 });
+
+/**
+ * Mount App and start the renderer process.
+ */
+createRoot(document.querySelector("#App")!).render(<App />);

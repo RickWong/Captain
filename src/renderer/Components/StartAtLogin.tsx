@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ipcRenderer } from "electron";
-import { COMMANDS } from "../rpcCommands";
+import { COMMANDS } from "../ipcCommands";
 
 interface Props {
   autoLaunch: boolean;

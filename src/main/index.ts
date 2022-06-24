@@ -19,7 +19,7 @@ import debug from "debug";
 import path from "path";
 import { app } from "electron";
 import { menubar } from "menubar";
-import { serverStart } from "./rpcServer";
+import { addIpcListeners } from "./addIpcListeners";
 
 require("@electron/remote/main").initialize();
 
@@ -44,13 +44,22 @@ const captainMenubar = menubar({
   showDockIcon: false,
 });
 
+/**
+ * Grant renderer process access to @electron/remote.
+ */
 captainMenubar.on("before-load", () => require("@electron/remote/main").enable(captainMenubar.window!.webContents));
 
+/**
+ * Make sure the window auto-hides like an actual popup menu.
+ */
 captainMenubar.on("focus-lost", () => captainMenubar.window!.hide());
 
+/**
+ * Start listening to IPC commands in the main process.
+ */
 captainMenubar.on("after-create-window", async () => {
   try {
-    serverStart(captainMenubar).catch((error) => console.error(error));
+    addIpcListeners(captainMenubar).catch((error) => console.error(error));
   } catch (e) {
     debug("captain")(e.stack || e);
   }
