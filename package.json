@@ -29,7 +29,7 @@
     "dev": "yarn && env NODE_ENV=development webpack serve --progress --color",
     "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v dist/ | grep -v build/ | grep -v node_modules/ | xargs prettier --write",
     "typecheck": "tsc --noEmit --pretty",
-    "build": "yarn && yarn clean && yarn prettier && env NODE_ENV=production webpack --progress --color",
+    "build": "yarn && yarn clean && yarn prettier && yarn typecheck && env NODE_ENV=production webpack --progress --color",
     "package": "yarn build && node --require dotenv/config ./node_modules/.bin/electron-builder --mac --x64 --arm64 --publish always"
   },
   "engines": {
