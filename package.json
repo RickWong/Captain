@@ -58,7 +58,8 @@
         "LSUIElement": true
       },
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
       "publish": [
         "github"
