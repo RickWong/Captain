@@ -2,6 +2,11 @@ import debug from "debug";
 import { app, dialog, BrowserWindow } from "electron";
 
 export const moveToApplications = async (currentWindow: BrowserWindow) => {
+  if (!app.isPackaged || app.isInApplicationsFolder()) {
+    debug("captain-move-app")("Not necessary");
+    return;
+  }
+
   const buttonId = dialog.showMessageBoxSync(currentWindow, {
     message: "Move Captain to Applications folder? This is optional.",
     buttons: ["OK", "Maybe later"],
@@ -10,11 +15,6 @@ export const moveToApplications = async (currentWindow: BrowserWindow) => {
 
   if (buttonId == 1) {
     // Maybe later
-    return;
-  }
-
-  if (!app.isPackaged || app.isInApplicationsFolder()) {
-    debug("captain-move-app")("Not necessary");
     return;
   }
 

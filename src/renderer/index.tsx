@@ -33,7 +33,7 @@ menuWindow.setSkipTaskbar(true);
  */
 if (!remote.app.isPackaged) {
   menuWindow.setResizable(true);
-  menuWindow.openDevTools();
+  menuWindow.openDevTools({ mode: "detach", activate: true });
 }
 
 /**
