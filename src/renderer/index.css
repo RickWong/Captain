@@ -163,10 +163,10 @@ body .menu > li.status {
 */
 @media (prefers-color-scheme: dark) {
   body .menu > li.status {
-    color: #888;
+    color: #999;
   }
   .menu li.action {
-    color: #aaa;
+    color: #ddd;
   }
   .menu li.action.checked:before {
     filter: invert();
