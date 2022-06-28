@@ -3,7 +3,7 @@ import { app, dialog, BrowserWindow } from "electron";
 
 export const moveToApplications = async (currentWindow: BrowserWindow) => {
   const buttonId = dialog.showMessageBoxSync(currentWindow, {
-    message: "Move Captain to Applications folder?",
+    message: "Move Captain to Applications folder? This is optional.",
     buttons: ["OK", "Maybe later"],
     defaultId: 0, // OK
   });
