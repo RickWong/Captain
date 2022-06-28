@@ -26,6 +26,7 @@ menuWindow.setMovable(false);
 menuWindow.setMinimizable(false);
 menuWindow.setMaximizable(false);
 menuWindow.setResizable(false);
+menuWindow.setSkipTaskbar(true);
 
 /**
  * Open development tools for debugging.

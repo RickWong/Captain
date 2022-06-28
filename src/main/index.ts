@@ -60,6 +60,7 @@ captainMenubar.on("focus-lost", () => captainMenubar.window!.hide());
 captainMenubar.on("after-create-window", async () => {
   try {
     addIpcListeners(captainMenubar).catch((error) => console.error(error));
+    app.dock.hide();
   } catch (e) {
     debug("captain")(e.stack || e);
   }
