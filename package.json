@@ -50,7 +50,6 @@
       "!.env"
     ],
     "asar": true,
-    "compression": "maximum",
     "mac": {
       "forceCodeSigning": true,
       "icon": "./public/Icon.icns",

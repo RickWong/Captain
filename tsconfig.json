@@ -3,7 +3,6 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "paths": {
-      "_/*": ["src/*"],
       "*": ["node_modules/*"]
     },
     "module": "commonjs",

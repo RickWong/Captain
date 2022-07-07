@@ -5,7 +5,7 @@ import * as Docker from "./docker";
 import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 import { Menubar } from "menubar/lib/Menubar";
 import { moveToApplications } from "./moveToApplications";
-import { autoUpdater } from "electron-updater";
+import { checkForUpdates } from "./checkForUpdates";
 
 export const addIpcListeners = async (menubar: Menubar) => {
   require("@electron/remote/main").enable(menubar.window!.webContents);
@@ -47,9 +47,6 @@ export const addIpcListeners = async (menubar: Menubar) => {
   ipcMain.on(COMMANDS.APPLICATION_QUIT, async () => {
     debug("captain-rpc-server")("Quit");
 
-    // Before quiting, check for new updates.
-    await autoUpdater.checkForUpdatesAndNotify().catch((error) => debug("captain-rpc-server")(error));
-
     menubar.app.quit();
   });
 
@@ -76,7 +73,8 @@ export const addIpcListeners = async (menubar: Menubar) => {
 
   ipcMain.on(COMMANDS.CHECK_FOR_UPDATES, async () => {
     debug("captain-rpc-server")("Check for updates");
-    await autoUpdater.checkForUpdatesAndNotify().catch((error) => debug("captain-rpc-server")(error));
+
+    await checkForUpdates().catch((error) => debug("captain-rpc-server")(error));
   });
 
   ipcMain.on(COMMANDS.CONTAINER_KILL, async (_event, body) => {

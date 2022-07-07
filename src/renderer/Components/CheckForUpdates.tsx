@@ -5,8 +5,8 @@ import { COMMANDS } from "../ipcCommands";
 
 export const CheckForUpdates = () => {
   const onClick = () => {
-    ipcRenderer.send(COMMANDS.CHECK_FOR_UPDATES);
     remote.getCurrentWindow().hide();
+    ipcRenderer.send(COMMANDS.CHECK_FOR_UPDATES);
   };
 
   return (
