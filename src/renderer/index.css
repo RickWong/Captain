@@ -66,7 +66,7 @@ body .menu > li.status {
   height: auto;
   overflow: auto;
   position: relative;
-  margin-left: -22px;
+  margin-left: -25px;
   margin-right: -8px;
 }
 .containers:empty {
@@ -117,11 +117,14 @@ body .menu > li.status {
   background: rgb(0, 122, 255);
   color: #fff;
 }
+.containers li.group.startable:hover,
+.containers li.group.stoppable:hover,
 .containers li.container.active:hover {
   background: rgb(0, 122, 255);
   color: #fff;
   cursor: default;
 }
+.containers li.group.killable:hover,
 .containers li.container.active.killable:hover {
   background: rgb(255, 59, 48);
   color: #fff;

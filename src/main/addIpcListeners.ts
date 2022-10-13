@@ -78,42 +78,42 @@ export const addIpcListeners = async (menubar: Menubar) => {
   });
 
   ipcMain.on(COMMANDS.CONTAINER_KILL, async (_event, body) => {
-    debug("captain-rpc-server")("Container kill");
+    debug("captain-rpc-server")("Container kill", body);
     await Docker.containerCommand("kill", body.id);
 
     triggerListener(COMMANDS.CONTAINER_GROUPS);
   });
 
-  ipcMain.on(COMMANDS.CONTAINER_STOP, async (event, body) => {
-    debug("captain-rpc-server")("Container stop", event, body);
+  ipcMain.on(COMMANDS.CONTAINER_STOP, async (_event, body) => {
+    debug("captain-rpc-server")("Container stop", body);
     await Docker.containerCommand("stop", body.id);
 
     triggerListener(COMMANDS.CONTAINER_GROUPS);
   });
 
   ipcMain.on(COMMANDS.CONTAINER_START, async (_event, body) => {
-    debug("captain-rpc-server")("Container start");
+    debug("captain-rpc-server")("Container start", body);
     await Docker.containerCommand("start", body.id);
 
     triggerListener(COMMANDS.CONTAINER_GROUPS, undefined, 500);
   });
 
   ipcMain.on(COMMANDS.CONTAINER_PAUSE, async (_event, body) => {
-    debug("captain-rpc-server")("Container pause");
+    debug("captain-rpc-server")("Container pause", body);
     await Docker.containerCommand("pause", body.id);
 
     triggerListener(COMMANDS.CONTAINER_GROUPS);
   });
 
   ipcMain.on(COMMANDS.CONTAINER_UNPAUSE, async (_event, body) => {
-    debug("captain-rpc-server")("Container unpause");
+    debug("captain-rpc-server")("Container unpause", body);
     await Docker.containerCommand("unpause", body.id);
 
     triggerListener(COMMANDS.CONTAINER_GROUPS);
   });
 
   ipcMain.on(COMMANDS.CONTAINER_REMOVE, async (_event, body) => {
-    debug("captain-rpc-server")("Container remove");
+    debug("captain-rpc-server")("Container remove", body);
     await Docker.containerCommand("rm", body.id);
 
     triggerListener(COMMANDS.CONTAINER_GROUPS);

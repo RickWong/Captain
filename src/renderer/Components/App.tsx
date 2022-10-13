@@ -100,6 +100,7 @@ export const App = () => {
               groupName={groupName}
               containers={groups[groupName]}
               updateWindowHeight={updateWindowHeight}
+              keysPressed={keysPressed}
             >
               {Object.keys(groups[groupName]).map((containerName) => (
                 <Container key={containerName} {...groups[groupName][containerName]} keysPressed={keysPressed} />
