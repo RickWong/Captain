@@ -1,7 +1,7 @@
 {
   "license": "GPL-3.0",
   "name": "captain",
-  "version": "10.0.3",
+  "version": "10.1.0",
   "description": "Docker menubar",
   "author": {
     "name": "Rick Wong",
@@ -24,7 +24,7 @@
   "scripts": {
     "preinstall": "git submodule update --init --recursive",
     "postinstall": "electron-builder install-app-deps",
-    "clean": "rm -rf dist/* build/*",
+    "clean": "rm -rf dist/* build/* || true",
     "dev": "yarn && env NODE_ENV=development webpack serve --progress --color",
     "prettier": "find ./ -type f \\( -iname \\*.js -o -iname \\*.json -o -iname \\*.ts -o -iname \\*.css \\) | grep -v logs/ | grep -v dist/ | grep -v build/ | grep -v node_modules/ | xargs prettier --write",
     "typecheck": "tsc --noEmit --pretty",
