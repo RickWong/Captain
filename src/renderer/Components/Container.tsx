@@ -34,22 +34,26 @@ export const Container = (props: Props) => {
     metaIsDown = keysPressed.has("Meta");
 
   const port = ports.indexOf("443") >= 0 ? 443 : ports.indexOf("80") >= 0 ? 80 : parseInt(ports[0]);
-  const openable = active && !paused && port && !ctrlIsDown && !altIsDown && metaIsDown;
+  const openable = active && !paused && port && !ctrlIsDown && metaIsDown;
   const killable = active && !paused && ctrlIsDown && !altIsDown && !metaIsDown;
   const stoppable = !paused && active && !shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
   const startable = !active && !shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
   const unpausable = paused && !ctrlIsDown && !altIsDown && !metaIsDown;
   const removable = !paused && !active && ctrlIsDown && altIsDown && metaIsDown;
   const pausable = !paused && active && shiftIsDown && !ctrlIsDown && !altIsDown && !metaIsDown;
-  const copyable = !ctrlIsDown && altIsDown && !metaIsDown;
+  const copyable = !ctrlIsDown && altIsDown;
 
   const onClick = () => {
+    const browserUrl = props.openInBrowser || `http${port === 443 ? "s" : ""}://localhost:${port || 80}`;
+
     if (disabled) {
       return;
+    } else if (copyable) {
+      clipboard.writeText(openable ? browserUrl : id);
+      remote.getCurrentWindow().hide();
+      keysPressed.clear();
     } else if (openable) {
-      shell
-        .openExternal(props.openInBrowser || `http${port === 443 ? "s" : ""}://localhost:${port || 80}`)
-        .catch((error: Error) => console.error(error));
+      shell.openExternal(browserUrl).catch((error: Error) => console.error(error));
       remote.getCurrentWindow().hide();
       keysPressed.clear();
     } else if (killable) {
@@ -70,30 +74,30 @@ export const Container = (props: Props) => {
     } else if (startable) {
       ipcRenderer.send(COMMANDS.CONTAINER_START, props);
       setDisabled(true);
-    } else if (copyable) {
-      clipboard.writeText(id);
-      remote.getCurrentWindow().hide();
-      keysPressed.clear();
     }
   };
 
+  const browserUrl: string = openInBrowser || `${hostname || "localhost"}:${port || 80}`;
+
   const __html = removable
     ? `Remove ${shortName}`
+    : copyable && openable
+    ? `Copy "${browserUrl}"`
     : copyable
     ? `Copy "${id}"`
     : openable
-    ? `Open "${openInBrowser || `${hostname || "localhost"}:${port || 80}`}"`
+    ? `Open "${browserUrl}"`
     : killable
     ? `Kill ${shortName}`
     : pausable
     ? `Pause ${shortName}`
     : `${shortName} <small>${paused ? `(paused)` : port ? `(${port})` : ""}</small>`;
 
+  const hoverTitle = openable ? browserUrl : `Name: ${name}\nImage: ${image}\nStatus: ${status}`;
+
   return (
     <li
-      title={`Name: ${name}
-Image: ${image}
-Status: ${status}`}
+      title={hoverTitle}
       className={classnames("container", {
         active,
         inactive: !active,

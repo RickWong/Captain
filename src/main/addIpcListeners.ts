@@ -24,7 +24,7 @@ export const addIpcListeners = async (menubar: Menubar) => {
     setTimeout(() => ipcMain.emit(command, body), delayMs); // Run on next tick.
   };
 
-  let queryContainersInterval: NodeJS.Timer;
+  let queryContainersInterval: NodeJS.Timeout;
   menubar.on("show", async () => {
     debug("captain-rpc-server")("Show");
 

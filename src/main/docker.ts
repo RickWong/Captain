@@ -109,7 +109,7 @@ export const containerList = async (): Promise<Container[]> => {
           _ports = "";
         }
 
-        let ports: string[] = [];
+        let ports: string[];
         if (_ports.length) {
           ports = (_ports.match(/:([0-9]+)->/g) || []).map((s) => s.replace(/[^0-9]+/g, ""));
         } else {
@@ -136,7 +136,7 @@ export const containerList = async (): Promise<Container[]> => {
         ),
     );
 
-    return Object.values(list);
+    return Object.values(list).sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     debug("captain-docker")(error);
     return [];
