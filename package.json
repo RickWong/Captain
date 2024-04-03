@@ -1,7 +1,7 @@
 {
   "license": "GPL-3.0",
   "name": "captain",
-  "version": "10.2.0",
+  "version": "10.2.1",
   "description": "Docker menubar",
   "author": {
     "name": "Rick Wong",
@@ -90,7 +90,7 @@
     "debug": "^4.3.4",
     "dotenv": "^16.4.5",
     "electron": "^19.1.9",
-    "electron-builder": "^23.6.0",
+    "electron-builder": "^24.13.3",
     "electron-notarize": "^1.2.2",
     "electron-updater": "^5.0.5",
     "html-webpack-plugin": "^5.6.0",
