@@ -9,6 +9,7 @@ import { StartAtLogin } from "./StartAtLogin";
 import { useEffect, useState } from "react";
 import { ContainerGroup } from "./ContainerGroup";
 import * as remote from "@electron/remote";
+import classnames from "classnames";
 
 /**
  * Resizes the popup menu based on its content's height.
@@ -62,9 +63,16 @@ export const App = () => {
     setAutoLaunch(autoLaunch);
   };
 
-  const onGroups = (event: IpcRendererEvent, { groups }: any) => {
-    setGroups(groups);
-  };
+  const onGroups = React.useCallback(
+    (event: IpcRendererEvent, { groups }: any) => {
+      if (Object.keys(groups).length < 2 && !dockerVersion?.length) {
+        return;
+      }
+
+      setGroups(groups);
+    },
+    [dockerVersion],
+  );
 
   useEffect(() => {
     window.addEventListener("keydown", trackModifierKeys);
@@ -89,21 +97,27 @@ export const App = () => {
     updateWindowHeight();
   }); // Runs after every render.
 
+  const disconnected = !dockerVersion?.length;
+
   return (
     <ul className="menu">
       <Status dockerVersion={dockerVersion} />
       <li>
-        <ul className="containers">
+        <ul className={classnames("containers", { disconnected })}>
           {Object.keys(groups).map((groupName) => (
             <ContainerGroup
               key={groupName}
               groupName={groupName}
               containers={groups[groupName]}
               updateWindowHeight={updateWindowHeight}
-              keysPressed={keysPressed}
+              keysPressed={disconnected ? new Set<string>() : keysPressed}
             >
               {Object.keys(groups[groupName]).map((containerName) => (
-                <Container key={containerName} {...groups[groupName][containerName]} keysPressed={keysPressed} />
+                <Container
+                  key={containerName}
+                  {...groups[groupName][containerName]}
+                  keysPressed={disconnected ? new Set<string>() : keysPressed}
+                />
               ))}
             </ContainerGroup>
           ))}

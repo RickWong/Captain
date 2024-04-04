@@ -1,7 +1,7 @@
 {
   "license": "GPL-3.0",
   "name": "captain",
-  "version": "10.2.1",
+  "version": "10.3.0",
   "description": "Docker menubar",
   "author": {
     "name": "Rick Wong",

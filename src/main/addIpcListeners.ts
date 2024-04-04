@@ -169,6 +169,10 @@ export const addIpcListeners = async (menubar: Menubar) => {
       });
     }
 
+    if (containers.every((c) => c.shortName.endsWith("-1"))) {
+      containers.forEach((c) => (c.shortName = c.shortName.replace(/-1$/, "")));
+    }
+
     cachedContainerGroups = Object.assign({}, groups);
     lastCacheMicrotime = Date.now();
     sendToRenderer(COMMANDS.CONTAINER_GROUPS, { groups });

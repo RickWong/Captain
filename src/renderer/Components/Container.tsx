@@ -49,7 +49,7 @@ export const Container = (props: Props) => {
     if (disabled) {
       return;
     } else if (copyable) {
-      clipboard.writeText(openable ? browserUrl : id);
+      clipboard.writeText(openable ? browserUrl : shiftIsDown ? name : id);
       remote.getCurrentWindow().hide();
       keysPressed.clear();
     } else if (openable) {
@@ -83,6 +83,8 @@ export const Container = (props: Props) => {
     ? `Remove ${shortName}`
     : copyable && openable
     ? `Copy "${browserUrl}"`
+    : copyable && shiftIsDown
+    ? `Copy "${name}"`
     : copyable
     ? `Copy "${id}"`
     : openable
@@ -93,7 +95,11 @@ export const Container = (props: Props) => {
     ? `Pause ${shortName}`
     : `${shortName} <small>${paused ? `(paused)` : port ? `(${port})` : ""}</small>`;
 
-  const hoverTitle = openable ? browserUrl : `Name: ${name}\nImage: ${image}\nStatus: ${status}`;
+  const hoverTitle = copyable
+    ? "Click to copy"
+    : openable
+    ? browserUrl
+    : `Name: ${name}\nImage: ${image}\nStatus: ${status}\nPorts: ${ports.join(", ") || "none"}`;
 
   return (
     <li

@@ -28,7 +28,7 @@ const captainMenubar = menubar({
   icon: path.join(__dirname, "../public/iconTemplate.png"),
   index: app.isPackaged ? "file://" + path.join(__dirname, "./index.html") : "http://localhost:9999/index.html",
   browserWindow: {
-    width: 240,
+    width: 260,
     height: 240,
     transparent: true,
     vibrancy: "under-window",
