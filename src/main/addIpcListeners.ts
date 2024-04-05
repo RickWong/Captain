@@ -9,11 +9,23 @@ import { checkForUpdates } from "./checkForUpdates";
 
 export const addIpcListeners = async (menubar: Menubar) => {
   require("@electron/remote/main").enable(menubar.window!.webContents);
+  const webContents = menubar.window!.webContents;
+
+  const browserSetValue = async <V>(key: string, value: V): Promise<void> => {
+    return webContents.executeJavaScript(
+      `(localStorage.setItem((${JSON.stringify(key)}), (${JSON.stringify(JSON.stringify(value))})))`,
+    );
+  };
+
+  const browserGetValue = async <V>(key: string): Promise<V | null> => {
+    let res = await webContents.executeJavaScript(`(localStorage.getItem((${JSON.stringify(key)})))`);
+    return res ? JSON.parse(res) : null;
+  };
 
   /**
    * Sends message to Electron's renderer process over IPC.
    */
-  const sendToRenderer = (channel: string, ...args: any[]) => menubar.window!.webContents.send(channel, ...args);
+  const sendToRenderer = (channel: string, ...args: any[]) => webContents.send(channel, ...args);
 
   /**
    * Triggers IPC listener in main process.
@@ -120,7 +132,8 @@ export const addIpcListeners = async (menubar: Menubar) => {
   });
 
   // Holds cached container info.
-  let cachedContainerGroups: Record<string, any> = {};
+  const stored = await browserGetValue<typeof cachedContainerGroups>("cachedContainerGroups");
+  let cachedContainerGroups: Record<string, any> = stored ?? {};
 
   ipcMain.on(COMMANDS.CONTAINER_GROUPS, async () => {
     /**
@@ -136,6 +149,13 @@ export const addIpcListeners = async (menubar: Menubar) => {
     }
 
     const containers = await Docker.containerList();
+    if (containers === undefined) {
+      debug("captain-rpc-server")("Using browser cache");
+
+      sendToRenderer(COMMANDS.CONTAINER_GROUPS, { groups: cachedContainerGroups });
+      return;
+    }
+
     const composeProjects = await Docker.composeProjectsList();
     const groups: Record<string, any> = { "~others": {} }; // Make sure ~others exist as first group.
 
@@ -175,6 +195,7 @@ export const addIpcListeners = async (menubar: Menubar) => {
 
     cachedContainerGroups = Object.assign({}, groups);
     lastCacheMicrotime = Date.now();
+    browserSetValue("cachedContainerGroups", cachedContainerGroups).finally();
     sendToRenderer(COMMANDS.CONTAINER_GROUPS, { groups });
   });
 };

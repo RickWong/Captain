@@ -94,7 +94,7 @@ interface Container {
 /**
  * Queries the docker container list, returns array of Containers.
  */
-export const containerList = async (): Promise<Container[]> => {
+export const containerList = async (): Promise<Container[] | undefined> => {
   try {
     const list: Record<string, Container> = {};
 
@@ -139,6 +139,6 @@ export const containerList = async (): Promise<Container[]> => {
     return Object.values(list).sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     debug("captain-docker")(error);
-    return [];
+    return undefined;
   }
 };
