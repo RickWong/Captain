@@ -14,15 +14,32 @@ interface Props {
   image: string;
   status: string;
   ports: string[];
+  logs?: string;
   openInBrowser: string;
   active: boolean;
   paused: boolean;
   keysPressed: Set<string>;
 }
 
+const logsNeedsAttention = (logs?: string) => {
+  logs = logs?.toLowerCase() ?? "";
+  return (
+    logs.includes("exited") ||
+    logs.includes("failed") ||
+    logs.includes("crashed") ||
+    logs.includes("terminated") ||
+    logs.includes("killed") ||
+    logs.includes("error") ||
+    logs.includes("exception") ||
+    logs.includes("...")
+  );
+};
 export const Container = (props: Props) => {
   const [disabled, setDisabled] = useState(false);
-  const { id, name, shortName, hostname, image, status, ports, openInBrowser, active, paused, keysPressed } = props;
+  const { id, name, shortName, hostname, image, status, ports, logs, openInBrowser, active, paused, keysPressed } =
+    props;
+  // Container is active but needs attention.
+  const attention = active && !paused && logsNeedsAttention(logs);
 
   useEffect(() => {
     setDisabled(false);
@@ -99,7 +116,9 @@ export const Container = (props: Props) => {
     ? "Click to copy"
     : openable
     ? browserUrl
-    : `Name: ${name}\nImage: ${image}\nStatus: ${status}\nPorts: ${ports.join(", ") || "none"}`;
+    : `Name: ${name}\nImage: ${image}\nStatus: ${status}${ports.length ? `\nPorts: ${ports.join(", ")}` : ""}${
+        logs ? `\n\n${logs}` : ""
+      }`;
 
   return (
     <li
@@ -107,6 +126,7 @@ export const Container = (props: Props) => {
       className={classnames("container", {
         active,
         inactive: !active,
+        attention,
         paused,
         openable,
         killable,

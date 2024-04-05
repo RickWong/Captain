@@ -164,6 +164,9 @@ body .menu > li.status {
 .containers li.container.inactive:before {
   background: rgb(255, 59, 48);
 }
+.containers li.container.attention:before {
+  animation: 2s cubic-bezier(0.4, 0, 0.6, 1) 0s infinite pulse;
+}
 
 /*
   https://developer.apple.com/design/human-interface-guidelines/foundations/color/#specifications
@@ -207,5 +210,11 @@ body .menu > li.status {
   }
   .containers li.container.inactive:before {
     background: rgb(255, 69, 58);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.4;
   }
 }

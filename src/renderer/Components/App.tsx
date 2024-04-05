@@ -58,10 +58,10 @@ export const App = () => {
     });
   };
 
-  const onVersion = (event: IpcRendererEvent, { dockerVersion, autoLaunch }: any) => {
+  const onVersion = React.useCallback((event: IpcRendererEvent, { dockerVersion, autoLaunch }: any) => {
     setDockerVersion(dockerVersion || "");
     setAutoLaunch(autoLaunch);
-  };
+  }, []);
 
   const onGroups = React.useCallback(
     (event: IpcRendererEvent, { groups }: any) => {
@@ -74,12 +74,17 @@ export const App = () => {
     [dockerVersion],
   );
 
+  const onError = React.useCallback((event: IpcRendererEvent, { message, details }: any) => {
+    remote.dialog.showErrorBox(message, details);
+  }, []);
+
   useEffect(() => {
     window.addEventListener("keydown", trackModifierKeys);
     window.addEventListener("keyup", trackModifierKeys);
 
     ipcRenderer.on(COMMANDS.VERSION, onVersion);
     ipcRenderer.on(COMMANDS.CONTAINER_GROUPS, onGroups);
+    ipcRenderer.on(COMMANDS.CONTAINER_ERROR, onError);
 
     ipcRenderer.send(COMMANDS.VERSION);
     ipcRenderer.send(COMMANDS.CONTAINER_GROUPS);
@@ -87,6 +92,7 @@ export const App = () => {
     return () => {
       ipcRenderer.off(COMMANDS.VERSION, onVersion);
       ipcRenderer.off(COMMANDS.CONTAINER_GROUPS, onGroups);
+      ipcRenderer.off(COMMANDS.CONTAINER_ERROR, onError);
 
       window.removeEventListener("keydown", trackModifierKeys);
       window.removeEventListener("keyup", trackModifierKeys);

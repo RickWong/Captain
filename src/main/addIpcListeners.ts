@@ -6,6 +6,7 @@ import { toggleAutoLaunch, autoLaunchEnabled } from "./toggleAutoLaunch";
 import { Menubar } from "menubar/lib/Menubar";
 import { moveToApplications } from "./moveToApplications";
 import { checkForUpdates } from "./checkForUpdates";
+import { containerStart } from "./docker";
 
 export const addIpcListeners = async (menubar: Menubar) => {
   require("@electron/remote/main").enable(menubar.window!.webContents);
@@ -105,9 +106,16 @@ export const addIpcListeners = async (menubar: Menubar) => {
 
   ipcMain.on(COMMANDS.CONTAINER_START, async (_event, body) => {
     debug("captain-rpc-server")("Container start", body);
-    await Docker.containerCommand("start", body.id);
-
-    triggerListener(COMMANDS.CONTAINER_GROUPS, undefined, 500);
+    const [_, err] = await Docker.containerStart(body.id);
+    if (err !== undefined) {
+      sendToRenderer(
+        COMMANDS.CONTAINER_ERROR,
+        { message: `Failed to start container "${body.name}"`, details: err },
+        500,
+      );
+    } else {
+      triggerListener(COMMANDS.CONTAINER_GROUPS, undefined, 500);
+    }
   });
 
   ipcMain.on(COMMANDS.CONTAINER_PAUSE, async (_event, body) => {

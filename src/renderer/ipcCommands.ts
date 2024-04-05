@@ -15,4 +15,5 @@ export const COMMANDS = {
   CONTAINER_PAUSE: "containerPause",
   CONTAINER_UNPAUSE: "containerUnpause",
   CONTAINER_REMOVE: "containerRemove",
+  CONTAINER_ERROR: "containerError",
 };
