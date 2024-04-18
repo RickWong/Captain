@@ -215,6 +215,7 @@ body .menu > li.status {
 
 @keyframes pulse {
   50% {
-    opacity: 0.4;
+    filter: brightness(60%);
+    transform: scale(0.9);
   }
 }
