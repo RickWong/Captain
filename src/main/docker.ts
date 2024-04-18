@@ -128,7 +128,7 @@ export const containerList = async (): Promise<Container[] | undefined> => {
           // Enrich with openInBrowser.
           list[id].ports.length > 0 ? containerOpenInBrowser(id).then(([url]) => (list[id].openInBrowser = url)) : true,
           // Enrich with last log.
-          containerLogs(id).then(([logs]) => (list[id].logs = logs)),
+          containerLogs(id).then(([logs]) => (list[id].logs = logs ? cleanUpLogs(logs) : logs)),
         ]),
       ),
     );
@@ -168,4 +168,11 @@ export const containerStart = async (id: string): Promise<[string?, string?]> =>
     debug("captain-docker")(err);
     return [undefined, err];
   }
+};
+
+const cleanUpLogs = (logs: string): string => {
+  // Remove terminal escape codes from logs.
+  const escapeCodes = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
+
+  return logs.replace(escapeCodes, "");
 };
