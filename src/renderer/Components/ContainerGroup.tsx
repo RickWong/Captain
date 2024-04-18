@@ -1,6 +1,6 @@
 import * as React from "react";
 import classnames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { ipcRenderer } from "electron";
 import { COMMANDS } from "../ipcCommands";
 
@@ -14,7 +14,6 @@ interface Props {
 
 export const ContainerGroup = ({ groupName, containers, updateWindowHeight, children, keysPressed }: Props) => {
   const [closed, setClosed] = React.useState(false);
-  const [hoverRef, isHovered] = useHover<HTMLDivElement>();
 
   const totalContainers = Object.keys(containers).length;
   const activeContainers = Object.values(containers).filter((c) => c.active).length;
@@ -26,9 +25,9 @@ export const ContainerGroup = ({ groupName, containers, updateWindowHeight, chil
     altIsDown = keysPressed.has("Alt"),
     metaIsDown = keysPressed.has("Meta");
 
-  const startable = isHovered && !shiftIsDown && !ctrlIsDown && !altIsDown && metaIsDown;
-  const stoppable = isHovered && shiftIsDown && !ctrlIsDown && !altIsDown; // && !metaIsDown;
-  const killable = isHovered && !shiftIsDown && ctrlIsDown && !altIsDown && !metaIsDown;
+  const startable = !shiftIsDown && !ctrlIsDown && !altIsDown && metaIsDown;
+  const stoppable = shiftIsDown && !ctrlIsDown && !altIsDown; // && !metaIsDown;
+  const killable = !shiftIsDown && ctrlIsDown && !altIsDown && !metaIsDown;
 
   const onClick = () => {
     keysPressed.clear();
@@ -60,7 +59,6 @@ export const ContainerGroup = ({ groupName, containers, updateWindowHeight, chil
         className={classnames("group", { closed, startable, stoppable, killable })}
         onClick={onClick}
         onContextMenu={onClick}
-        ref={hoverRef}
       >
         {startable ? "Start " : stoppable ? "Stop " : killable ? "Kill " : ""}
         {`${groupName.replace(/^~/, "")}`}{" "}
@@ -73,28 +71,3 @@ export const ContainerGroup = ({ groupName, containers, updateWindowHeight, chil
     </>
   );
 };
-
-// Hook
-// T - could be any type of HTML element like: HTMLDivElement, HTMLParagraphElement and etc.
-// hook returns tuple(array) with type [any, boolean]
-function useHover<T>() {
-  const [value, setValue] = useState<boolean>(false);
-  const ref: any = useRef<T | null>(null);
-  const handleMouseOver = (): void => setValue(true);
-  const handleMouseOut = (): void => setValue(false);
-  useEffect(
-    () => {
-      const node: any = ref.current;
-      if (node) {
-        node.addEventListener("mouseover", handleMouseOver);
-        node.addEventListener("mouseout", handleMouseOut);
-        return () => {
-          node.removeEventListener("mouseover", handleMouseOver);
-          node.removeEventListener("mouseout", handleMouseOut);
-        };
-      }
-    },
-    [ref.current], // Recall only if ref changes
-  );
-  return [ref, value];
-}
